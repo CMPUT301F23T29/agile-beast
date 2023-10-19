@@ -62,3 +62,9 @@
 | SerialNumberReader ||
 | :--------: | :--------: |
 | Detect and read serial numbers from photos   | InputScreen |
+
+### Class: ItemAdapter
+
+| SerialNumberReader ||
+| :--------: | :--------: |
+| Connect the list of items to the ListView   | InputScreen |
