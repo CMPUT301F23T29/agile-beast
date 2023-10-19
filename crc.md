@@ -1,22 +1,22 @@
-### Class: InventoryItem
+### Class: Item
 
-| InventoryItem ||
+| Item ||
 | :--------: | :--------: |
 | Store and manage information about an inventory item   | FirestoreDatabase |
 | Provide methods for retrieving and updating item information   | BarcodeScanner |
 |   | SerialNumberReader |
 
-### Class: MainMenuScreen
+### Class: MainMenuActivity
 
-| MainMenuScreen ||
+| MainMenuActivity ||
 | :--------: | :--------: |
 | Display the main menu screen of the app   | InputScreen |
 | Provide options for navigating to different sections of the app   | DisplayScreen |
 |   | SummaryScreen |
 
-### Class: InputScreen
+### Class: InputActivity
 
-| InputScreen ||
+| InputActivity ||
 | :--------: | :--------: |
 | Allow users to input data for a new inventory item   | InventoryItem |
 | Validate and store the data collected   | Camera |
@@ -24,14 +24,14 @@
 |   | SerialNumberReader |
 |   | FirestoreDatabase |
 
-### Class: DisplayScreen
+### Class: DisplayActivity
 
 | DisplayScreen ||
 | :--------: | :--------: |
 | Display details of a selected inventory item   | InventoryItem |
 | Allow users to view and potentially edit the item's information   | FirestoreDatabase |
 
-### Class: SummaryScreen
+### Class: SummaryActivity
 
 | SummaryScreen ||
 | :--------: | :--------: |
@@ -49,6 +49,7 @@
 | Camera ||
 | :--------: | :--------: |
 | Capture photos of products for barcode detection and serial number reading   | InputScreen |
+
 
 ### Class: BarcodeScanner
 
