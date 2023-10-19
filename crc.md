@@ -65,6 +65,6 @@
 
 ### Class: ItemAdapter
 
-| SerialNumberReader ||
+| ItemAdapter ||
 | :--------: | :--------: |
 | Connect the list of items to the ListView   | InputScreen |
