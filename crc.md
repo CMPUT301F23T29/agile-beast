@@ -42,7 +42,8 @@
 
 | FirestoreDatabase ||
 | :--------: | :--------: |
-| Connect to the Firestore database   | InventoryItem |
+| Connect to the Firestore database   | Item |
+| Connect to the Firestore database   | Profile |
 
 ### Class: Camera
 
@@ -62,4 +63,10 @@
 | SerialNumberReader ||
 | :--------: | :--------: |
 | Detect and read serial numbers from photos   | InputScreen |
+### Class: Profile
+| Profile ||
+| :--------: | :--------: |
+| Store and manage information about user profile | FirestoreDatabase |
+
+
 
