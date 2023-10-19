@@ -63,8 +63,3 @@
 | :--------: | :--------: |
 | Detect and read serial numbers from photos   | InputScreen |
 
-### Class: ItemAdapter
-
-| ItemAdapter ||
-| :--------: | :--------: |
-| Connect the list of items to the ListView   | Item|
