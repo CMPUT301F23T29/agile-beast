@@ -67,4 +67,4 @@
 
 | ItemAdapter ||
 | :--------: | :--------: |
-| Connect the list of items to the ListView   | InputScreen |
+| Connect the list of items to the ListView   | InventoryItem|
