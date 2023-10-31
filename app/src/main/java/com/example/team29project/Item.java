@@ -1,11 +1,18 @@
 package com.example.team29project;
 
+import android.graphics.Bitmap;
+
+import java.util.ArrayList;
+
 public class Item {
     private String name;
     private String description;
     private String date;
     private String make;
     private String serialNumber;
+
+    private ArrayList<Bitmap> photos;
+    private ArrayList<Tag> tags;
 
     public Item(String name , String date , String make, String serialNumber, String description){
         this.name = name;
@@ -60,4 +67,12 @@ public class Item {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
+
+    public void addTag (Tag tag){
+        this.tags.add(tag);
+    }
+    public ArrayList<Tag> getTags(){
+        return tags;
+    }
+
 }
