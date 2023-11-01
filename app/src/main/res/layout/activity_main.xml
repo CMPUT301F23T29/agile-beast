@@ -1,44 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="56dp"
-        app:layout_constraintBottom_toTopOf="@+id/camera_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></ImageView>
+<androidx.camera.view.PreviewView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/cameraPreview" >
 
 
-    <Button
-        android:id="@+id/camera_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="271dp"
-        android:text="Camera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_view"></Button>
+</androidx.camera.view.PreviewView>
+    <ImageButton
+        android:layout_width="60sp"
+        android:layout_height="60sp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40sp"
+        android:id="@+id/capture"
+        android:src="@drawable/round_camera_24"
+        android:scaleType="centerCrop"
+        app:tint="#fff"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
+    <ImageButton
+        android:id="@+id/flipCamera"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+       android:layout_margin="10sp"
+        android:layout_alignParentEnd="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerCrop"
+        android:src="@drawable/round_flip_camera_android_24"
+        app:tint="#fff" />
 
-    <TextView
-        android:id="@+id/barcode_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="356dp"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_view" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
