@@ -94,7 +94,7 @@ public class CustomCameraActivity extends AppCompatActivity {
         flipCameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                customCamera.filpCamera();
+                customCamera.flipCamera();
                 customCamera.startCamera(CustomCameraActivity.this);
             }
         });

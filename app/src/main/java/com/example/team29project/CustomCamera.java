@@ -25,7 +25,7 @@ public class CustomCamera {
         this.previewView = previewView;
         this.cameraFacing=CameraSelector.LENS_FACING_BACK;
     }
-    public void filpCamera(){
+    public void flipCamera(){
         if(this.cameraFacing == CameraSelector.LENS_FACING_BACK){
             this.cameraFacing= CameraSelector.LENS_FACING_FRONT;
         }
