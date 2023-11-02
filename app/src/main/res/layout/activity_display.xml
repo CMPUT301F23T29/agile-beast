@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".DisplayActivity"
+    android:backgroundTint="@color/background"
+    android:background="@color/background">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/taskbar"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/button_colour"
+            android:fontFamily="monospace"
+            android:text="@string/back"
+            android:textColor="@color/button_text"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/edit_button"
+            app:layout_constraintHorizontal_bias="0.04"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/button_colour"
+            android:fontFamily="monospace"
+            android:text="@string/edit"
+            android:textColor="@color/button_text"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.96"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linearLayoutCompat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="9dp"
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/white"
+            android:padding="10sp"
+            android:text="item name"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/item_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginVertical="9dp"
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/white"
+            android:padding="10sp"
+            android:text="value of item"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/item_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="9dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="9dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_style"
+                android:backgroundTint="@color/white"
+                android:padding="10sp"
+                android:text="YY/MM/DD"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/item_make"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="9dp"
+                android:layout_marginStart="9dp"
+                android:layout_marginEnd="18dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_style"
+                android:backgroundTint="@color/white"
+                android:padding="10sp"
+                android:text="item make"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/item_model"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="9dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="9dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_style"
+                android:backgroundTint="@color/white"
+                android:padding="10sp"
+                android:text="model"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/item_serialno"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="9dp"
+                android:layout_marginStart="9dp"
+                android:layout_marginEnd="18dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_style"
+                android:backgroundTint="@color/white"
+                android:padding="10sp"
+                android:text="serial number"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginVertical="9dp"
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/white"
+            android:padding="10sp"
+            android:text="description description description"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/item_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginVertical="9dp"
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/white"
+            android:padding="10sp"
+            android:text="comment comment comment"
+            android:textSize="15sp" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/white"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginVertical="9dp">
+
+        </com.google.android.material.chip.ChipGroup>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginVertical="9dp"
+            android:background="@android:color/darker_gray"/>
+
+        <GridView
+            android:layout_width="409dp"
+            android:layout_height="256dp"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="585dp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
