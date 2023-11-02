@@ -41,11 +41,15 @@ public class MainActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc: value) {
                         String name = doc.getId();
                         String date = doc.getString("date");
+                        Number itemValue = doc.getDouble("value");
                         String make = doc.getString("make");
+                        String model = doc.getString("model");
                         String serialNumber = doc.getString("serialNumber");
                         String description = doc.getString("description");
+                        String comment = doc.getString("comment");
 
-                        dataList.add(new Item(name, date, make, serialNumber, description));
+                        dataList.add(new Item(name, date, itemValue, make, model,
+                                serialNumber, description, comment));
                     }
                     itemAdapter.notifyDataSetChanged();
                 }
