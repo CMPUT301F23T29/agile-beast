@@ -24,9 +24,6 @@
             android:name=".DisplayActivity"
             android:exported="false" />
         <activity
-            android:name=".GalleryActivity"
-            android:exported="false" />
-        <activity
             android:name=".CustomCameraActivity"
             android:exported="false" />
         <activity

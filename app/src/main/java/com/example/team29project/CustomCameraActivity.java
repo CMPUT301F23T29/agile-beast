@@ -15,6 +15,7 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -34,6 +36,10 @@ import java.util.concurrent.Executors;
 public class CustomCameraActivity extends AppCompatActivity {
     private CustomCamera customCamera;
     private PreviewView previewView;
+    private ImageView capturedImage;
+    private Button okButton;
+    private Button reTryButton;
+
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private final String[] REQUIRED_PERMISSIONS = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private File outputDirectory;
@@ -54,22 +60,29 @@ public class CustomCameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_camera);
-        cameraFacing= CameraSelector.LENS_FACING_BACK;
+        cameraFacing = CameraSelector.LENS_FACING_BACK;
         previewView = findViewById(R.id.customPreview);
         capture_btns = findViewById(R.id.capture_btn);
+        okButton = findViewById(R.id.ok_btn);
+        reTryButton = findViewById(R.id.retry_btn);
+        capturedImage = findViewById(R.id.capture_image);
         flipCameraBtn = findViewById(R.id.flipCamera_btn);
         if (ContextCompat.checkSelfPermission(CustomCameraActivity.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             activityResultLauncher.launch(android.Manifest.permission.CAMERA);
         } else {
             startCamera();
         }
-       // outputDirectory = getOutputDirectory();
 
     }
 
-
     private void startCamera() {
         // Initialize your custom CameraX instance
+        previewView.setVisibility(View.VISIBLE);
+        capture_btns.setVisibility(View.VISIBLE);
+        flipCameraBtn.setVisibility(View.VISIBLE);
+        okButton.setVisibility(View.INVISIBLE);
+        reTryButton.setVisibility(View.INVISIBLE);
+        capturedImage.setVisibility(View.INVISIBLE);
         customCamera = new CustomCamera(previewView);
         customCamera.startCamera(this);
         capture_btns.setOnClickListener(new View.OnClickListener() {
@@ -97,11 +110,44 @@ public class CustomCameraActivity extends AppCompatActivity {
                 @Override
                 public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                     runOnUiThread(() -> {
-                        Toast.makeText(CustomCameraActivity.this, "ImageSaved: " , Toast.LENGTH_SHORT).show();
                         Uri imageUri= outputFileResults.getSavedUri();
-                        Intent display_image = new Intent(CustomCameraActivity.this ,DisplayActivity.class);
-                        display_image.putExtra("imageUri", imageUri.toString());
-                        startActivity(display_image);
+                        previewView.setVisibility(View.INVISIBLE);
+                        capture_btns.setVisibility(View.INVISIBLE);
+                        flipCameraBtn.setVisibility(View.INVISIBLE);
+                        okButton.setVisibility(View.VISIBLE);
+                        reTryButton.setVisibility(View.VISIBLE);
+                        capturedImage.setVisibility(View.VISIBLE);
+                        capturedImage.setImageURI(imageUri);
+                        okButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(CustomCameraActivity.this, "ImageSaved: " , Toast.LENGTH_SHORT).show();
+                                Uri imageUri= outputFileResults.getSavedUri();
+                                Intent resultIntent = new Intent();
+                                resultIntent.setData(imageUri); // You can put any data you want
+                                setResult(Activity.RESULT_OK, resultIntent);
+                                finish();
+                            }
+                        });
+                        reTryButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                startCamera();
+                            }
+                        });
+
+
+
+
+
+
+
+
+
+
+
+
                     });
                 }
 
@@ -148,13 +194,6 @@ public class CustomCameraActivity extends AppCompatActivity {
         }
 
     }
-   /* private File getOutputDirectory() {
-        File mediaDir = new File(getExternalFilesDir(null), "CameraXImages");
-        if (!mediaDir.exists() && !mediaDir.mkdirs()) {
-            return getExternalFilesDir(null);
-        }
-        return mediaDir;
-    }
-*/
+
 
 }
