@@ -8,18 +8,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-public class DisplayActivity extends AppCompatActivity {
+public class DisplayImageActivity extends AppCompatActivity {
     private ImageView images;
     private Button camera_btn;
 
@@ -40,7 +35,7 @@ public class DisplayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display);
+        setContentView(R.layout.activity_imagedisplay);
         images = findViewById(R.id.image_pic);
         camera_btn = findViewById(R.id.takePhoto_btn);
         gallery_btn= findViewById((R.id.pickPhoto_btn));
@@ -57,7 +52,7 @@ public class DisplayActivity extends AppCompatActivity {
         camera_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent customCamera = new Intent(DisplayActivity.this, CustomCameraActivity.class);
+                Intent customCamera = new Intent(DisplayImageActivity.this, CustomCameraActivity.class);
                 pictureActivityResultLauncher.launch(customCamera);
 
             }

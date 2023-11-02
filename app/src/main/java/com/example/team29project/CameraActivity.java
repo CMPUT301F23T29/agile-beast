@@ -117,7 +117,7 @@ public class CameraActivity extends AppCompatActivity {
                     Toast.makeText(CameraActivity.this, "ImageSaved: " , Toast.LENGTH_SHORT).show();
                     Uri imageUri= outputFileResults.getSavedUri();
 
-                    Intent display_image = new Intent(CameraActivity.this ,DisplayActivity.class);
+                    Intent display_image = new Intent(CameraActivity.this ,DisplayImageActivity.class);
                     display_image.putExtra("imageUri", imageUri.toString());
                     startActivity(display_image);
                 });
