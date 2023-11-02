@@ -65,5 +65,12 @@ public class MainActivity extends AppCompatActivity {
         // Init db, load db items into dataList and adapter
         handleDatabase();
 
+        // Init list and
+        dataList = new ArrayList<>();
+
+        itemAdapter = new ItemArrayAdapter(this, dataList);
+        itemsList = findViewById(R.id.items_list);
+        itemsList.setAdapter(itemAdapter);
+
     }
 }
