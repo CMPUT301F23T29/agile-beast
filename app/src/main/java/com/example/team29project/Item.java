@@ -19,6 +19,7 @@ public class Item {
         this.date = date;
         this.make = make;
         this.serialNumber = serialNumber;
+        this.description = "";
     }
 
     public String getName() {
