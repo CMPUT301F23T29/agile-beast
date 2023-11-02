@@ -19,9 +19,19 @@ public class CustomCamera {
     private PreviewView previewView;
     private ImageCapture imageCapture;
     private Executor executor = Executors.newSingleThreadExecutor();
+    private int cameraFacing;
 
     public CustomCamera(PreviewView previewView) {
         this.previewView = previewView;
+        this.cameraFacing=CameraSelector.LENS_FACING_BACK;
+    }
+    public void filpCamera(){
+        if(this.cameraFacing == CameraSelector.LENS_FACING_BACK){
+            this.cameraFacing= CameraSelector.LENS_FACING_FRONT;
+        }
+        else{
+            this.cameraFacing=CameraSelector.LENS_FACING_BACK;
+        }
     }
 
     public void startCamera(LifecycleOwner lifecycleOwner) {
@@ -42,7 +52,7 @@ public class CustomCamera {
     private void bindCameraUseCases(ProcessCameraProvider cameraProvider, LifecycleOwner lifecycleOwner) {
         Preview preview = new Preview.Builder().build();
         CameraSelector cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .requireLensFacing(cameraFacing)
                 .build();
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());

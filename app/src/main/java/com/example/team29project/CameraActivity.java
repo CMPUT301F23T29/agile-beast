@@ -13,18 +13,24 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
-import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 import com.google.common.util.concurrent.ListenableFuture;
-
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
@@ -82,7 +88,6 @@ public class CameraActivity extends AppCompatActivity {
                 CameraSelector cameraSelector = new CameraSelector.Builder()
                         .requireLensFacing(cameraFacing).build();
                 cameraProvider.unbindAll();
-
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
 
                 capture.setOnClickListener(new View.OnClickListener() {
@@ -103,35 +108,30 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public void takePicture(ImageCapture imageCapture) {
-        final File file = new File(getExternalFilesDir(null), System.currentTimeMillis() + ".jpg");
+        final File file = createImageFile();
         ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(file).build();
-        imageCapture.takePicture(outputFileOptions, Executors.newCachedThreadPool(), new ImageCapture.OnImageSavedCallback() {
+        imageCapture.takePicture( outputFileOptions, Executors.newCachedThreadPool(), new ImageCapture.OnImageSavedCallback() {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(CameraActivity.this, "Image saved at: " + file.getPath(), Toast.LENGTH_SHORT).show();
-                    }
+                runOnUiThread(() -> {
+                    Toast.makeText(CameraActivity.this, "ImageSaved: " , Toast.LENGTH_SHORT).show();
+                    Uri imageUri= outputFileResults.getSavedUri();
+
+                    Intent display_image = new Intent(CameraActivity.this ,DisplayActivity.class);
+                    display_image.putExtra("imageUri", imageUri.toString());
+                    startActivity(display_image);
                 });
-                finish();
+
             }
+
 
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(CameraActivity.this, "Failed to save: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(CameraActivity.this, "Failed to save: " + exception.getMessage(), Toast.LENGTH_SHORT).show());
                 startCamera(cameraFacing);
             }
         });
     }
-
-
-
     private int aspectRatio(int width, int height) {
         double previewRatio = (double) Math.max(width, height) / Math.min(width, height);
         if (Math.abs(previewRatio - 4.0 / 3.0) <= Math.abs(previewRatio - 16.0 / 9.0)) {
@@ -139,6 +139,28 @@ public class CameraActivity extends AppCompatActivity {
         }
         return AspectRatio.RATIO_16_9;
     }
+    private File createImageFile() {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir =  getExternalFilesDir("Pictures");
+        try {
+            File image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+            return image;
+        } catch (Exception ex) {
+            Toast.makeText(this, "sss", Toast.LENGTH_SHORT).show();
+            ex.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+
 
 
 }

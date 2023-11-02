@@ -6,14 +6,18 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.AspectRatio;
+import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -34,8 +38,8 @@ public class CustomCameraActivity extends AppCompatActivity {
     private final String[] REQUIRED_PERMISSIONS = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private File outputDirectory;
     private String currentPhotoPath;
-    private ImageButton capture_btns;
-
+    private ImageButton capture_btns ,flipCameraBtn;;
+    private int cameraFacing ;
     private Preview preview;
     private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
         @Override
@@ -50,15 +54,16 @@ public class CustomCameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_camera);
+        cameraFacing= CameraSelector.LENS_FACING_BACK;
         previewView = findViewById(R.id.customPreview);
         capture_btns = findViewById(R.id.capture_btn);
+        flipCameraBtn = findViewById(R.id.flipCamera_btn);
         if (ContextCompat.checkSelfPermission(CustomCameraActivity.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             activityResultLauncher.launch(android.Manifest.permission.CAMERA);
         } else {
             startCamera();
         }
-        outputDirectory = getOutputDirectory();
-        Toast.makeText(this,"sdfswwwdf",Toast.LENGTH_SHORT);
+       // outputDirectory = getOutputDirectory();
 
     }
 
@@ -73,6 +78,14 @@ public class CustomCameraActivity extends AppCompatActivity {
                 captureImage();
             }
         });
+        flipCameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                customCamera.filpCamera();
+                customCamera.startCamera(CustomCameraActivity.this);
+            }
+        });
+
     }
 
     private void captureImage() {
@@ -80,15 +93,18 @@ public class CustomCameraActivity extends AppCompatActivity {
         //File photoFile = createImageFile();
         if (photoFile != null) {
             ImageCapture.OnImageSavedCallback callback =  new ImageCapture.OnImageSavedCallback() {
+
                 @Override
-                public void onImageSaved(@NonNull ImageCapture.OutputFileResults output) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(CustomCameraActivity.this, "Image saved at: " + photoFile.getPath(), Toast.LENGTH_SHORT).show();
-                        }
+                public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(CustomCameraActivity.this, "ImageSaved: " , Toast.LENGTH_SHORT).show();
+                        Uri imageUri= outputFileResults.getSavedUri();
+                        Intent display_image = new Intent(CustomCameraActivity.this ,DisplayActivity.class);
+                        display_image.putExtra("imageUri", imageUri.toString());
+                        startActivity(display_image);
                     });
                 }
+
                 @Override
                 public void onError(@NonNull ImageCaptureException exception) {
                     // Handle error
@@ -115,7 +131,7 @@ public class CustomCameraActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = new File(getExternalFilesDir(null), "CameraXImages");
 
         try {
             File image = File.createTempFile(
@@ -132,13 +148,13 @@ public class CustomCameraActivity extends AppCompatActivity {
         }
 
     }
-    private File getOutputDirectory() {
+   /* private File getOutputDirectory() {
         File mediaDir = new File(getExternalFilesDir(null), "CameraXImages");
         if (!mediaDir.exists() && !mediaDir.mkdirs()) {
             return getExternalFilesDir(null);
         }
         return mediaDir;
     }
-
+*/
 
 }
