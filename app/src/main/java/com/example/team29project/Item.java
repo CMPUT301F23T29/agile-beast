@@ -2,17 +2,28 @@ package com.example.team29project;
 
 public class Item {
     private String name;
+    private Number value;
     private String description;
     private String date;
     private String make;
+    private String model;
     private String serialNumber;
+    private String comment;
 
-    public Item(String name , String date , String make, String serialNumber, String description){
+    public Item(
+            String name , String date ,
+            Number value,
+            String make, String model, String serialNumber,
+            String description, String comment
+    ){
         this.name = name;
         this.date = date;
+        this.value = value;
         this.make = make;
+        this.model = model;
         this.serialNumber = serialNumber;
         this.description= description;
+        this.comment = comment;
     }
     public Item(String name, String date, String make, String serialNumber){
         this.name = name;
