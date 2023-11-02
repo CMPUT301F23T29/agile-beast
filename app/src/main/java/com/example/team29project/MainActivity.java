@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
                         String make = doc.getString("make");
                         String serialNumber = doc.getString("serialNumber");
                         String description = doc.getString("description");
+
+                        dataList.add(new Item(name, date, make, serialNumber, description));
                     }
                     itemAdapter.notifyDataSetChanged();
                 }
