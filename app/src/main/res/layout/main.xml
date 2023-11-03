@@ -112,6 +112,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@android:drawable/ic_menu_add" />
 
+        <!-- todo change the image button icon to the three ellipsis -->
+
         <TextView
             android:id="@+id/value_label"
             android:layout_width="wrap_content"
