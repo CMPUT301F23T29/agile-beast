@@ -33,6 +33,30 @@ public class Item {
         this.description = "";
     }
 
+    public Number getValue() {
+        return value;
+    }
+
+    public void setValue(Number value) {
+        this.value = value;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public String getName() {
         return name;
     }
