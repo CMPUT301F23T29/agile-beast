@@ -25,12 +25,21 @@ public class Item {
         this.description= description;
         this.comment = comment;
     }
-    public Item(String name, String date, String make, String serialNumber){
+
+    public Item(
+            String name , String date ,
+            Number value,
+            String make, String model,
+            String description, String comment
+    ){
         this.name = name;
         this.date = date;
+        this.value = value;
         this.make = make;
-        this.serialNumber = serialNumber;
-        this.description = "";
+        this.model = model;
+        this.serialNumber = "N/A";
+        this.description= description;
+        this.comment = comment;
     }
 
     public Number getValue() {
