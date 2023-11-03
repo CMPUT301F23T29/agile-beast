@@ -13,8 +13,9 @@ public class Item {
     public Item(
             String name , String date ,
             Number value,
-            String make, String model, String serialNumber,
-            String description, String comment
+            String make, String model,
+            String description, String comment,
+            String serialNumber
     ){
         this.name = name;
         this.date = date;

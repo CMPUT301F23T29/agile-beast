@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -17,6 +18,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Item> dataList;
@@ -41,15 +44,14 @@ public class MainActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc: value) {
                         String name = doc.getId();
                         String date = doc.getString("date");
-                        Number itemValue = doc.getDouble("value");
+                        Number itemValue = Float.parseFloat(doc.getString("value"));
                         String make = doc.getString("make");
                         String model = doc.getString("model");
                         String serialNumber = doc.getString("serialNumber");
                         String description = doc.getString("description");
                         String comment = doc.getString("comment");
 
-                        dataList.add(new Item(name, date, itemValue, make, model,
-                                serialNumber, description, comment));
+                        dataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
                     }
                     itemAdapter.notifyDataSetChanged();
                 }
@@ -72,5 +74,28 @@ public class MainActivity extends AppCompatActivity {
         itemsList = findViewById(R.id.items_list);
         itemsList.setAdapter(itemAdapter);
 
+//        addItem(new Item("name", "10/5/2", 23, "Honda", "Civic", "Description", "comment"));
+
+    }
+
+    public void addItem(Item item) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("date", item.getDate());
+        data.put("value", item.getValue().toString());
+        data.put("make", item.getMake());
+        data.put("model", item.getModel());
+        data.put("serialNumber", item.getSerialNumber());
+        data.put("description", item.getDescription());
+        data.put("comment", item.getComment());
+        itemsRef
+                .document(item.getName())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Firestore", "Document snapshot written successfully!");
+                    }
+                });
     }
 }
+
