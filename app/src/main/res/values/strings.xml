@@ -7,4 +7,5 @@
     <string name="delete">Delete</string>
     <string name="filter">Filter</string>
     <string name="sort_by">Sort By</string>
+    <string name="value">Value: </string>
 </resources>
