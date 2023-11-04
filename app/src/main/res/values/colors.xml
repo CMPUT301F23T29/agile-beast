@@ -7,4 +7,5 @@
     <color name="menu_page">#136476</color>
     <color name="taskbar">#B6DDD6</color>
     <color name="background">#D8E8EC</color>
+    <color name="tinted">#80404040</color>
 </resources>
