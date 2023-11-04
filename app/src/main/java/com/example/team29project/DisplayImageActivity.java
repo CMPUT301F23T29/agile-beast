@@ -17,7 +17,6 @@ import android.widget.ImageView;
 public class DisplayImageActivity extends AppCompatActivity {
     private ImageView images;
     private Button camera_btn;
-
     private Button gallery_btn;
     ActivityResultLauncher<Intent> pictureActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -54,16 +53,8 @@ public class DisplayImageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent customCamera = new Intent(DisplayImageActivity.this, CustomCameraActivity.class);
                 pictureActivityResultLauncher.launch(customCamera);
-
             }
         });
 
-       /* Intent display_image = getIntent();
-        Uri myUri = Uri.parse( display_image.getStringExtra("imageUri"));
-        try {
-            images.setImageURI(myUri);
-        }catch (Exception ex) {
-            Toast.makeText(this, "nah", Toast.LENGTH_SHORT).show();
-        }*/
     }
 }

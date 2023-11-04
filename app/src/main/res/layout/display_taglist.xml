@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="500dp"
+    android:layout_gravity="center"
+    android:background="@color/borderColor"
+    android:orientation="vertical"
+    >
+    <ListView
+        android:id="@+id/tag_listview"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:dividerHeight="2dp"
+        android:background="@drawable/border"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="30dp">
+    </ListView>
+    <EditText
+        android:id="@+id/add_tag_edt"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:hint="Add Tag "
+        android:visibility="visible"></EditText>
+
+
+</LinearLayout>
