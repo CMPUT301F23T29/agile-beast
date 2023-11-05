@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CustomCameraActivity">
+
+    <androidx.camera.view.PreviewView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:id="@+id/customPreview" >
+    </androidx.camera.view.PreviewView>
+    <ImageButton
+        android:layout_width="60sp"
+        android:layout_height="60sp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40sp"
+        android:id="@+id/capture_btn"
+        android:src="@drawable/round_camera_24"
+        android:scaleType="centerCrop"
+        app:tint="#fff"
+        android:visibility="visible"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
+    <ImageButton
+        android:id="@+id/flipCamera_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10sp"
+        android:layout_alignParentEnd="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerCrop"
+        android:src="@drawable/round_flip_camera_android_24"
+        android:visibility="visible"
+        app:tint="#fff" />
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ok_btn"
+        android:text="OK"
+        android:visibility="invisible"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        >
+    </Button>
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/retry_btn"
+        android:text="Retry"
+        android:visibility="invisible"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        >
+    </Button>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:id="@+id/capture_image"
+        ></ImageView>
+
+
+
+
+
+</RelativeLayout>

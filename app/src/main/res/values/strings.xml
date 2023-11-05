@@ -12,4 +12,8 @@
     <string name="serial_number">serial number</string>
     <string name="description">description</string>
     <string name="comment">comment</string>
+    <string name="delete">Delete</string>
+    <string name="filter">Filter</string>
+    <string name="sort_by">Sort By</string>
+    <string name="value">Value: </string>
 </resources>
