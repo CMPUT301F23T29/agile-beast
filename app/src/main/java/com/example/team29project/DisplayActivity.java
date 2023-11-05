@@ -57,7 +57,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
             @Override
             public void onClick(View view) {
                 new InputFragment().show(getSupportFragmentManager(), "Edit");
-                //TODO implement fragment
+                // TODO implement fragment
             }
         });
     }
@@ -67,5 +67,5 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         // TODO change details and pass the data
     }
 
-    //TODO implement photo functions
+    // TODO implement photo functions
 }
