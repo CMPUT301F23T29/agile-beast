@@ -21,9 +21,12 @@
         android:theme="@style/Theme.Team29project"
         tools:targetApi="31">
         <activity
+            android:name=".TagActivity"
+            android:exported="false" />
+        <activity
             android:name=".DisplayActivity"
             android:exported="false" />
-       <activity
+        <activity
             android:name=".DisplayImageActivity"
             android:exported="false" />
         <activity

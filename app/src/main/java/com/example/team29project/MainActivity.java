@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 menuBackgroundLayout.setTranslationX(0.f);
                 menuBackgroundLayout.setBackgroundColor(getResources().getColor(R.color.white, null));
                 menuBackgroundLayout.setElevation(0);
+
             }
         });
     }
