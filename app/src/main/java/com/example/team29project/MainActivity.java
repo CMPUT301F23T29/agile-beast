@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
         itemsList = findViewById(R.id.items_list);
         itemsList.setAdapter(itemAdapter);
 
-//        addItem(new Item("name", "10/5/2", 23, "Honda", "Civic", "Description", "comment"));
-
     }
 
     public void addItem(Item item) {
