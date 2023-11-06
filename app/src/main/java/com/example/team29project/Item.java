@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 
+/**
+ * Represents an item with a name, value, make, model, serial number, description, and comment.
+ */
 public class Item {
     private String name;
     private Number value;
