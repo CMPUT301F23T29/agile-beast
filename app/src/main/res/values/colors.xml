@@ -2,6 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="itemLayoutBackground">#ebfdff</color>
+    <color name="mainLayoutBackground">#adf7ff</color>
+
     <color name="button_colour">#70C4CA</color>
     <color name="button_text">#407783</color>
     <color name="menu_page">#136476</color>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "689855980369",
+    "project_id": "agile-beast",
+    "storage_bucket": "agile-beast.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689855980369:android:289dea9e33d7c0df4b2970",
+        "android_client_info": {
+          "package_name": "com.example.team29project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArjlzxjedvcw4ikFqq-1K-Z4nxb3izUz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,26 +6,71 @@ import java.util.ArrayList;
 
 public class Item {
     private String name;
+    private Number value;
     private String description;
     private String date;
     private String make;
+    private String model;
     private String serialNumber;
-
+    private String comment;
     private ArrayList<Bitmap> photos;
     private ArrayList<Tag> tags;
 
-    public Item(String name , String date , String make, String serialNumber, String description){
+    public Item(
+            String name , String date ,
+            Number value,
+            String make, String model,
+            String description, String comment,
+            String serialNumber
+    ){
         this.name = name;
         this.date = date;
+        this.value = value;
         this.make = make;
+        this.model = model;
         this.serialNumber = serialNumber;
         this.description= description;
+        this.comment = comment;
     }
-    public Item(String name, String date, String make, String serialNumber){
+
+    public Item(
+            String name , String date ,
+            Number value,
+            String make, String model,
+            String description, String comment
+    ){
         this.name = name;
         this.date = date;
+        this.value = value;
         this.make = make;
-        this.serialNumber = serialNumber;
+        this.model = model;
+        this.serialNumber = "N/A";
+        this.description= description;
+        this.comment = comment;
+    }
+
+    public Number getValue() {
+        return value;
+    }
+
+    public void setValue(Number value) {
+        this.value = value;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getName() {
