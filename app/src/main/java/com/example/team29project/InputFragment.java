@@ -72,7 +72,7 @@ public class InputFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
 
-        // TODO set up filter chips of all tags (from firestore)
+        // TODO set up filter chips of all tags (from firestore) and select ones already tagged by the item
 
         // TODO set scan button listener
 
