@@ -69,7 +69,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
         // TODO assign values of photos from item to photos
         ArrayList<Bitmap> photos = item.getPhotos();
-        photoAdapter = photos;
+        photoAdapter = new ArrayAdapter<Bitmap>(this,R.layout.photos_list_item, photos);
         photo_view.setAdapter(photoAdapter);
 
         back_button.setOnClickListener(new View.OnClickListener() {

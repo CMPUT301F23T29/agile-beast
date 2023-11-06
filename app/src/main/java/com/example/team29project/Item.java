@@ -21,12 +21,15 @@ public class Item implements Parcelable{
     private ArrayList<Bitmap> photos;
     private ArrayList<Tag> tags;
 
-    public Item(String name , String date , String make, String serialNumber, String description){
+    public Item(String name , String date , String make, String serialNumber,String model, String description, String value, String comment){
         this.name = name;
         this.date = date;
         this.make = make;
         this.serialNumber = serialNumber;
         this.description= description;
+        this.model = model;
+        this.value = value;
+        this.comment = comment;
     }
     public Item(String name, String date, String make, String serialNumber){
         this.name = name;
@@ -34,6 +37,30 @@ public class Item implements Parcelable{
         this.make = make;
         this.serialNumber = serialNumber;
     }
+
+    protected Item(Parcel in) {
+        name = in.readString();
+        description = in.readString();
+        date = in.readString();
+        make = in.readString();
+        serialNumber = in.readString();
+        model = in.readString();
+        comment = in.readString();
+        value = in.readString();
+        photos = in.createTypedArrayList(Bitmap.CREATOR);
+    }
+
+    public static final Creator<Item> CREATOR = new Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 
     public String getName() {
         return name;
