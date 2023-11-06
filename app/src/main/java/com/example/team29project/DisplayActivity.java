@@ -86,7 +86,13 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
             }
         });
 
-        // TODO implement add photo function
+        photo_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO if clicked on photo, delete
+                // TODO if clicked on last photo, call DisplayImageActivity
+            }
+        });
     }
 
     @Override
