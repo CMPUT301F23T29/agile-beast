@@ -52,16 +52,8 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         item_description = findViewById(R.id.item_description);
         item_comment = findViewById(R.id.item_comment);
         item = intent.getParcelableExtra("item");
-        changeData();
 
-        // set tags
-        ArrayList<Tag> tags = item.getTags();
-        for (Tag tag: tags) {
-            Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
-            chip.setText(tag.getName());
-            chip.setId(tags.indexOf(tag));
-            tagGroup.addView(chip);
-        }
+        changeData();
 
         // TODO assign values of photos from item to photos
         ArrayList<Bitmap> photos = item.getPhotos();
@@ -91,6 +83,10 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         });
     }
 
+    /**
+     * This method passes the new item back into main activity to be processed
+     * @param aitem this is the new updated item to be displayed
+     */
     @Override
     public void onOKPressed(Item aitem) {
         assert item != null;
@@ -101,6 +97,9 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         setResult(Activity.RESULT_OK, inte);
     }
 
+    /**
+     * This method refreshes displayed data with any changes
+     */
     private void changeData() {
         item_name.setText(item.getName());
         item_value.setText(item.getValue());
@@ -110,6 +109,15 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         item_serialno.setText(item.getSerialNumber());
         item_description.setText(item.getDescription());
         item_comment.setText(item.getComment());
-        // TODO update photos and tags
+
+        // update tags
+        tagGroup.removeAllViews();
+        ArrayList<Tag> tags = item.getTags();
+        for (Tag tag: tags) {
+            Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
+            chip.setText(tag.getName());
+            chip.setId(tags.indexOf(tag));
+            tagGroup.addView(chip);
+        }
     }
 }
