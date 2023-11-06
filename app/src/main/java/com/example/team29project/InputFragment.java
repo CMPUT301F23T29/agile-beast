@@ -72,26 +72,29 @@ public class InputFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
 
-        // TODO get all texts
+        // TODO set up filter chips of all tags (from firestore)
 
-        // TODO set add tag and scan button listeners
+        // TODO set scan button listener
 
         builder.setView(view);
         builder.setTitle("Add new item");
         builder.setNegativeButton("Cancel", null);
         builder.setPositiveButton("OK", (dialog, which) -> {
-                    String item_name = itemName.getText().toString();
-                    String item_date = itemDate.getText().toString();
-                    String item_make = itemMake.getText().toString();
-                    String item_value = itemValue.getText().toString();
-                    String item_serN = itemSerialNumber.getText().toString();
-                    String item_model = itemModel.getText().toString();
-                    String item_description = itemDescription.getText().toString();
-                    String item_comment = itemComment.getText().toString();
+            String item_name = itemName.getText().toString();
+            String item_date = itemDate.getText().toString();
+            String item_make = itemMake.getText().toString();
+            String item_value = itemValue.getText().toString();
+            String item_serN = itemSerialNumber.getText().toString();
+            String item_model = itemModel.getText().toString();
+            String item_description = itemDescription.getText().toString();
+            String item_comment = itemComment.getText().toString();
 
-                    // TODO create new item
-                    listener.onOKPressed(new Item(item_name,item_date, item_make,item_serN,item_model, item_description, item_value,item_comment));
-                });
+            Item new_item = new Item(item_name,item_date, item_make,item_serN,item_model, item_description, item_value,item_comment);
+            // TODO add tags selected to the item
+            // do this by checking the selected id from the chip group
+
+            listener.onOKPressed(new_item);
+        });
         return builder.create();
     }
 }
