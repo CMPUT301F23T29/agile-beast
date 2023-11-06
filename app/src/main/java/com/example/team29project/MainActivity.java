@@ -54,7 +54,9 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
-        addItem.setOnClickListener(v -> new InputFragment().show(getSupportFragmentManager(), "addItems"));
+        addItem.setOnClickListener(v ->
+                new InputFragment().show(getSupportFragmentManager(), "addItems")
+        );
         editTag = popupView.findViewById(R.id.edit_tag_item);
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -69,7 +69,7 @@ public class InputFragment extends DialogFragment {
         itemModel =  view.findViewById(R.id.edit_item_model);
         itemDescription =  view.findViewById(R.id.edit_description);
         itemComment = view.findViewById(R.id.edit_comment);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.CustomAlertDialogTheme);
 
 
         // TODO get all texts
