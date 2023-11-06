@@ -21,7 +21,8 @@ public class TagActivity extends AppCompatActivity implements TagDialogue.OnFrag
         t_adapter = new TagAdapter(this, tags);
         tagAddBtn = findViewById(R.id.tagAdd);
         tagAddBtn.setOnClickListener(v ->
-                new TagDialogue(tags, t_adapter).show(getSupportFragmentManager(),"Tags"));
+                //new TagDialogue(tags, t_adapter).show(getSupportFragmentManager(),"Tags"));
+                new InputFragment().show(getSupportFragmentManager(), "addItems"));
 
     }
 

@@ -22,7 +22,6 @@ import android.widget.EditText;
  */
 public class InputFragment extends DialogFragment {
 
-    private OnFragmentInteractionListener listener;
     private Item item;
     private EditText itemName;
 
@@ -43,15 +42,16 @@ public class InputFragment extends DialogFragment {
     public InputFragment(Item aItem) {
         this.item = aItem;
     }
+    private OnFragmentsInteractionListener listener;
 
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentsInteractionListener {
         void onOKPressed(Item item);
     }
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            listener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentsInteractionListener) {
+            listener = (OnFragmentsInteractionListener) context;
         } else {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
