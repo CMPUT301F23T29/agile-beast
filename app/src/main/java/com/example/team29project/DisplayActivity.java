@@ -38,14 +38,11 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-
         Intent intent = getIntent();
-
         back_button = findViewById(R.id.back_button);
         edit_button = findViewById(R.id.edit_button);
         tagGroup = findViewById(R.id.tagGroup);
         photo_view = findViewById(R.id.photo_view);
-
         item_name = findViewById(R.id.item_name);
         item_value = findViewById(R.id.item_value);
         item_date = findViewById(R.id.item_date);
@@ -54,7 +51,6 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         item_serialno = findViewById(R.id.item_serialno);
         item_description = findViewById(R.id.item_description);
         item_comment = findViewById(R.id.item_comment);
-
         item = intent.getParcelableExtra("item");
         changeData();
 

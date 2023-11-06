@@ -25,9 +25,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
-    Button camera ;
-    TextView addItem;
+public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentInteractionListener{
+    private Button camera ;
+    private TextView addItem;
+
+    private TextView editTag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,10 +54,12 @@ public class MainActivity extends AppCompatActivity {
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
-        addItem.setOnClickListener(new View.OnClickListener() {
+        addItem.setOnClickListener(v -> new InputFragment().show(getSupportFragmentManager(), "addItems"));
+        editTag = popupView.findViewById(R.id.edit_tag_item);
+        editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    new InputFragment().show(getSupportFragmentManager(), "addItems");
+
             }
         });
 
@@ -63,5 +68,10 @@ public class MainActivity extends AppCompatActivity {
                     popupWindow.dismiss();
                     return true;
                 });
+    }
+
+    @Override
+    public void onOKPressed(Item item) {
+
     }
 }
