@@ -8,7 +8,8 @@
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
     android:weightSum="10"
-    tools:context=".InputFragment">
+    tools:context=".InputFragment"
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -151,45 +152,6 @@
                 android:backgroundTint="@color/taskbar"
                 android:fontFamily="monospace"
                 android:text="Scan +"
-                android:textColor="@color/button_text"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.9"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/ok_button"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:background="@drawable/square_button"
-                android:backgroundTint="@color/taskbar"
-                android:fontFamily="monospace"
-                android:text="ok"
-                android:textColor="@color/button_text"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/cancel_button"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:background="@drawable/square_button"
-                android:backgroundTint="@color/taskbar"
-                android:fontFamily="monospace"
-                android:text="cancel"
                 android:textColor="@color/button_text"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
