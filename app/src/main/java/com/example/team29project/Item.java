@@ -1,15 +1,22 @@
 package com.example.team29project;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-public class Item {
+public class Item implements Parcelable{
     private String name;
     private String description;
     private String date;
     private String make;
     private String serialNumber;
+    private String model;
+    private String comment;
+    private String value;
 
     private ArrayList<Bitmap> photos;
     private ArrayList<Tag> tags;
@@ -75,4 +82,54 @@ public class Item {
         return tags;
     }
 
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public ArrayList<Bitmap> getPhotos() {
+        return photos;
+    }
+
+    public void addPhoto(Bitmap photo) {
+        this.photos.add(photo);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(value);
+        parcel.writeString(date);
+        parcel.writeString(model);
+        parcel.writeString(make);
+        parcel.writeString(serialNumber);
+        parcel.writeString(description);
+        parcel.writeString(comment);
+        parcel.writeList(tags);
+        parcel.writeList(photos);
+    }
 }
