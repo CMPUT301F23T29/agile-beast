@@ -1,5 +1,9 @@
 package com.example.team29project;
 
+import android.graphics.Bitmap;
+
+import java.util.ArrayList;
+
 public class Item {
     private String name;
     private Number value;
@@ -9,6 +13,8 @@ public class Item {
     private String model;
     private String serialNumber;
     private String comment;
+    private ArrayList<Bitmap> photos;
+    private ArrayList<Tag> tags;
 
     public Item(
             String name , String date ,
@@ -106,4 +112,12 @@ public class Item {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
+
+    public void addTag (Tag tag){
+        this.tags.add(tag);
+    }
+    public ArrayList<Tag> getTags(){
+        return tags;
+    }
+
 }
