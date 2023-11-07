@@ -83,6 +83,23 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
         //removed the menu code maria said to remove (the sliding right code)
         //TODO make the button do something
+
+
+        Button filterButton = (Button)findViewById(R.id.filter_button);
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO make fragment for filter by
+            }
+        });
+
+        Button sortButton = (Button)findViewById(R.id.sort_by_button);
+        sortButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO make fragment for sort by
+            }
+        });
     }
 
     /**
@@ -123,9 +140,123 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
      * The snapshot listener updates the dataList and notifies the itemAdapter whenever the data in the "items" collection changes.
      * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
      */
-    private void handleDatabase() {
+    private void handleDatabase() { //TODO we need to move database stuff to a different class
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");
+
+        // Add a snapshot listener to the Firestore reference 'itemsRef'
+        itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                // If there's an error with the snapshot, log the error
+                if (error != null) {
+                    Log.e("Firebase", error.toString());
+                }
+
+                // If the snapshot is not null (i.e., there's data at 'itemsRef')
+                if (value != null) {
+                    // Clear the 'dataList'
+                    dataList.clear();
+
+                    // Loop over each document in the snapshot
+                    for (QueryDocumentSnapshot doc: value) {
+                        // Retrieve various fields from the document
+                        String name = doc.getId();
+                        String date = doc.getString("date");
+                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
+                        String make = doc.getString("make");
+                        String model = doc.getString("model");
+                        String serialNumber = doc.getString("serialNumber");
+                        String description = doc.getString("description");
+                        String comment = doc.getString("comment");
+
+                        // Add a new 'Item' object to 'dataList' with these fields
+                        dataList.add(new Item(name, date, itemValue.toString(), make, model, description, comment, serialNumber));
+                    }
+
+                    // refresh ListView and display the new data
+                    itemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+
+    //not tested yet may not work
+    private void sortedView(String sortBy, bool isAsc) { //TODO we need to move database stuff to a different class
+        db = FirebaseFirestore.getInstance();
+
+        // sorting the data by the sortBy field in ascending or descending order
+        Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
+        if (sortBy.equals("date")) {
+            itemsRef = db.collection("items").orderBy("date", direction);
+        } else if (sortBy.equals("value")) {
+            itemsRef = db.collection("items").orderBy("value", direction);
+        } else if (sortBy.equals("make")) {
+            itemsRef = db.collection("items").orderBy("make", direction);
+        } else if (sortBy.equals("model")) {
+            itemsRef = db.collection("items").orderBy("model", direction);
+        } else if (sortBy.equals("serialNumber")) {
+            itemsRef = db.collection("items").orderBy("serialNumber", direction);
+        } else if (sortBy.equals("description")) {
+            itemsRef = db.collection("items").orderBy("description", direction);
+        } else if (sortBy.equals("comment")) {
+            itemsRef = db.collection("items").orderBy("comment", direction);
+        } else {
+            itemsRef = db.collection("items");
+        }
+
+        // Add a snapshot listener to the Firestore reference 'itemsRef'
+        itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                // If there's an error with the snapshot, log the error
+                if (error != null) {
+                    Log.e("Firebase", error.toString());
+                }
+
+                // If the snapshot is not null (i.e., there's data at 'itemsRef')
+                if (value != null) {
+                    // Clear the 'dataList'
+                    dataList.clear();
+
+                    // Loop over each document in the snapshot
+                    for (QueryDocumentSnapshot doc: value) {
+                        // Retrieve various fields from the document
+                        String name = doc.getId();
+                        String date = doc.getString("date");
+                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
+                        String make = doc.getString("make");
+                        String model = doc.getString("model");
+                        String serialNumber = doc.getString("serialNumber");
+                        String description = doc.getString("description");
+                        String comment = doc.getString("comment");
+
+                        // Add a new 'Item' object to 'dataList' with these fields
+                        dataList.add(new Item(name, date, itemValue.toString(), make, model, description, comment, serialNumber));
+                    }
+
+                    // refresh ListView and display the new data
+                    itemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    //not tested yet may not work
+    private void filteredView(String filterBy, String value) { //TODO we need to move database stuff to a different class
+        db = FirebaseFirestore.getInstance();
+
+        // filtering the data by the sortBy field in ascending or descending order
+        if(filterBy.equals("make"))
+            itemsRef = db.collection("items").whereEqualTo("make", value);
+        } else if (filterBy.equals("date")){
+            //TODO date range
+        } else if (filterBy.equals("description")){
+            //TODO multiple description words or most number of words matched
+        } else {
+            itemsRef = db.collection("items");
+        }
 
         // Add a snapshot listener to the Firestore reference 'itemsRef'
         itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
