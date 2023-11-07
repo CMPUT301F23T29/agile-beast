@@ -45,12 +45,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * This method is called when the activity is starting.
- * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
- * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle
- * contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
- * @throws NullPointerException if any findViewById operation fails.
- * @see android.app.Activity#onCreate(Bundle)
+ * Main Activity with display of items. Buttons to access the other functions of the program.
  */
 public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentInteractionListener{
     private Button camera ;
@@ -62,6 +57,15 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private FirebaseFirestore db;
     private CollectionReference itemsRef;
 
+
+    /**
+     * This method is called when the activity is starting.
+     * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle
+     * contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
+     * @throws NullPointerException if any findViewById operation fails.
+     * @see android.app.Activity#onCreate(Bundle)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,43 +76,13 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         handleDatabase();
         dataList = new ArrayList<>();
         itemAdapter = new ItemArrayAdapter(this, dataList);
-        itemsList = findViewById(R.id.items_list);
+        itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
 
         ImageButton menu = (ImageButton)findViewById(R.id.menu);
         ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-
-
-        // Maria said this is to be removed
-        // Slide the menu right when the menu button is clicked
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConstraintLayout menuLayout = (ConstraintLayout) findViewById(R.id.menu_layout);
-                ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-                // Move the menu and its background 400 units to the right
-                menuLayout.setTranslationX(400.f);
-                menuBackgroundLayout.setTranslationX(400.f);
-                // Change the background color to 'tinted' and Raise the elevation to create a shadow effect
-                menuBackgroundLayout.setBackgroundColor(getResources().getColor(R.color.tinted, null));
-                menuBackgroundLayout.setElevation(2);
-            }
-        });
-
-        // Hide the menu when the menu background is clicked
-        menuBackgroundLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConstraintLayout menuLayout = (ConstraintLayout) findViewById(R.id.menu_layout);
-                ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-                // Move menu back to its original position
-                menuLayout.setTranslationX(0.f);
-                menuBackgroundLayout.setTranslationX(0.f);
-                // Reset the background color and elevation of the menu background layout
-                menuBackgroundLayout.setBackgroundColor(getResources().getColor(R.color.white, null));
-                menuBackgroundLayout.setElevation(0);
-            }
-        });
+        //removed the menu code maria said to remove (the sliding right code)
+        //TODO make the button do something
     }
 
     /**
@@ -141,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
 
     @Override
     public void onOKPressed(Item item) {
-        //
+        //TODO this also is never called
     }
 
     /**
@@ -172,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                         // Retrieve various fields from the document
                         String name = doc.getId();
                         String date = doc.getString("date");
-                        Number itemValue = Float.parseFloat(doc.getString("value"));
+                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
                         String make = doc.getString("make");
                         String model = doc.getString("model");
                         String serialNumber = doc.getString("serialNumber");
@@ -180,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                         String comment = doc.getString("comment");
 
                         // Add a new 'Item' object to 'dataList' with these fields
-                        dataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
+                        dataList.add(new Item(name, date, itemValue.toString(), make, model, description, comment, serialNumber));
                     }
 
                     // refresh ListView and display the new data

@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header_layout"
@@ -83,13 +83,13 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ListView
-        android:id="@+id/items_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-  />
+<!--    <ListView-->
+<!--        android:id="@+id/items_list"-->
+<!--        android:layout_width="372dp"-->
+<!--        android:layout_height="623dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        tools:layout_editor_absoluteX="39dp" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footer_layout"
@@ -154,9 +154,10 @@
 
     <ListView
         android:id="@+id/items"
-        android:layout_width="409dp"
-        android:layout_height="503dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@color/white"
+        android:padding="0dp"
         app:layout_constraintBottom_toTopOf="@+id/footer_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
