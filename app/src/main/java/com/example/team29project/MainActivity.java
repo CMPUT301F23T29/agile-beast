@@ -74,41 +74,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         itemAdapter = new ItemArrayAdapter(this, dataList);
         itemsList = findViewById(R.id.items_list);
         itemsList.setAdapter(itemAdapter);
-
-        ImageButton menu = (ImageButton)findViewById(R.id.menu);
-        ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-
-
-        // Maria said this is to be removed
-        // Slide the menu right when the menu button is clicked
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConstraintLayout menuLayout = (ConstraintLayout) findViewById(R.id.menu_layout);
-                ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-                // Move the menu and its background 400 units to the right
-                menuLayout.setTranslationX(400.f);
-                menuBackgroundLayout.setTranslationX(400.f);
-                // Change the background color to 'tinted' and Raise the elevation to create a shadow effect
-                menuBackgroundLayout.setBackgroundColor(getResources().getColor(R.color.tinted, null));
-                menuBackgroundLayout.setElevation(2);
-            }
-        });
-
-        // Hide the menu when the menu background is clicked
-        menuBackgroundLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConstraintLayout menuLayout = (ConstraintLayout) findViewById(R.id.menu_layout);
-                ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-                // Move menu back to its original position
-                menuLayout.setTranslationX(0.f);
-                menuBackgroundLayout.setTranslationX(0.f);
-                // Reset the background color and elevation of the menu background layout
-                menuBackgroundLayout.setBackgroundColor(getResources().getColor(R.color.white, null));
-                menuBackgroundLayout.setElevation(0);
-            }
-        });
     }
 
     /**
