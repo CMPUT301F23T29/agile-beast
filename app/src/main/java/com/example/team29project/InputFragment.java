@@ -4,16 +4,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 
 /**
  * Allow users to input/edit data for an inventory item
@@ -23,7 +20,7 @@ import android.widget.EditText;
 public class InputFragment extends DialogFragment {
 
     private OnFragmentInteractionListener listener;
-    private Item item;
+    private final Item item;
     private EditText itemName;
 
     private EditText itemValue;
@@ -89,7 +86,7 @@ public class InputFragment extends DialogFragment {
             String item_description = itemDescription.getText().toString();
             String item_comment = itemComment.getText().toString();
 
-            Item new_item = new Item(item_name,item_date,item_value,item_make,item_model, item_description,item_comment,item_serN);
+            Item new_item = new Item(item_name,item_date,Float.parseFloat(item_value),item_make,item_model, item_description,item_comment,item_serN);
             // TODO add tags selected to the item
             // do this by checking the selected id from the chip group
 

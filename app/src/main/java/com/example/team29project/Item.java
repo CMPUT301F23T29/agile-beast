@@ -145,11 +145,11 @@ public class Item implements Parcelable{
         this.comment = comment;
     }
 
-    public String getValue() {
+    public Number getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Number value) {
         this.value = value;
     }
 
@@ -169,7 +169,7 @@ public class Item implements Parcelable{
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeString(name);
-        parcel.writeString(value);
+        parcel.writeString(value.toString());
         parcel.writeString(date);
         parcel.writeString(model);
         parcel.writeString(make);
