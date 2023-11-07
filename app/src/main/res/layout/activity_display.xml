@@ -178,12 +178,14 @@
             android:textSize="15sp" />
 
         <com.google.android.material.chip.ChipGroup
+            android:id="@+id/tagGroup"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:background="@drawable/button_style"
             android:backgroundTint="@color/white"
             android:layout_marginHorizontal="18dp"
-            android:layout_marginVertical="9dp">
+            android:layout_marginVertical="9dp"
+            app:selectionRequired="false">
 
         </com.google.android.material.chip.ChipGroup>
         <View
@@ -194,10 +196,12 @@
             android:background="@android:color/darker_gray"/>
 
         <GridView
-            android:layout_width="409dp"
-            android:layout_height="256dp"
-            tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="585dp" />
+            android:id="@+id/photo_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="9dp"
+            android:numColumns="3"
+            />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

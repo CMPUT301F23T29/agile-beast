@@ -7,7 +7,8 @@
 
     <color name="button_colour">#70C4CA</color>
     <color name="button_text">#407783</color>
-    <color name="menu_page">#136476</color>
+    <color name="menu_page_text">#136476</color>
+    <color name="menu_page">#58909C</color>
     <color name="taskbar">#B6DDD6</color>
     <color name="background">#D8E8EC</color>
     <color name="tinted">#80404040</color>
