@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                         // Retrieve various fields from the document
                         String name = doc.getId();
                         String date = doc.getString("date");
-                        Number itemValue = Float.parseFloat(doc.getString("value"));
+                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
                         String make = doc.getString("make");
                         String model = doc.getString("model");
                         String serialNumber = doc.getString("serialNumber");
