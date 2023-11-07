@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * Represents an adapter for displaying tags in a list view.
+ */
 public class TagAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater mLayoutInflater;

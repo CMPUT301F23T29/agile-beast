@@ -62,7 +62,7 @@ public class InputFragment extends DialogFragment {
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("OK", (dialog, which) -> {
                     // TODO
-                    listener.onOKPressed(new Item());
+                    //listener.onOKPressed(new Item());
                 }).create();
     }
 }
