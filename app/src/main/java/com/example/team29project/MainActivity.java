@@ -25,6 +25,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             @Override
             public void onClick(View view) {
                 //TODO make fragment for filter by
+                // select what to filter by and enter data depending on
+                // what we filter by
             }
         });
 
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             @Override
             public void onClick(View view) {
                 //TODO make fragment for sort by
+                //select what to sort by
             }
         });
     }
@@ -182,32 +186,34 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     }
 
 
-    //not tested yet may not work
-    private void sortedView(String sortBy, bool isAsc) { //TODO we need to move database stuff to a different class
+    // //not tested yet may not work
+    void sortedView(String sortBy, Boolean isAsc) {
         db = FirebaseFirestore.getInstance();
 
         // sorting the data by the sortBy field in ascending or descending order
         Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
+        Query query; // New Query variable
+
         if (sortBy.equals("date")) {
-            itemsRef = db.collection("items").orderBy("date", direction);
+            query = db.collection("items").orderBy("date", direction);
         } else if (sortBy.equals("value")) {
-            itemsRef = db.collection("items").orderBy("value", direction);
+            query = db.collection("items").orderBy("value", direction);
         } else if (sortBy.equals("make")) {
-            itemsRef = db.collection("items").orderBy("make", direction);
+            query = db.collection("items").orderBy("make", direction);
         } else if (sortBy.equals("model")) {
-            itemsRef = db.collection("items").orderBy("model", direction);
+            query = db.collection("items").orderBy("model", direction);
         } else if (sortBy.equals("serialNumber")) {
-            itemsRef = db.collection("items").orderBy("serialNumber", direction);
+            query = db.collection("items").orderBy("serialNumber", direction);
         } else if (sortBy.equals("description")) {
-            itemsRef = db.collection("items").orderBy("description", direction);
+            query = db.collection("items").orderBy("description", direction);
         } else if (sortBy.equals("comment")) {
-            itemsRef = db.collection("items").orderBy("comment", direction);
+            query = db.collection("items").orderBy("comment", direction);
         } else {
-            itemsRef = db.collection("items");
+            query = db.collection("items");
         }
 
-        // Add a snapshot listener to the Firestore reference 'itemsRef'
-        itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        // Add a snapshot listener to the Firestore query
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 // If there's an error with the snapshot, log the error
@@ -243,23 +249,26 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         });
     }
 
-    //not tested yet may not work
-    private void filteredView(String filterBy, String value) { //TODO we need to move database stuff to a different class
+    // //not tested yet may not work
+    private void filteredView(String filterBy, String value) {
         db = FirebaseFirestore.getInstance();
 
-        // filtering the data by the sortBy field in ascending or descending order
-        if(filterBy.equals("make"))
-            itemsRef = db.collection("items").whereEqualTo("make", value);
-        } else if (filterBy.equals("date")){
+        Query query; // Declare a Query object
+
+        if(filterBy.equals("make")) {
+            query = db.collection("items").whereEqualTo("make", value);
+        } else if (filterBy.equals("date")) {
             //TODO date range
-        } else if (filterBy.equals("description")){
+            query = db.collection("items");//need to change this query
+        } else if (filterBy.equals("description")) {
             //TODO multiple description words or most number of words matched
+            query = db.collection("items");//need to change this query
         } else {
-            itemsRef = db.collection("items");
+            query = db.collection("items");
         }
 
-        // Add a snapshot listener to the Firestore reference 'itemsRef'
-        itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        // Add a snapshot listener to the Firestore query
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 // If there's an error with the snapshot, log the error
@@ -294,5 +303,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             }
         });
     }
+
 }
 
