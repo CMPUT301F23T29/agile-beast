@@ -45,8 +45,12 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * MainActivity class that extends AppCompatActivity.
- * This class handles the main UI and database operations of the application.
+ * This method is called when the activity is starting.
+ * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
+ * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle
+ * contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
+ * @throws NullPointerException if any findViewById operation fails.
+ * @see android.app.Activity#onCreate(Bundle)
  */
 public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentInteractionListener{
     private Button camera ;
@@ -58,12 +62,93 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private FirebaseFirestore db;
     private CollectionReference itemsRef;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Init db, load db items into dataList and adapter
+        // Initialize the database, create list for data, set up the adapter and assign to the ListView.
+        handleDatabase();
+        dataList = new ArrayList<>();
+        itemAdapter = new ItemArrayAdapter(this, dataList);
+        itemsList = findViewById(R.id.items_list);
+        itemsList.setAdapter(itemAdapter);
+
+        ImageButton menu = (ImageButton)findViewById(R.id.menu);
+        ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
+
+
+        // Maria said this is to be removed
+        // Slide the menu right when the menu button is clicked
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConstraintLayout menuLayout = (ConstraintLayout) findViewById(R.id.menu_layout);
+                ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
+                // Move the menu and its background 400 units to the right
+                menuLayout.setTranslationX(400.f);
+                menuBackgroundLayout.setTranslationX(400.f);
+                // Change the background color to 'tinted' and Raise the elevation to create a shadow effect
+                menuBackgroundLayout.setBackgroundColor(getResources().getColor(R.color.tinted, null));
+                menuBackgroundLayout.setElevation(2);
+            }
+        });
+
+        // Hide the menu when the menu background is clicked
+        menuBackgroundLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConstraintLayout menuLayout = (ConstraintLayout) findViewById(R.id.menu_layout);
+                ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
+                // Move menu back to its original position
+                menuLayout.setTranslationX(0.f);
+                menuBackgroundLayout.setTranslationX(0.f);
+                // Reset the background color and elevation of the menu background layout
+                menuBackgroundLayout.setBackgroundColor(getResources().getColor(R.color.white, null));
+                menuBackgroundLayout.setElevation(0);
+            }
+        });
+    }
+
+    /**
+     * This method adds a new item to the "items" collection in the Firestore database.
+     * @param item The item to be added to the database.
+     * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
+     * @see com.google.firebase.firestore.CollectionReference#document(String)
+     * @see com.google.firebase.firestore.DocumentReference#set(Object)
+     */
+    public void addItem(Item item) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("date", item.getDate());
+        data.put("value", item.getValue().toString());
+        data.put("make", item.getMake());
+        data.put("model", item.getModel());
+        data.put("serialNumber", item.getSerialNumber());
+        data.put("description", item.getDescription());
+        data.put("comment", item.getComment());
+        // Add the 'data' map to the Firestore database under a document named after the item's name.
+        itemsRef
+                .document(item.getName())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Firestore", "Document snapshot written successfully!");
+                    }
+                });
+    }
+
+    @Override
+    public void onOKPressed(Item item) {
+        //
+    }
+
     /**
      * This method initializes the Firestore database and sets up a snapshot listener on the "items" collection.
      * The snapshot listener updates the dataList and notifies the itemAdapter whenever the data in the "items" collection changes.
      * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
      */
-
     private void handleDatabase() {
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");
@@ -103,111 +188,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                 }
             }
         });
-    }
-}
-
-public class MainActivity extends AppCompatActivity {//Remove this line?///////////////////////////////////////
-    Button camera ;
-
-    /**
-     * This method is called when the activity is starting.
-     * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle 
-     * contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
-     * @throws NullPointerException if any findViewById operation fails.
-     * @see android.app.Activity#onCreate(Bundle)
-     */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-        ImageButton menu =findViewById(R.id.menu);
-//        ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-
-
-        // Init db, load db items into dataList and adapter
-        // Initialize the database, create list for data, set up the adapter and assign to the ListView.
-        handleDatabase();
-        dataList = new ArrayList<>();
-        itemAdapter = new ItemArrayAdapter(this, dataList);+
-        itemsList = findViewById(R.id.items_list);
-        itemsList.setAdapter(itemAdapter);
-
-        ImageButton menu = (ImageButton)findViewById(R.id.menu);
-        ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-
-
-        // Maria said this is to be removed
-        // Slide the menu right when the menu button is clicked
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConstraintLayout menuLayout = (ConstraintLayout) findViewById(R.id.menu_layout);
-                ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-                // Move the menu and its background 400 units to the right
-                menuLayout.setTranslationX(400.f);
-                menuBackgroundLayout.setTranslationX(400.f);
-                // Change the background color to 'tinted' and Raise the elevation to create a shadow effect
-                menuBackgroundLayout.setBackgroundColor(getResources().getColor(R.color.tinted, null));
-                menuBackgroundLayout.setElevation(2);
-            }
-        });
-
-        // Hide the menu when the menu background is clicked
-        menuBackgroundLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConstraintLayout menuLayout = (ConstraintLayout) findViewById(R.id.menu_layout);
-                ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-                // Move menu back to its original position
-                menuLayout.setTranslationX(0.f);
-                menuBackgroundLayout.setTranslationX(0.f);
-                // Reset the background color and elevation of the menu background layout
-                menuBackgroundLayout.setBackgroundColor(getResources().getColor(R.color.white, null));
-                menuBackgroundLayout.setElevation(0);
-            }
-        });
-
-
-      popupView.setOnTouchListener((v, event) -> {
-                    popupWindow.dismiss();
-                    return true;
-                });
-    }
-
-    @Override
-    public void onOKPressed(Item item) {
-
-    }
-
-    /**
-     * This method adds a new item to the "items" collection in the Firestore database.
-     * @param item The item to be added to the database.
-     * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
-     * @see com.google.firebase.firestore.CollectionReference#document(String)
-     * @see com.google.firebase.firestore.DocumentReference#set(Object)
-     */
-    public void addItem(Item item) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("date", item.getDate());
-        data.put("value", item.getValue().toString());
-        data.put("make", item.getMake());
-        data.put("model", item.getModel());
-        data.put("serialNumber", item.getSerialNumber());
-        data.put("description", item.getDescription());
-        data.put("comment", item.getComment());
-        // Add the 'data' map to the Firestore database under a document named after the item's name.
-        itemsRef
-                .document(item.getName())
-                .set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Firestore", "Document snapshot written successfully!");
-                    }
-                });
     }
 }
 

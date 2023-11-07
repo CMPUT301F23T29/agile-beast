@@ -13,30 +13,27 @@ import java.util.ArrayList;
  */
 public class Item implements Parcelable{
     private String name;
-    private Number value;
+    private String value;
     private String description;
     private String date;
     private String make;
     private String model;
     private String serialNumber;
     private String comment;
-    private String value;
 
     private ArrayList<Bitmap> photos;
     private ArrayList<Tag> tags;
 
     public Item(
             String name , String date ,
-            Number value,
+            String value,
             String make, String model,
             String description, String comment,
             String serialNumber
     ){
         this.name = name;
         this.date = date;
-        this.value = value;
         this.make = make;
-        this.model = model;
         this.serialNumber = serialNumber;
         this.description= description;
         this.model = model;
@@ -46,7 +43,7 @@ public class Item implements Parcelable{
 
     public Item(
             String name , String date ,
-            Number value,
+            String value,
             String make, String model,
             String description, String comment
     ){
@@ -57,30 +54,6 @@ public class Item implements Parcelable{
         this.model = model;
         this.serialNumber = "N/A";
         this.description= description;
-        this.comment = comment;
-    }
-
-    public Number getValue() {
-        return value;
-    }
-
-    public void setValue(Number value) {
-        this.value = value;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
         this.comment = comment;
     }
 

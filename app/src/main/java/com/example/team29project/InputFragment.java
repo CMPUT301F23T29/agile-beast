@@ -89,7 +89,7 @@ public class InputFragment extends DialogFragment {
             String item_description = itemDescription.getText().toString();
             String item_comment = itemComment.getText().toString();
 
-            Item new_item = new Item(item_name,item_date, item_make,item_serN,item_model, item_description, item_value,item_comment);
+            Item new_item = new Item(item_name,item_date,item_value,item_make,item_model, item_description,item_comment,item_serN);
             // TODO add tags selected to the item
             // do this by checking the selected id from the chip group
 
