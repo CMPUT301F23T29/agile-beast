@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
+/**
+ * Represents an item with a name, value, make, model, serial number, description, and comment.
+ */
 public class Item implements Parcelable{
     private String name;
     private Number value;

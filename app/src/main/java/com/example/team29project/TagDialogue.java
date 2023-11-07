@@ -17,23 +17,42 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a dialog fragment for managing tags.
+ */
 public class TagDialogue extends DialogFragment {
     private ListView tagListView;
     private ArrayList<Tag> tag_list;
     private EditText enteredTag;
     private TagAdapter tag_adapter;
 
-
+    /**
+     * Constructs a new TagDialogue with the given list of tags and tag adapter.
+     *
+     * @param tagList The list of tags to be managed.
+     * @param tagAdapter The adapter for displaying the tags.
+     */
     public TagDialogue(ArrayList<Tag> tagList ,TagAdapter tagAdapter)
     {
         this.tag_list = tagList;
         this.tag_adapter = tagAdapter;
     }
+
     private OnFragmentInteractionListener listener;
+
+    /**
+     * Interface for handling interactions in the TagDialogue.
+     */
     public interface OnFragmentInteractionListener {
         void onAddPressed(Tag tag);
         void onEditPressed();
     }
+
+    /**
+     * Attaches the dialog fragment to its context, ensuring that it implements OnFragmentInteractionListener.
+     *
+     * @param context The context to attach to.
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -44,7 +63,11 @@ public class TagDialogue extends DialogFragment {
             throw new RuntimeException("e");
         }
     }
-
+    
+    /**
+     * Represents a dialog fragment for adding tags. The dialog includes a field for entering a tag name and a list view for 
+     * displaying existing tags.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
