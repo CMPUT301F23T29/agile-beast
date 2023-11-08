@@ -1,25 +1,18 @@
 package com.example.team29project;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 
-import android.content.Intent;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -32,15 +25,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.SlidingDrawer;
-import android.widget.TextView;
-
-import com.google.common.util.concurrent.ListenableFuture;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -80,19 +66,21 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
 
-        ImageButton menu = (ImageButton)findViewById(R.id.menu);
+        ImageButton addButton = (ImageButton)findViewById(R.id.add_button);
         ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-        //removed the menu code maria said to remove (the sliding right code)
-        //TODO make the button do something
-
+        //added temporary code to connect the add button
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new InputFragment().show(getSupportFragmentManager(),"Input");
+            }
+        });
 
         Button filterButton = (Button)findViewById(R.id.filter_button);
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO make fragment for filter by
-                // select what to filter by and enter data depending on
-                // what we filter by
+                new FilterFragment().show(getSupportFragmentManager(),"Filter");
             }
         });
 
@@ -112,7 +100,8 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
      * @see com.google.firebase.firestore.CollectionReference#document(String)
      * @see com.google.firebase.firestore.DocumentReference#set(Object)
      */
-    public void addItem(Item item) {
+    @Override
+    public void onOKPressed(Item item) {
         HashMap<String, String> data = new HashMap<>();
         data.put("date", item.getDate());
         data.put("value", item.getValue().toString());
@@ -131,11 +120,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                         Log.d("Firestore", "Document snapshot written successfully!");
                     }
                 });
-    }
-
-    @Override
-    public void onOKPressed(Item item) {
-        //TODO this also is never called
     }
 
     /**
