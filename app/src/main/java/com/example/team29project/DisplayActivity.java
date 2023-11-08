@@ -88,7 +88,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
      * @param aitem this is the new updated item to be displayed
      */
     @Override
-    public void onOKPressed(Item aitem) {
+    public void onAddPressed(Item aitem) {
         assert item != null;
         this.item = aitem;
         changeData();

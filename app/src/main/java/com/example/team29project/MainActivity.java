@@ -34,7 +34,10 @@ import java.util.Objects;
 /**
  * Main Activity with display of items. Buttons to access the other functions of the program.
  */
-public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentInteractionListener,SortFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements
+        InputFragment.OnFragmentInteractionListener,
+        SortFragment.OnFragmentInteractionListener,
+        FilterFragment.OnFragmentInteractionListener{
     private Button camera ;
     private TextView addItem;
     private TextView editTag;
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
      * @see com.google.firebase.firestore.DocumentReference#set(Object)
      */
     @Override
-    public void onOKPressed(Item item) {
+    public void onAddPressed(Item item) {
         HashMap<String, String> data = new HashMap<>();
         data.put("date", item.getDate());
         data.put("value", item.getValue().toString());
@@ -288,12 +291,12 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     }
 
     @Override
-    public void onConfirmPressed(String sortBy, int isAsc) {
+    public void onSortConfirmPressed(String sortBy, int isAsc) {
 
     }
 
     @Override
-    public void onCancelPressed() {
+    public void onFilterConfirmPressed(String filterBy, String data) {
 
     }
 }

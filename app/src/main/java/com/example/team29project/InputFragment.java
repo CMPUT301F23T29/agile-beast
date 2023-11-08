@@ -8,11 +8,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 /**
@@ -45,7 +43,7 @@ public class InputFragment extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onOKPressed(Item item);
+        void onAddPressed(Item item);
     }
     @Override
     public void onAttach(@NonNull Context context) {
@@ -79,7 +77,7 @@ public class InputFragment extends DialogFragment {
         builder.setView(view);
         builder.setTitle("Add new item");
         builder.setNegativeButton("Cancel", null);
-        builder.setPositiveButton("OK", (dialog, which) -> {
+        builder.setPositiveButton("Add", (dialog, which) -> {
             String item_name = itemName.getText().toString();
             String item_date = itemDate.getText().toString();
             String item_make = itemMake.getText().toString();
@@ -93,7 +91,7 @@ public class InputFragment extends DialogFragment {
             // TODO add tags selected to the item
             // do this by checking the selected id from the chip group
 
-            listener.onOKPressed(new_item);
+            listener.onAddPressed(new_item);
         });
         return builder.create();
     }

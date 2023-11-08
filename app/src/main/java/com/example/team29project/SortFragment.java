@@ -50,13 +50,12 @@ public class SortFragment extends DialogFragment {
             int selectedId = sortOrder.getCheckedRadioButtonId(); // Get selected RadioButton from RadioGroup
             int isAsc = selectedId == R.id.sort_asc_radiobutton ? 1 : 0; // Check if the selected RadioButton is 'asc_radiobutton'
 
-            listener.onConfirmPressed(sortBy, isAsc); // Call onConfirmPressed with the selected values
+            listener.onSortConfirmPressed(sortBy, isAsc); // Call onConfirmPressed with the selected values
             dismiss(); // Close the dialog
         });
 
         // Set OnClickListener for cancel button
         cancel.setOnClickListener(v -> {
-            listener.onCancelPressed(); // Call onCancelPressed
             dismiss(); // Close the dialog
         });
 
@@ -66,7 +65,6 @@ public class SortFragment extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onConfirmPressed(String sortBy, int isAsc);
-        void onCancelPressed();
+        void onSortConfirmPressed(String sortBy, int isAsc);
     }
 }
