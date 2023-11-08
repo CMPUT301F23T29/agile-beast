@@ -33,7 +33,7 @@ public class InputFragment extends DialogFragment {
     private EditText itemDescription;
     private EditText itemComment;
 
-
+    //TODO make the fragment higher up or have enter key save the data
     public InputFragment() {
         this.item = null;
     }

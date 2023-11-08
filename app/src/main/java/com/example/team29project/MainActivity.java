@@ -173,67 +173,6 @@ public class MainActivity extends AppCompatActivity implements
 
 
     // //not tested yet may not work
-    void sortedView(String sortBy, Boolean isAsc) {
-        db = FirebaseFirestore.getInstance();
-
-        // sorting the data by the sortBy field in ascending or descending order
-        Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
-        Query query; // New Query variable
-
-        if (sortBy.equals("date")) {
-            query = db.collection("items").orderBy("date", direction);
-        } else if (sortBy.equals("value")) {
-            query = db.collection("items").orderBy("value", direction);
-        } else if (sortBy.equals("make")) {
-            query = db.collection("items").orderBy("make", direction);
-        } else if (sortBy.equals("model")) {
-            query = db.collection("items").orderBy("model", direction);
-        } else if (sortBy.equals("serialnumber")) {
-            query = db.collection("items").orderBy("serialnumber", direction);
-        } else if (sortBy.equals("description")) {
-            query = db.collection("items").orderBy("description", direction);
-        } else if (sortBy.equals("comment")) {
-            query = db.collection("items").orderBy("comment", direction);
-        } else {
-            query = db.collection("items");
-        }
-
-        // Add a snapshot listener to the Firestore query
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                // If there's an error with the snapshot, log the error
-                if (error != null) {
-                    Log.e("Firebase", error.toString());
-                }
-
-                // If the snapshot is not null (i.e., there's data at 'itemsRef')
-                if (value != null) {
-                    // Clear the 'dataList'
-                    dataList.clear();
-
-                    // Loop over each document in the snapshot
-                    for (QueryDocumentSnapshot doc: value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
-
-                        // Add a new 'Item' object to 'dataList' with these fields
-                        dataList.add(new Item(name, date, itemValue.toString(), make, model, description, comment, serialNumber));
-                    }
-
-                    // refresh ListView and display the new data
-                    itemAdapter.notifyDataSetChanged();
-                }
-            }
-        });
-    }
 
     // //not tested yet may not work
     private void filteredView(String filterBy, String value) {
@@ -291,8 +230,66 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSortConfirmPressed(String sortBy, int isAsc) {
+    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
+        db = FirebaseFirestore.getInstance();
 
+        // sorting the data by the sortBy field in ascending or descending order
+        Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
+        Query query; // New Query variable
+        sortBy=sortBy.toLowerCase();
+        if (sortBy.equals("date")) {
+            query = db.collection("items").orderBy("date", direction);
+        } else if (sortBy.equals("value")) {
+            query = db.collection("items").orderBy("value", direction);
+        } else if (sortBy.equals("make")) {
+            query = db.collection("items").orderBy("make", direction);
+        } else if (sortBy.equals("model")) {
+            query = db.collection("items").orderBy("model", direction);
+        } else if (sortBy.equals("serialnumber")) {
+            query = db.collection("items").orderBy("serialnumber", direction);
+        } else if (sortBy.equals("description")) {
+            query = db.collection("items").orderBy("description", direction);
+        } else if (sortBy.equals("comment")) {
+            query = db.collection("items").orderBy("comment", direction);
+        } else {
+            query = db.collection("items");
+        }
+
+        // Add a snapshot listener to the Firestore query
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                // If there's an error with the snapshot, log the error
+                if (error != null) {
+                    Log.e("Firebase", error.toString());
+                }
+
+                // If the snapshot is not null (i.e., there's data at 'itemsRef')
+                if (value != null) {
+                    // Clear the 'dataList'
+                    dataList.clear();
+
+                    // Loop over each document in the snapshot
+                    for (QueryDocumentSnapshot doc: value) {
+                        // Retrieve various fields from the document
+                        String name = doc.getId();
+                        String date = doc.getString("date");
+                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
+                        String make = doc.getString("make");
+                        String model = doc.getString("model");
+                        String serialNumber = doc.getString("serialNumber");
+                        String description = doc.getString("description");
+                        String comment = doc.getString("comment");
+
+                        // Add a new 'Item' object to 'dataList' with these fields
+                        dataList.add(new Item(name, date, itemValue.toString(), make, model, description, comment, serialNumber));
+                    }
+
+                    // refresh ListView and display the new data
+                    itemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     @Override

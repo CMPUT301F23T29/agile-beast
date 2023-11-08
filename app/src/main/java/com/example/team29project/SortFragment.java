@@ -48,7 +48,7 @@ public class SortFragment extends DialogFragment {
         confirm.setOnClickListener(v -> {
             String sortBy = sortSpinner.getSelectedItem().toString(); // Get selected item from Spinner
             int selectedId = sortOrder.getCheckedRadioButtonId(); // Get selected RadioButton from RadioGroup
-            int isAsc = selectedId == R.id.sort_asc_radiobutton ? 1 : 0; // Check if the selected RadioButton is 'asc_radiobutton'
+            Boolean isAsc = selectedId == R.id.sort_asc_radiobutton; // Check if the selected RadioButton is 'asc_radiobutton'
 
             listener.onSortConfirmPressed(sortBy, isAsc); // Call onConfirmPressed with the selected values
             dismiss(); // Close the dialog
@@ -65,6 +65,6 @@ public class SortFragment extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onSortConfirmPressed(String sortBy, int isAsc);
+        void onSortConfirmPressed(String sortBy, Boolean isAsc);
     }
 }
