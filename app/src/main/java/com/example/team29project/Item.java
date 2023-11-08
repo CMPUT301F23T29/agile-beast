@@ -1,20 +1,24 @@
 package com.example.team29project;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * Represents an item with a name, value, make, model, serial number, description, and comment.
  */
-public class Item implements Parcelable{
+public class Item implements Serializable {
     private String name;
-    private Number value;
+    private double value;
     private String description;
     private String date;
     private String make;
@@ -22,12 +26,12 @@ public class Item implements Parcelable{
     private String serialNumber;
     private String comment;
 
-    private ArrayList<Bitmap> photos;
-    private ArrayList<Tag> tags;
+    private ArrayList<Uri> photos;
+    //private ArrayList<Tag> tags;
 
     public Item(
             String name , String date ,
-            Number value,
+            double value,
             String make, String model,
             String description, String comment,
             String serialNumber
@@ -40,11 +44,12 @@ public class Item implements Parcelable{
         this.model = model;
         this.value = value;
         this.comment = comment;
+        photos = null;
     }
 
     public Item(
             String name , String date ,
-            Number value,
+            double value,
             String make, String model,
             String description, String comment
     ){
@@ -56,21 +61,12 @@ public class Item implements Parcelable{
         this.serialNumber = "N/A";
         this.description= description;
         this.comment = comment;
+        photos = null;
     }
 
-    protected Item(Parcel in) {
-        name = in.readString();
-        description = in.readString();
-        date = in.readString();
-        make = in.readString();
-        serialNumber = in.readString();
-        model = in.readString();
-        comment = in.readString();
-        value = Float.parseFloat(Objects.requireNonNull(in.readString()));
-        photos = in.createTypedArrayList(Bitmap.CREATOR);
-    }
 
-    public static final Creator<Item> CREATOR = new Creator<Item>() {
+
+ /*   public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
         @Override
         public Item createFromParcel(Parcel in) {
             return new Item(in);
@@ -80,7 +76,26 @@ public class Item implements Parcelable{
         public Item[] newArray(int size) {
             return new Item[size];
         }
-    };
+    };*/
+  /*  protected Item(Parcel in) {
+        name = in.readString();
+        value = in.readDouble();
+        date = in.readString();
+        model = in.readString();
+        make = in.readString();
+        serialNumber = in.readString();
+        description = in.readString();
+        comment = in.readString();
+
+      //  in.readList(photos, Uri.class.getClassLoader());
+       // in.readList(tags,Tag.class.getClassLoader());
+
+    }*/
+    public ArrayList<Uri> getPhotos(){ return photos;}
+
+    public void setPhotos(ArrayList<Uri> photos){
+        this.photos = photos;
+    }
 
     public String getName() {
         return name;
@@ -122,12 +137,12 @@ public class Item implements Parcelable{
         this.serialNumber = serialNumber;
     }
 
-    public void addTag (Tag tag){
+   /* public void addTag (Tag tag){
         this.tags.add(tag);
-    }
-    public ArrayList<Tag> getTags(){
+    }*/
+   /* public ArrayList<Tag> getTags(){
         return tags;
-    }
+    }*/
 
     public String getModel() {
         return model;
@@ -145,38 +160,33 @@ public class Item implements Parcelable{
         this.comment = comment;
     }
 
-    public Number getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(Number value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
-    public ArrayList<Bitmap> getPhotos() {
-        return photos;
-    }
 
-    public void addPhoto(Bitmap photo) {
-        this.photos.add(photo);
-    }
 
-    @Override
+    /*@Override
     public int describeContents() {
         return 0;
     }
-
-    @Override
+*/
+    /*@Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeString(name);
-        parcel.writeString(value.toString());
+        parcel.writeDouble(value);
         parcel.writeString(date);
         parcel.writeString(model);
         parcel.writeString(make);
         parcel.writeString(serialNumber);
         parcel.writeString(description);
         parcel.writeString(comment);
-        parcel.writeList(tags);
+        parcel.writeTypedList();
         parcel.writeList(photos);
-    }
+       // parcel.writeList(tags);
+    }*/
 }

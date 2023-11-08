@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -68,6 +69,7 @@ public class CameraActivity extends AppCompatActivity {
         previewView = findViewById(R.id.cameraPreview);
         capture = findViewById(R.id.capture);
         flipCamera = findViewById(R.id.flipCamera);
+        Log.i("MyApp", "This is an info message.");
 
         // Check if the application has the camera permission, if not, request it, otherwise start the camera.
         if (ContextCompat.checkSelfPermission(CameraActivity.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -158,8 +160,7 @@ public class CameraActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Toast.makeText(CameraActivity.this, "ImageSaved: " , Toast.LENGTH_SHORT).show();
                     Uri imageUri= outputFileResults.getSavedUri();
-
-                    Intent display_image = new Intent(CameraActivity.this ,DisplayImageActivity.class);
+                    Intent display_image = new Intent(CameraActivity.this ,DisplayActivity.class);
                     display_image.putExtra("imageUri", imageUri.toString());
                     startActivity(display_image);
                 });
