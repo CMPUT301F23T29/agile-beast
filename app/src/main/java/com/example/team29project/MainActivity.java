@@ -9,8 +9,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private ArrayAdapter<Item> itemAdapter;
     private FirebaseFirestore db;
     private CollectionReference itemsRef;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         itemAdapter = new ItemArrayAdapter(this, dataList);
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
+
+        drawerLayout = findViewById(R.id.main_drawerLayout);
+
     }
 
     /**
