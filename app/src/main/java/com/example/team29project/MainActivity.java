@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         handleDatabase();
         dataList = new ArrayList<>();
         itemAdapter = new ItemArrayAdapter(this, dataList);
-        itemsList = findViewById(R.id.items_list);
+        itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
     }
 
