@@ -88,7 +88,6 @@ public class InputFragment extends DialogFragment {
                     String item_model = itemModel.getText().toString();
                     String item_description = itemDescription.getText().toString();
                     String item_comment = itemComment.getText().toString();
-
                     // TODO create new item
                     listener.onOKPressed(new Item(item_name,item_date, item_make,item_serN,item_model, item_description, item_value,item_comment));
                 });

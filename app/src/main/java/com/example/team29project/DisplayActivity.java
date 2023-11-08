@@ -202,7 +202,6 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
     @Override
     public void onCameraPressed() {
-        Intent customCamera = new Intent(DisplayActivity.this, CustomCameraActivity.class);
-        pictureActivityResultLauncher.launch(customCamera);
+        pictureActivityResultLauncher.launch(cameraIntent);
     }
 }

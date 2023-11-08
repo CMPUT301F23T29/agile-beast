@@ -20,7 +20,6 @@ import android.widget.PopupWindow;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 
-import com.google.common.util.concurrent.ListenableFuture;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
