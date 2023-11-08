@@ -40,7 +40,7 @@ import java.util.ArrayList;
  * Display details of a selected inventory item
  * Allow users to view and potentially edit the item's information
  */
-public class DisplayActivity extends AppCompatActivity implements InputFragment.OnFragmentInteractionListener, SelectListener,PickCameraDialog.ImageOrGalleryListener {
+public class DisplayActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener, SelectListener,PickCameraDialog.ImageOrGalleryListener {
 
     private Button back_button, edit_button;
     private TextView item_name, item_value, item_date, item_make, item_model, item_serialno, item_description, item_comment;
@@ -120,15 +120,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
        adapter = new MultiImageAdapter(uriList, getApplicationContext(),this);
        imageListView.setAdapter(adapter);
        imageListView.setLayoutManager(new LinearLayoutManager(DisplayActivity.this, LinearLayoutManager.HORIZONTAL, false));
-       edit_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //pictureActivityResultLauncher.launch(cameraIntent);
 
-                pictureActivityResultLauncher.launch(galleryIntent);
-
-            }
-        });
 
 
 
@@ -210,7 +202,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
     @Override
     public void onCameraPressed() {
-        pictureActivityResultLauncher.launch(cameraIntent);
-
+        Intent customCamera = new Intent(DisplayActivity.this, CustomCameraActivity.class);
+        pictureActivityResultLauncher.launch(customCamera);
     }
 }

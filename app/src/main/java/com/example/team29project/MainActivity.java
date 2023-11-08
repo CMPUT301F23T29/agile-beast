@@ -25,7 +25,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener{
     private Button camera ;
     private TextView addItem;
     private ArrayList<Item> item_list;

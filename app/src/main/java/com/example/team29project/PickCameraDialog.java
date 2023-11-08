@@ -28,7 +28,7 @@ public class PickCameraDialog extends DialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof InputFragment.OnFragmentInteractionListener) {
+        if (context instanceof ImageOrGalleryListener) {
             listener = (ImageOrGalleryListener) context;
         } else {
             throw new RuntimeException(context + "ImageOrGallery Listener is not implemented");

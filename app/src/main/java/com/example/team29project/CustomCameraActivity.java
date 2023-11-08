@@ -124,7 +124,7 @@ public class CustomCameraActivity extends AppCompatActivity {
                                 Toast.makeText(CustomCameraActivity.this, "ImageSaved: " , Toast.LENGTH_SHORT).show();
                                 Uri imageUri= outputFileResults.getSavedUri();
                                 Intent resultIntent = new Intent();
-                                resultIntent.setData(imageUri); // You can put any data you want
+                                resultIntent.setData(imageUri);
                                 setResult(Activity.RESULT_OK, resultIntent);
                                 finish();
                             }

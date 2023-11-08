@@ -52,7 +52,6 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
 
     @Override
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
-
             Uri image_uri = mData.get(position);
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
