@@ -2,6 +2,8 @@ package com.example.team29project;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -55,6 +57,14 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         itemsList.setAdapter(itemAdapter);
 
         drawerLayout = findViewById(R.id.main_drawerLayout);
+        Button menuButton = findViewById(R.id.menu_button);
+
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
 
     }
 
