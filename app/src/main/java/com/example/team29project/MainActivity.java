@@ -2,6 +2,8 @@ package com.example.team29project;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -9,8 +11,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private ArrayAdapter<Item> itemAdapter;
     private FirebaseFirestore db;
     private CollectionReference itemsRef;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +53,19 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         handleDatabase();
         dataList = new ArrayList<>();
         itemAdapter = new ItemArrayAdapter(this, dataList);
-        itemsList = findViewById(R.id.items_list);
+        itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
+
+        drawerLayout = findViewById(R.id.main_drawerLayout);
+        Button menuButton = findViewById(R.id.menu_button);
+
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
     }
 
     /**
