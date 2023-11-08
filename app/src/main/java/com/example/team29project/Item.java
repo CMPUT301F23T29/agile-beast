@@ -7,21 +7,31 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+/**
+ * Represents an item with a name, value, make, model, serial number, description, and comment.
+ */
 public class Item implements Parcelable{
     private String name;
+    private Number value;
     private String description;
     private String date;
     private String make;
-    private String serialNumber;
     private String model;
+    private String serialNumber;
     private String comment;
-    private String value;
 
     private ArrayList<Bitmap> photos;
     private ArrayList<Tag> tags;
 
-    public Item(String name , String date , String make, String serialNumber,String model, String description, String value, String comment){
+    public Item(
+            String name , String date ,
+            Number value,
+            String make, String model,
+            String description, String comment,
+            String serialNumber
+    ){
         this.name = name;
         this.date = date;
         this.make = make;
@@ -31,11 +41,21 @@ public class Item implements Parcelable{
         this.value = value;
         this.comment = comment;
     }
-    public Item(String name, String date, String make, String serialNumber){
+
+    public Item(
+            String name , String date ,
+            Number value,
+            String make, String model,
+            String description, String comment
+    ){
         this.name = name;
         this.date = date;
+        this.value = value;
         this.make = make;
-        this.serialNumber = serialNumber;
+        this.model = model;
+        this.serialNumber = "N/A";
+        this.description= description;
+        this.comment = comment;
     }
 
     protected Item(Parcel in) {
@@ -46,7 +66,7 @@ public class Item implements Parcelable{
         serialNumber = in.readString();
         model = in.readString();
         comment = in.readString();
-        value = in.readString();
+        value = Float.parseFloat(Objects.requireNonNull(in.readString()));
         photos = in.createTypedArrayList(Bitmap.CREATOR);
     }
 
@@ -125,11 +145,11 @@ public class Item implements Parcelable{
         this.comment = comment;
     }
 
-    public String getValue() {
+    public Number getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Number value) {
         this.value = value;
     }
 
@@ -149,7 +169,7 @@ public class Item implements Parcelable{
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeString(name);
-        parcel.writeString(value);
+        parcel.writeString(value.toString());
         parcel.writeString(date);
         parcel.writeString(model);
         parcel.writeString(make);

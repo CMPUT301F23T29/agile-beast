@@ -87,7 +87,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-       // Intent intent = getIntent();
+        Intent intent = getIntent();
         back_button = findViewById(R.id.back_button);
         edit_button = findViewById(R.id.edit_button);
         tagGroup = findViewById(R.id.tagGroup);
@@ -129,14 +129,13 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
 
         // set tags
-       /* ArrayList<Tag> tags = item.getTags();
+        ArrayList<Tag> tags = item.getTags();
         for (Tag tag: tags) {
             Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
             chip.setText(tag.getName());
             chip.setId(tags.indexOf(tag));
             tagGroup.addView(chip);
         }
-        */
 
         // TODO assign values of photos from item to photos
       //  ArrayList<Bitmap> photos = item.getPhotos();
@@ -148,14 +147,14 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
             }
         });
 
-        /*edit_button.setOnClickListener(new View.OnClickListener() {
+        edit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new InputFragment(item).show(getSupportFragmentManager(), "Edit");
             }
         });
 
-         */
+
 
 
     }
@@ -172,14 +171,23 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
     private void changeData() {
         item_name.setText(item.getName());
-        item_value.setText(item.getValue());
+        item_value.setText(item.getValue().toString());
         item_date.setText(item.getDate());
         item_make.setText(item.getMake());
         item_model.setText(item.getModel());
         item_serialno.setText(item.getSerialNumber());
         item_description.setText(item.getDescription());
         item_comment.setText(item.getComment());
-        // TODO update photos and tags
+
+        // update tags
+        tagGroup.removeAllViews();
+        ArrayList<Tag> tags = item.getTags();
+        for (Tag tag: tags) {
+            Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
+            chip.setText(tag.getName());
+            chip.setId(tags.indexOf(tag));
+            tagGroup.addView(chip);
+        }
     }
     @Override
     public void onItemClick(int position) {
