@@ -28,13 +28,15 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentInteractionListener{
     private Button camera ;
     private TextView addItem;
-
+    private ArrayList<Item> item_list;
     private TextView editTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = new Intent(this, DisplayActivity.class);
+        startActivity(intent);
         ImageButton menu =findViewById(R.id.menu);
 //        ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
         menu.setOnClickListener(new View.OnClickListener() {

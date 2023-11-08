@@ -59,6 +59,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
@@ -181,27 +182,33 @@
             android:id="@+id/tagGroup"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@drawable/button_style"
-            android:backgroundTint="@color/white"
             android:layout_marginHorizontal="18dp"
             android:layout_marginVertical="9dp"
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/white"
             app:selectionRequired="false">
 
         </com.google.android.material.chip.ChipGroup>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginHorizontal="18dp"
             android:layout_marginVertical="9dp"
-            android:background="@android:color/darker_gray"/>
+            android:background="@android:color/darker_gray" />
 
-        <GridView
-            android:id="@+id/photo_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="9dp"
-            android:numColumns="3"
-            />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/photo_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
