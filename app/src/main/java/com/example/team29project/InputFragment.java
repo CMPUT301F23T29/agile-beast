@@ -19,7 +19,6 @@ import androidx.fragment.app.DialogFragment;
  */
 public class InputFragment extends DialogFragment {
 
-
     private Item item;
     private EditText itemName;
 
@@ -44,12 +43,13 @@ public class InputFragment extends DialogFragment {
 
     public interface OnFragmentsInteractionListener {
         void onOKPressed(Item item);
+        void onEditPressed();
     }
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            listener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentsInteractionListener) {
+            listener = (OnFragmentsInteractionListener) context;
         } else {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
@@ -67,6 +67,9 @@ public class InputFragment extends DialogFragment {
         itemModel =  view.findViewById(R.id.edit_item_model);
         itemDescription =  view.findViewById(R.id.edit_description);
         itemComment = view.findViewById(R.id.edit_comment);
+        if(item !=null){
+            writeData(item);
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
 
@@ -86,13 +89,35 @@ public class InputFragment extends DialogFragment {
             String item_model = itemModel.getText().toString();
             String item_description = itemDescription.getText().toString();
             String item_comment = itemComment.getText().toString();
+            if(item==null) {
+                // TODO add tags selected to the item
+                // do this by checking the selected id from the chip group
+                listener.onOKPressed(new Item(item_name, item_date, Double.parseDouble(item_value), item_make, item_model, item_description, item_comment, item_serN));
+            }
+            else{
+                item.setName(item_name);
+                item.setDate(item_date);
+                item.setValue(Double.parseDouble(item_value));
+                item.setModel(item_model);
+                item.setDescription(item_description);
+                item.setSerialNumber(item_serN);
+                item.setMake(item_make);
+                item.setComment(item_comment);
+                listener.onEditPressed();
 
-            Item new_item = new Item(item_name,item_date,Float.parseFloat(item_value),item_make,item_model, item_description,item_comment,item_serN);
-            // TODO add tags selected to the item
-            // do this by checking the selected id from the chip group
-
-            listener.onOKPressed(new_item);
+            }
         });
         return builder.create();
+    }
+    public void writeData(Item item){
+        itemValue.setText(item.getValue().toString());
+        itemName.setText(item.getName());
+        itemDate.setText(item.getDate());
+        itemModel.setText(item.getDate());
+        itemSerialNumber.setText(item.getSerialNumber());
+        itemMake.setText(item.getMake());
+        itemDescription.setText((item.getDescription()));
+        itemComment.setText(item.getComment());
+
     }
 }

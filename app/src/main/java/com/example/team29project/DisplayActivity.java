@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -87,7 +88,8 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-        Intent intent = getIntent();
+        Intent ints = getIntent();
+        item = (Item) ints.getSerializableExtra("item");
         back_button = findViewById(R.id.back_button);
         edit_button = findViewById(R.id.edit_button);
         tagGroup = findViewById(R.id.tagGroup);
@@ -100,8 +102,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         item_description = findViewById(R.id.item_description);
         item_comment = findViewById(R.id.item_comment);
         imageListView= findViewById(R.id.photo_view);
-     //   item = intent.getParcelableExtra("item");
-       // changeData();
+        changeData();
         galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -129,13 +130,15 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
 
         // set tags
-        ArrayList<Tag> tags = item.getTags();
+       /* ArrayList<Tag> tags = item.getTags();
         for (Tag tag: tags) {
             Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
             chip.setText(tag.getName());
             chip.setId(tags.indexOf(tag));
             tagGroup.addView(chip);
         }
+
+        */
 
         // TODO assign values of photos from item to photos
       //  ArrayList<Bitmap> photos = item.getPhotos();
@@ -169,6 +172,12 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         setResult(Activity.RESULT_OK, inte);
     }
 
+    @Override
+    public void onEditPressed() {
+        changeData();
+
+    }
+
     private void changeData() {
         item_name.setText(item.getName());
         item_value.setText(item.getValue().toString());
@@ -179,15 +188,16 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         item_description.setText(item.getDescription());
         item_comment.setText(item.getComment());
 
+
         // update tags
         tagGroup.removeAllViews();
-        ArrayList<Tag> tags = item.getTags();
+        /*ArrayList<Tag> tags = item.getTags();
         for (Tag tag: tags) {
             Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
             chip.setText(tag.getName());
             chip.setId(tags.indexOf(tag));
             tagGroup.addView(chip);
-        }
+        }*/
     }
     @Override
     public void onItemClick(int position) {

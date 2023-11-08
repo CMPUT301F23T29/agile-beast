@@ -48,7 +48,7 @@ public class ItemArrayAdapter extends ArrayAdapter<Item> {
         View view = convertView;
 
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.item_layout_default, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.item_layout_default,null);
         }
 
         Item item = items.get(position);

@@ -5,10 +5,14 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,20 +22,17 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
+import com.google.android.material.navigation.NavigationView;
+
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -47,12 +48,38 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private TextView addItem;
     private ArrayList<Item> item_list;
     private TextView editTag;
+    private ItemArrayAdapter itemAdapter;
+    private ArrayList<Item> dataList;
+    private ListView itemsList;
+
+   // private FirebaseFirestore db;
+    //private CollectionReference itemsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ImageButton menu =findViewById(R.id.menu);
+        dataList = new ArrayList<>();
+        itemAdapter = new ItemArrayAdapter(this, dataList);
+        itemsList = findViewById(R.id.items);
+        itemsList.setAdapter(itemAdapter);
+        double a = 11.25;
+        dataList.add(new Item("Name","2023-11",11.0,"Apple","Iphone","model5","nice phone","0000000000"));
+        itemAdapter.notifyDataSetChanged();
+        itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position >=0) {
+                    Item temp = dataList.get(position);
+                    Intent display = new Intent(MainActivity.this, DisplayActivity.class);
+                    display.putExtra("item" , temp);
+                    startActivity(display);
+
+                }
+
+            }
+        });
 //       ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,9 +98,13 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
-        addItem.setOnClickListener(v ->
-                new InputFragment().show(getSupportFragmentManager(), "addItems")
-        );
+        addItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new InputFragment().show(getSupportFragmentManager(), "addItems");
+                popupWindow.dismiss();
+            }
+        });
         editTag = popupView.findViewById(R.id.edit_tag_item);
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,21 +112,19 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
 
             }
         });
-
-
         popupView.setOnTouchListener((v, event) -> {
             popupWindow.dismiss();
             return true;
         });
     }
-    /**
+  /*  /**
      * This method adds a new item to the "items" collection in the Firestore database.
      * @param item The item to be added to the database.
      * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
      * @see com.google.firebase.firestore.CollectionReference#document(String)
      * @see com.google.firebase.firestore.DocumentReference#set(Object)
      */
-    public void addItem(Item item) {
+  /*  public void addItem(Item item) {
         HashMap<String, String> data = new HashMap<>();
         data.put("date", item.getDate());
         data.put("value", item.getValue().toString());
@@ -105,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         data.put("description", item.getDescription());
         data.put("comment", item.getComment());
         // Add the 'data' map to the Firestore database under a document named after the item's name.
-        itemsRef
+      /*  itemsRef
                 .document(item.getName())
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -114,11 +143,18 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                         Log.d("Firestore", "Document snapshot written successfully!");
                     }
                 });
-    }
+    }*/
 
     @Override
     public void onOKPressed(Item item) {
-        //
+        dataList.add(item);
+        itemAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onEditPressed() {
+        itemAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -126,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
      * The snapshot listener updates the dataList and notifies the itemAdapter whenever the data in the "items" collection changes.
      * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
      */
-    private void handleDatabase() {
+    /*private void handleDatabase() {
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");
 
@@ -165,6 +201,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                 }
             }
         });
-    }
+    }*/
 }
 
