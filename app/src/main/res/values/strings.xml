@@ -16,4 +16,44 @@
     <string name="filter">Filter</string>
     <string name="sort_by">Sort By</string>
     <string name="value">Value: </string>
+    <string name="confrim">confrim</string>
+    <string name="cancel">cancel</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string-array name="sort_items">
+        <item>serialNumber</item>
+        <item>Date</item>
+        <item>Value</item>
+        <item>Make</item>
+        <item>Model</item>
+        <item>Description</item>
+        <item>Comment</item>
+        <item>Default</item>
+    </string-array>
+    <string-array name="filter_items">
+        <item>Date</item>
+        <item>Make</item>
+        <item>Description</item>
+        <item>Default</item>
+    </string-array>
+
+
+<!--    if (sortBy.equals("date")) {-->
+<!--    query = db.collection("items").orderBy("date", direction);-->
+<!--    } else if (sortBy.equals("value")) {-->
+<!--    query = db.collection("items").orderBy("value", direction);-->
+<!--    } else if (sortBy.equals("make")) {-->
+<!--    query = db.collection("items").orderBy("make", direction);-->
+<!--    } else if (sortBy.equals("model")) {-->
+<!--    query = db.collection("items").orderBy("model", direction);-->
+<!--    } else if (sortBy.equals("serialNumber")) {-->
+<!--    query = db.collection("items").orderBy("serialNumber", direction);-->
+<!--    } else if (sortBy.equals("description")) {-->
+<!--    query = db.collection("items").orderBy("description", direction);-->
+<!--    } else if (sortBy.equals("comment")) {-->
+<!--    query = db.collection("items").orderBy("comment", direction);-->
+<!--    } else {-->
+<!--    query = db.collection("items");-->
+<!--    }-->
+
 </resources>

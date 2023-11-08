@@ -113,7 +113,7 @@
     </com.google.android.material.chip.ChipGroup>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/scan_button"
+        android:id="@+id/confirm_sort_button"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@drawable/square_button"

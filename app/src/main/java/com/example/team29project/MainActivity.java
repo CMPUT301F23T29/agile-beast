@@ -48,7 +48,7 @@ import java.util.Objects;
 /**
  * Main Activity with display of items. Buttons to access the other functions of the program.
  */
-public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentInteractionListener,SortFragment.OnFragmentInteractionListener{
     private Button camera ;
     private TextView addItem;
     private TextView editTag;
@@ -100,8 +100,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         sortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO make fragment for sort by
-                //select what to sort by
+                new SortFragment().show(getSupportFragmentManager(),"Sort");
             }
         });
     }
@@ -202,8 +201,8 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             query = db.collection("items").orderBy("make", direction);
         } else if (sortBy.equals("model")) {
             query = db.collection("items").orderBy("model", direction);
-        } else if (sortBy.equals("serialNumber")) {
-            query = db.collection("items").orderBy("serialNumber", direction);
+        } else if (sortBy.equals("serialnumber")) {
+            query = db.collection("items").orderBy("serialnumber", direction);
         } else if (sortBy.equals("description")) {
             query = db.collection("items").orderBy("description", direction);
         } else if (sortBy.equals("comment")) {
@@ -304,5 +303,14 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         });
     }
 
+    @Override
+    public void onConfirmPressed(String sortBy, int isAsc) {
+
+    }
+
+    @Override
+    public void onCancelPressed() {
+
+    }
 }
 
