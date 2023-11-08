@@ -4,16 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.os.Bundle;
-
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.google.android.gms.tasks.OnFailureListener;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,18 +25,18 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * Main Activity with display of items. Buttons to access the other functions of the program.
+ * This method is called when the activity is starting.
+ * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
+ * @throws NullPointerException if any findViewById operation fails.
+ * @see android.app.Activity#onCreate(Bundle)
  */
 public class MainActivity extends AppCompatActivity implements
         InputFragment.OnFragmentInteractionListener,
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayAdapter<Item> itemAdapter;
     private FirebaseFirestore db;
     private CollectionReference itemsRef;
+    private DrawerLayout drawerLayout;
 
 
     /**
@@ -69,16 +74,6 @@ public class MainActivity extends AppCompatActivity implements
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
 
-        ImageButton addButton = (ImageButton)findViewById(R.id.add_button);
-        ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-        //added temporary code to connect the add button
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new InputFragment().show(getSupportFragmentManager(),"Input");
-            }
-        });
-
         Button filterButton = (Button)findViewById(R.id.filter_button);
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +89,17 @@ public class MainActivity extends AppCompatActivity implements
                 new SortFragment().show(getSupportFragmentManager(),"Sort");
             }
         });
+      
+        drawerLayout = findViewById(R.id.main_drawerLayout);
+        Button menuButton = findViewById(R.id.menu_button);
+
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
     }
 
     /**
@@ -212,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements
                         String name = doc.getId();
                         String date = doc.getString("date");
                         Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
+
                         String make = doc.getString("make");
                         String model = doc.getString("model");
                         String serialNumber = doc.getString("serialNumber");
