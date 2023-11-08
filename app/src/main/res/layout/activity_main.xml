@@ -11,8 +11,9 @@
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@id/menu"
+        android:id="@+id/navigation_menu"
         android:layout_gravity="start"
+        app:menu="@menu/fragment_main_menu"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
