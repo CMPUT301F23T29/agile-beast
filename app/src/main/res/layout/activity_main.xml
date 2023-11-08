@@ -129,7 +129,7 @@
                 app:layout_constraintStart_toEndOf="@+id/menu_button"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/menu_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -139,8 +139,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@android:drawable/ic_menu_add" />
-
-            <!-- todo change the image button icon to the three ellipsis -->
 
             <TextView
                 android:id="@+id/value_label"
