@@ -12,24 +12,61 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 public class Database {
     private FirebaseFirestore db;
+
+    // Item attributes
     private CollectionReference itemsRef;
-    private ArrayList<Item> dataList;
+    private ArrayList<Item> itemDataList;
     private ItemArrayAdapter itemAdapter;
+
+    // Tag attributes
+    private CollectionReference tagsRef;
+    private ArrayList<String> tagDataList;
 
     public Database(ItemArrayAdapter itemAdapter) {
         this.itemAdapter = itemAdapter;
 
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");
+        tagsRef = db.collection("tags");
 
-        // Load the items from FireBase remote into dataList and display them
+        // Load the items from FireBase remote into itemDataList and display them
         loadInitialItems();
+    }
+
+    private void loadInitialTags() {
+        tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                // If there's an error with the snapshot, log the error
+                if (error != null) {
+                    Log.e("Firebase", error.toString());
+                }
+
+                if (value != null) {
+                    // Clear the 'itemDataList'
+                    tagDataList.clear();
+
+                    // Loop over each document in the snapshot
+                    for (QueryDocumentSnapshot doc : value) {
+                        // Retrieve various fields from the document
+                        String tag = doc.getId();
+
+                        // Add a new 'Item' object to 'itemDataList' with these fields
+                        tagDataList.add(tag);
+                    }
+
+                    // refresh ListView and display the new data
+                    itemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     private void loadInitialItems() {
@@ -44,8 +81,8 @@ public class Database {
 
                 // If the snapshot is not null (i.e., there's data at 'itemsRef')
                 if (value != null) {
-                    // Clear the 'dataList'
-                    dataList.clear();
+                    // Clear the 'itemDataList'
+                    itemDataList.clear();
 
                     // Loop over each document in the snapshot
                     for (QueryDocumentSnapshot doc : value) {
@@ -59,8 +96,8 @@ public class Database {
                         String description = doc.getString("description");
                         String comment = doc.getString("comment");
 
-                        // Add a new 'Item' object to 'dataList' with these fields
-                        dataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
+                        // Add a new 'Item' object to 'itemDataList' with these fields
+                        itemDataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
                     }
 
                     // refresh ListView and display the new data
@@ -89,6 +126,14 @@ public class Database {
                         Log.d("Firestore", "Document snapshot written successfully!");
                     }
                 });
+    }
+
+    public ArrayList<Item> getItems() {
+        return itemDataList;
+    }
+
+    public ArrayList<String> getTags() {
+        return tagDataList;
     }
 
 }
