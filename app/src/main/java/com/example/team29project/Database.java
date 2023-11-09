@@ -28,9 +28,11 @@ public class Database {
     // Tag attributes
     private CollectionReference tagsRef;
     private ArrayList<String> tagDataList;
+    private TagAdapter tagAdapter;
 
-    public Database(ItemArrayAdapter itemAdapter) {
+    public Database(ItemArrayAdapter itemAdapter, TagAdapter tagAdapter) {
         this.itemAdapter = itemAdapter;
+        this.tagAdapter = tagAdapter;
 
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");
@@ -63,8 +65,8 @@ public class Database {
                         tagDataList.add(tag);
                     }
 
-                    // refresh ListView and display the new data
-                    itemAdapter.notifyDataSetChanged();
+                    // refresh and display the new data
+                    tagAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -112,8 +114,6 @@ public class Database {
         // Ensure data list does not already contain item with same name
         assert (!itemDataList.contains(item));
 
-        itemDataList.add(item);
-
         HashMap<String, String> data = new HashMap<>();
         data.put("date", item.getDate());
         data.put("value", item.getValue().toString());
@@ -129,15 +129,27 @@ public class Database {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.d("Firestore", "Document snapshot written successfully!");
+                        Log.d("Firestore", "Item written successfully!");
                     }
                 });
+
+        itemDataList.add(item);
+        itemAdapter.notifyDataSetChanged();
     }
 
     public void addTag(String tag) {
         assert (!tagDataList.contains(tag));
 
+        tagsRef.document(tag)
+                        .set(tag)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d("Firestore", "Tag written successfully!");
+                                    }
+                                });
         tagDataList.add(tag);
+        tagAdapter.notifyDataSetChanged();
     }
 
     public ArrayList<Item> getItems() {
