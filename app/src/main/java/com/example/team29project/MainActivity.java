@@ -3,32 +3,84 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SlidingDrawer;
+import android.widget.TextView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-public class MainActivity extends AppCompatActivity {
-    Button camera ;
+
+import com.google.android.material.navigation.NavigationView;
+
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+
+/**
+ * This method is called when the activity is starting.
+ * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
+ * @throws NullPointerException if any findViewById operation fails.
+ * @see android.app.Activity#onCreate(Bundle)
+ */
+public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener{
+    private Button camera ;
+    private TextView addItem;
+    private ArrayList<Item> item_list;
+    private TextView editTag;
+    private ItemArrayAdapter itemAdapter;
+    private ArrayList<Item> dataList;
+    private ListView itemsList;
+
+   // private FirebaseFirestore db;
+    //private CollectionReference itemsRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ImageButton menu =findViewById(R.id.menu);
+        dataList = new ArrayList<>();
+        itemAdapter = new ItemArrayAdapter(this, dataList);
+        itemsList = findViewById(R.id.items);
+        itemsList.setAdapter(itemAdapter);
+        double a = 11.25;
+        dataList.add(new Item("Name","2023-11",11.0,"Apple","Iphone","model5","nice phone","0000000000"));
+        itemAdapter.notifyDataSetChanged();
+        itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position >=0) {
+                    Item temp = dataList.get(position);
+                    Intent display = new Intent(MainActivity.this, DisplayActivity.class);
+                    display.putExtra("item" , temp);
+                    startActivity(display);
+
 
 
         ImageButton menu = (ImageButton)findViewById(R.id.menu);
 //        ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
+
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -37,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 
     public void popupMenu(View view){
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -47,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
 
+
         popupView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -54,5 +108,95 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        popupView.setOnTouchListener((v, event) -> {
+            popupWindow.dismiss();
+            return true;
+        });
     }
+  /*  /**
+     * This method adds a new item to the "items" collection in the Firestore database.
+     * @param item The item to be added to the database.
+     * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
+     * @see com.google.firebase.firestore.CollectionReference#document(String)
+     * @see com.google.firebase.firestore.DocumentReference#set(Object)
+     */
+  /*  public void addItem(Item item) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("date", item.getDate());
+        data.put("value", item.getValue().toString());
+        data.put("make", item.getMake());
+        data.put("model", item.getModel());
+        data.put("serialNumber", item.getSerialNumber());
+        data.put("description", item.getDescription());
+        data.put("comment", item.getComment());
+        // Add the 'data' map to the Firestore database under a document named after the item's name.
+      /*  itemsRef
+                .document(item.getName())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Firestore", "Document snapshot written successfully!");
+                    }
+                });
+    }*/
+
+    @Override
+    public void onOKPressed(Item item) {
+        dataList.add(item);
+        itemAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onEditPressed() {
+        itemAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * This method initializes the Firestore database and sets up a snapshot listener on the "items" collection.
+     * The snapshot listener updates the dataList and notifies the itemAdapter whenever the data in the "items" collection changes.
+     * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
+     */
+    /*private void handleDatabase() {
+        db = FirebaseFirestore.getInstance();
+        itemsRef = db.collection("items");
+
+        // Add a snapshot listener to the Firestore reference 'itemsRef'
+        itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                // If there's an error with the snapshot, log the error
+                if (error != null) {
+                    Log.e("Firebase", error.toString());
+                }
+
+                // If the snapshot is not null (i.e., there's data at 'itemsRef')
+                if (value != null) {
+                    // Clear the 'dataList'
+                    dataList.clear();
+
+                    // Loop over each document in the snapshot
+                    for (QueryDocumentSnapshot doc: value) {
+                        // Retrieve various fields from the document
+                        String name = doc.getId();
+                        String date = doc.getString("date");
+                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
+                        String make = doc.getString("make");
+                        String model = doc.getString("model");
+                        String serialNumber = doc.getString("serialNumber");
+                        String description = doc.getString("description");
+                        String comment = doc.getString("comment");
+
+                        // Add a new 'Item' object to 'dataList' with these fields
+                        dataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
+                    }
+
+                    // refresh ListView and display the new data
+                    itemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }*/
 }
+

@@ -33,6 +33,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 
+/**
+ * Represents a custom camera activity. This activity allows the user to capture images using the device's camera.
+ */
 public class CustomCameraActivity extends AppCompatActivity {
     private CustomCamera customCamera;
     private PreviewView previewView;
@@ -56,6 +59,11 @@ public class CustomCameraActivity extends AppCompatActivity {
         }
     });
 
+    /**
+     * Initializes the activity, sets up the camera and the buttons.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this contains the data it most recently supplied in onSaveInstanceState(Bundle). Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +83,9 @@ public class CustomCameraActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Starts the camera and sets up the capture and flip camera buttons.
+     */
     private void startCamera() {
         // Initialize your custom CameraX instance
         previewView.setVisibility(View.VISIBLE);
@@ -101,6 +112,9 @@ public class CustomCameraActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Starts the camera and sets up the capture and flip camera buttons.
+     */
     private void captureImage() {
         final File photoFile = new File(getExternalFilesDir(null), System.currentTimeMillis() + ".jpg");
         //File photoFile = createImageFile();
@@ -124,7 +138,7 @@ public class CustomCameraActivity extends AppCompatActivity {
                                 Toast.makeText(CustomCameraActivity.this, "ImageSaved: " , Toast.LENGTH_SHORT).show();
                                 Uri imageUri= outputFileResults.getSavedUri();
                                 Intent resultIntent = new Intent();
-                                resultIntent.setData(imageUri); // You can put any data you want
+                                resultIntent.setData(imageUri);
                                 setResult(Activity.RESULT_OK, resultIntent);
                                 finish();
                             }
@@ -166,6 +180,10 @@ public class CustomCameraActivity extends AppCompatActivity {
             customCamera.captureImage(photoFile, callback);
         }
     }
+
+    /**
+     * Starts the camera and sets up the capture and flip camera buttons.
+     */
     private int aspectRatio(int width, int height) {
         double previewRatio = (double) Math.max(width, height) / Math.min(width, height);
         if (Math.abs(previewRatio - 4.0 / 3.0) <= Math.abs(previewRatio - 16.0 / 9.0)) {
@@ -173,6 +191,12 @@ public class CustomCameraActivity extends AppCompatActivity {
         }
         return AspectRatio.RATIO_16_9;
     }
+
+    /**
+     * Creates an image file with a unique name in the "CameraXImages" directory.
+     *
+     * @return The created image file.
+     */
     private File createImageFile() {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());

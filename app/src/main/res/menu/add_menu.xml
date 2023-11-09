@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+>
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menu_select_item"
+            android:title="Select"/>
+        <item
+            android:id="@+id/menu_add_item"
+            android:title="Add Item"/>
+        <item
+            android:id="@+id/menu_edit_tag"
+            android:title="Edit Tag"/>
+    </group>
+
+</menu>

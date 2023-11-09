@@ -1,4 +1,6 @@
 package com.example.team29project;
+import android.widget.Toast;
+
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.Preview;
@@ -14,6 +16,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * Represents a custom camera that can capture images and switch between front and back camera.
+ */
 public class CustomCamera {
 
     private PreviewView previewView;
@@ -21,10 +26,19 @@ public class CustomCamera {
     private Executor executor = Executors.newSingleThreadExecutor();
     private int cameraFacing;
 
+    /**
+     * Constructs a new CustomCamera with the given PreviewView.
+     *
+     * @param previewView The PreviewView where the camera preview will be displayed.
+     */
     public CustomCamera(PreviewView previewView) {
         this.previewView = previewView;
         this.cameraFacing=CameraSelector.LENS_FACING_BACK;
     }
+
+    /**
+     * Flips the camera from back to front, or from front to back.
+     */
     public void flipCamera(){
         if(this.cameraFacing == CameraSelector.LENS_FACING_BACK){
             this.cameraFacing= CameraSelector.LENS_FACING_FRONT;
@@ -34,6 +48,11 @@ public class CustomCamera {
         }
     }
 
+    /**
+     * Starts the camera and binds it to the lifecycle of the given LifecycleOwner.
+     *
+     * @param lifecycleOwner The LifecycleOwner that the camera is bound to.
+     */
     public void startCamera(LifecycleOwner lifecycleOwner) {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(previewView.getContext());
 
@@ -49,6 +68,12 @@ public class CustomCamera {
         }, ContextCompat.getMainExecutor(previewView.getContext()));
     }
 
+    /**
+     * Binds the camera use cases to the given ProcessCameraProvider and LifecycleOwner.
+     *
+     * @param cameraProvider The ProcessCameraProvider that the camera use cases are bound to.
+     * @param lifecycleOwner The LifecycleOwner that the camera use cases are bound to.
+     */
     private void bindCameraUseCases(ProcessCameraProvider cameraProvider, LifecycleOwner lifecycleOwner) {
         Preview preview = new Preview.Builder().build();
         CameraSelector cameraSelector = new CameraSelector.Builder()
@@ -64,7 +89,13 @@ public class CustomCamera {
         cameraProvider.unbindAll();
         cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageCapture);
     }
-
+    
+    /**
+     * Captures an image and saves it to the given file. If the image capture is not initialized, this method does nothing.
+     *
+     * @param outputFile The file where the image will be saved.
+     * @param callback The callback that will be invoked after the image has been captured.
+     */
     public void captureImage(File outputFile, ImageCapture.OnImageSavedCallback callback) {
         if (imageCapture != null) {
             ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions.Builder(outputFile).build();

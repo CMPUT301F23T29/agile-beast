@@ -21,7 +21,7 @@
         android:layout_marginLeft="23sp"
         android:textColor="@color/menu_page_text"
         android:paddingBottom = "60sp"
-       />
+        />
 
     <TextView
         android:id ="@+id/select_item"
