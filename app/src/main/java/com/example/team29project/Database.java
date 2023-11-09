@@ -12,38 +12,42 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 public class Database {
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db;
 
     // Item attributes
-    private CollectionReference itemsRef;
-    private ArrayList<Item> itemDataList;
+    private final CollectionReference itemsRef;
+    private final ArrayList<Item> itemDataList;
     private ItemArrayAdapter itemAdapter;
 
     // Tag attributes
-    private CollectionReference tagsRef;
-    private ArrayList<String> tagDataList;
+    private final CollectionReference tagsRef;
+    private final ArrayList<String> tagDataList;
     private TagAdapter tagAdapter;
 
-    public Database(ItemArrayAdapter itemAdapter, TagAdapter tagAdapter) {
-        this.itemAdapter = itemAdapter;
-        this.tagAdapter = tagAdapter;
+    public Database() {
 
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");
         tagsRef = db.collection("tags");
 
-        // Load the items from FireBase remote into itemDataList and display them
-        loadInitialItems();
-        loadInitialTags();
+        this.itemDataList = new ArrayList<Item>();
+        this.tagDataList = new ArrayList<String>();
+
     }
 
-    private void loadInitialTags() {
+    public void setAdapters(ItemArrayAdapter itemAdapter, TagAdapter tagAdapter) {
+        this.itemAdapter = itemAdapter;
+        this.tagAdapter = tagAdapter;
+    }
+
+    public void loadInitialTags() {
         tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -72,7 +76,7 @@ public class Database {
         });
     }
 
-    private void loadInitialItems() {
+    public void loadInitialItems() {
         // Add a snapshot listener to the Firestore reference 'itemsRef'
         itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -196,6 +200,10 @@ public class Database {
         itemAdapter.notifyDataSetChanged();
 
         return toDeleteItem;
+    }
+
+    public boolean removeAllItems(ArrayList<Item> items) {
+        return this.itemDataList.removeAll(items);
     }
 
 }
