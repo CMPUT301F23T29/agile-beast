@@ -133,7 +133,6 @@ public class Database {
                     }
                 });
 
-        itemDataList.add(item);
         itemAdapter.notifyDataSetChanged();
     }
 
@@ -148,7 +147,6 @@ public class Database {
                                         Log.d("Firestore", "Tag written successfully!");
                                     }
                                 });
-        tagDataList.add(tag);
         tagAdapter.notifyDataSetChanged();
     }
 
@@ -162,6 +160,42 @@ public class Database {
 
     public Item getItem(int i) {
         return itemDataList.get(i);
+    }
+
+    public String removeTag(int i) {
+        assert (i < this.tagDataList.size());
+
+        String toDeleteTag = this.tagDataList.get(i);
+        tagsRef.document(toDeleteTag)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Firestore", "Tag '" + toDeleteTag + "' deleted successfully");
+                    }
+                });
+        tagAdapter.notifyDataSetChanged();
+
+        return toDeleteTag;
+    }
+
+    public Item removeItem(int i) {
+        assert (i < this.itemDataList.size());
+
+        Item toDeleteItem = this.itemDataList.get(i);
+
+        itemsRef.document(toDeleteItem.getName())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Firestore", "Item '" + toDeleteItem.getName() + "' deleted successfully");
+                    }
+                });
+
+        itemAdapter.notifyDataSetChanged();
+
+        return toDeleteItem;
     }
 
 }
