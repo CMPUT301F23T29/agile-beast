@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private ArrayList<Item> dataList;
     private ListView itemsList;
 
-   // private FirebaseFirestore db;
+    // private FirebaseFirestore db;
     //private CollectionReference itemsRef;
 
     @Override
@@ -76,11 +76,11 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                     display.putExtra("item" , temp);
                     startActivity(display);
 
+                }
 
-
-        ImageButton menu = (ImageButton)findViewById(R.id.menu);
-//        ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
-
+            }
+        });
+//       ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,22 +90,26 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
 
     }
 
-
-    public void popupMenu(View view){
+    public void popupMenu(View view) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.fragment_main_menu, null);
-
         int height = LinearLayout.LayoutParams.MATCH_PARENT;
         boolean focusable = true;
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
-
-
-        popupView.setOnTouchListener(new View.OnTouchListener() {
+        addItem = popupView.findViewById(R.id.add_new_item);
+        addItem.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
+                new InputFragment().show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
-                return true;
+            }
+        });
+        editTag = popupView.findViewById(R.id.edit_tag_item);
+        editTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         popupView.setOnTouchListener((v, event) -> {
@@ -113,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             return true;
         });
     }
-  /*  /**
+    /*  /**
      * This method adds a new item to the "items" collection in the Firestore database.
      * @param item The item to be added to the database.
      * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
