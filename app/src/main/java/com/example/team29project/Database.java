@@ -160,4 +160,8 @@ public class Database {
         return tagDataList;
     }
 
+    public Item getItem(int i) {
+        return itemDataList.get(i);
+    }
+
 }
