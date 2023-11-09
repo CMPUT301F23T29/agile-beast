@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private TextView editTag;
     private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
-    private ArrayList<Item> dataList;
     private ListView itemsList;
     private int itemPosition ;
     private boolean isDelete;
@@ -68,9 +67,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
 
     private ArrayList<Item> selectedItems;
 
-
-   // private FirebaseFirestore db;
-    //private CollectionReference itemsRef;
+    private Database db;
    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
            new ActivityResultContracts.StartActivityForResult(),
            new ActivityResultCallback<ActivityResult>() {
@@ -78,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                public void onActivityResult(ActivityResult result) {
                    if (result.getData() !=null) {
                        Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
-                       Item temp = dataList.get(itemPosition);
+                       Item temp = db.getItem(itemPosition);
                        temp.setName(newItem.getName());
                        temp.setDate(newItem.getDate());
                        temp.setValue(newItem.getValue());
@@ -102,31 +99,37 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         selectedItems = new ArrayList<Item>();
         isDelete= false;
         isSelect= false;
-        dataList = new ArrayList<>();
+
+        // Init lists for tags and items,
+        // as well as firestore database
+        db = new Database();
+
         tags = new ArrayList<>();
-        itemAdapter = new ItemArrayAdapter(this, dataList);
+        itemAdapter = new ItemArrayAdapter(this, db.getItems());
         tagAdapter = new TagAdapter(this,tags);
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
-        double a = 11.25;
-        dataList.add(new Item("Name","2023-11",11.0,"Apple","Iphone","model5","nice phone","0000000000"));
+
+        db.setAdapters(itemAdapter, tagAdapter);
+        db.loadInitialItems();
+
         itemAdapter.notifyDataSetChanged();
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
                     if(isSelect){
-                        selectedItems.add(dataList.get(position));
+                        selectedItems.add(db.getItem(position));
                     }
 
                     else if(isDelete){
-                        dataList.remove(position);
+                        db.removeItem(position);
                         itemAdapter.notifyDataSetChanged();
                         isDelete= false;
                     }
                     else {
                         itemPosition = position;
-                        Item temp = dataList.get(position);
+                        Item temp = db.getItem(position);
                         Intent display = new Intent(MainActivity.this, DisplayActivity.class);
                         display.putExtra("item", temp);
                         display.putStringArrayListExtra("tags",tags);
@@ -141,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             @Override
             public void onClick(View v) {
                 if(isSelect){
-                    dataList.removeAll(selectedItems);
+                    db.removeAllItems(selectedItems);
                     isSelect= false;
                     selectedItems.clear();
                     itemAdapter.notifyDataSetChanged();
@@ -233,9 +236,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
 
     @Override
     public void onOKPressed(Item item) {
-        dataList.add(item);
-        itemAdapter.notifyDataSetChanged();
-
+        db.addItem(item);
     }
 
     @Override
