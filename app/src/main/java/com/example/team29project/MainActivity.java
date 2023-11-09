@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private ListView itemsList;
     private int itemPosition ;
     private boolean isDelete;
-
-    private ArrayList<String> tags;
     private TagAdapter tagAdapter;
     private boolean isSelect;
 
@@ -80,9 +78,8 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         // as well as firestore database
         db = new Database();
 
-        tags = new ArrayList<>();
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
-        tagAdapter = new TagAdapter(this,tags);
+        tagAdapter = new TagAdapter(this, db.getTags());
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
 
@@ -108,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                         Item temp = db.getItem(position);
                         Intent display = new Intent(MainActivity.this, DisplayActivity.class);
                         display.putExtra("item", temp);
-                        display.putStringArrayListExtra("tags",tags);
+                        display.putStringArrayListExtra("tags",db.getTags());
                         itemActivityResultLauncher.launch(display);
                     }
 
@@ -165,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             public void onClick(View v) {
                 isSelect =false;
                 isDelete =false;
-                new InputFragment(tags).show(getSupportFragmentManager(), "addItems");
+                new InputFragment(db.getTags()).show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
         });
@@ -173,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TagDialogue(tags, tagAdapter).show(getSupportFragmentManager(),"Tags");
+                new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(),"Tags");
 
             }
         });
