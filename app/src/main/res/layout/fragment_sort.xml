@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="false"
+    android:layout_centerHorizontal="false"
+    android:layout_centerVertical="false"
+    android:layout_gravity="center"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp"
+    android:background="@color/background"
+    android:orientation="vertical"
+    android:weightSum="10"
+    tools:context=".InputFragment">
+
+    <Spinner
+        android:id="@+id/sort_spinner"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="10dp"
+        android:entries="@array/sort_items"
+        android:background="@drawable/border_black"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:id="@+id/sort_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/sort_asc_radiobutton"
+                android:layout_width="138dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:checked="true"
+                android:padding="10dp"
+                android:text="@string/ascending"
+                android:textSize="16dp" />
+
+            <RadioButton
+                android:id="@+id/sort_desc_radiobutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="24dp"
+                android:padding="10dp"
+                android:textSize="16dp"
+                android:text="@string/descending" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/confirm_sort_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/square_button"
+        android:backgroundTint="@color/taskbar"
+        android:fontFamily="monospace"
+        android:text="@string/confrim"
+        android:textColor="@color/button_text"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/cancel_sort_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/square_button"
+        android:backgroundTint="@color/taskbar"
+        android:fontFamily="monospace"
+        android:text="@string/cancel"
+        android:textColor="@color/button_text"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</LinearLayout>
