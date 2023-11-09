@@ -47,11 +47,11 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     private TextView item_name, item_value, item_date, item_make, item_model, item_serialno, item_description, item_comment;
     private Item item;
     ChipGroup tagGroup;
-    ArrayList<Uri> uriList = new ArrayList<>();
 
     RecyclerView imageListView;  //
     MultiImageAdapter adapter;
     Intent cameraIntent , galleryIntent;
+    ArrayList<String> photo_string ;
     ActivityResultLauncher<Intent> pictureActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -62,13 +62,13 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
                         Intent data = result.getData();
                         ClipData clipData = data.getClipData();
                         if (clipData == null) {
-                            uriList.add(data.getData());
+                            photo_string.add(data.getData().toString());
                             adapter.notifyDataSetChanged();
                         } else {
                             for (int i = 0; i < clipData.getItemCount(); i++) {
                                 Uri imageUri = clipData.getItemAt(i).getUri();
                                 try {
-                                    uriList.add(imageUri);
+                                    photo_string.add(imageUri.toString());
 
                                 } catch (Exception e) {
                                     Log.e(TAG, "File select error", e);
@@ -90,6 +90,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         setContentView(R.layout.activity_display);
         Intent ints = getIntent();
         item = (Item) ints.getSerializableExtra("item");
+        photo_string = item.getPhotos();
         back_button = findViewById(R.id.back_button);
         edit_button = findViewById(R.id.edit_button);
         tagGroup = findViewById(R.id.tagGroup);
@@ -102,13 +103,13 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         item_description = findViewById(R.id.item_description);
         item_comment = findViewById(R.id.item_comment);
         imageListView= findViewById(R.id.photo_view);
-        changeData();
         galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         galleryIntent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        changeData();
         cameraIntent = new Intent(DisplayActivity.this, CustomCameraActivity.class);
-        if(uriList.size()==0){
+        if(photo_string.size()==0){
             int resourceId = R.drawable.plus;
             Resources resources = getResources();
             Uri uris = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
@@ -116,19 +117,11 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
                     + '/' + resources.getResourceTypeName(resourceId)
                     + '/' + resources.getResourceEntryName(resourceId));
 
-            uriList.add(uris);
+            photo_string.add(uris.toString());
         }
-       adapter = new MultiImageAdapter(uriList, getApplicationContext(),this);
+       adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this);
        imageListView.setAdapter(adapter);
        imageListView.setLayoutManager(new LinearLayoutManager(DisplayActivity.this, LinearLayoutManager.HORIZONTAL, false));
-
-
-
-
-
-
-
-
         // set tags
        /* ArrayList<Tag> tags = item.getTags();
         for (Tag tag: tags) {
@@ -137,15 +130,13 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
             chip.setId(tags.indexOf(tag));
             tagGroup.addView(chip);
         }
-
         */
-
-        // TODO assign values of photos from item to photos
-      //  ArrayList<Bitmap> photos = item.getPhotos();
-
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra( "changed_item",item);
+                setResult(Activity.RESULT_OK,resultIntent);
                 finish();
             }
         });
@@ -173,7 +164,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     }
 
     @Override
-    public void onEditPressed() {
+    public void onEditPressed(Item item) {
         changeData();
 
     }
@@ -206,7 +197,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
         }
         else {
-            uriList.remove(position);
+            photo_string.remove(position);
             adapter.notifyDataSetChanged();
         }
     }

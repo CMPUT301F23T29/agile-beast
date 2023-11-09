@@ -26,7 +26,7 @@ public class Item implements Serializable {
     private String serialNumber;
     private String comment;
 
-    private ArrayList<Uri> photos;
+    private ArrayList<String> photos;
     //private ArrayList<Tag> tags;
 
     public Item(
@@ -44,7 +44,7 @@ public class Item implements Serializable {
         this.model = model;
         this.value = value;
         this.comment = comment;
-        photos = null;
+        this.photos = new ArrayList<String>();
     }
 
     public Item(
@@ -61,7 +61,7 @@ public class Item implements Serializable {
         this.serialNumber = "N/A";
         this.description= description;
         this.comment = comment;
-        photos = null;
+        this. photos = new ArrayList<String>();
     }
 
 
@@ -91,9 +91,9 @@ public class Item implements Serializable {
        // in.readList(tags,Tag.class.getClassLoader());
 
     }*/
-    public ArrayList<Uri> getPhotos(){ return photos;}
+    public ArrayList<String> getPhotos(){ return photos;}
 
-    public void setPhotos(ArrayList<Uri> photos){
+    public void setPhotos(ArrayList<String> photos){
         this.photos = photos;
     }
 

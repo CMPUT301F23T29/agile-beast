@@ -1,10 +1,18 @@
 package com.example.team29project;
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,9 +59,31 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private ItemArrayAdapter itemAdapter;
     private ArrayList<Item> dataList;
     private ListView itemsList;
+    private int itemPosition ;
 
    // private FirebaseFirestore db;
     //private CollectionReference itemsRef;
+   ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
+           new ActivityResultContracts.StartActivityForResult(),
+           new ActivityResultCallback<ActivityResult>() {
+               @Override
+               public void onActivityResult(ActivityResult result) {
+                   if (result.getData() !=null) {
+                       Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
+                       Item temp = dataList.get(itemPosition);
+                       temp.setName(newItem.getName());
+                       temp.setDate(newItem.getDate());
+                       temp.setValue(newItem.getValue());
+                       temp.setMake(newItem.getMake());
+                       temp.setModel(newItem.getModel());
+                       temp.setSerialNumber(newItem.getSerialNumber());
+                       temp.setDescription(newItem.getDescription());
+                       temp.setComment(newItem.getComment());
+                       temp.setPhotos(newItem.getPhotos());
+                       itemAdapter.notifyDataSetChanged();
+                   }
+               }
+           });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +101,11 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
+                    itemPosition =position;
                     Item temp = dataList.get(position);
                     Intent display = new Intent(MainActivity.this, DisplayActivity.class);
                     display.putExtra("item" , temp);
-                    startActivity(display);
+                    itemActivityResultLauncher.launch(display);
 
                 }
 
@@ -153,7 +184,8 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     }
 
     @Override
-    public void onEditPressed() {
+    public void onEditPressed(Item item) {
+
         itemAdapter.notifyDataSetChanged();
     }
 

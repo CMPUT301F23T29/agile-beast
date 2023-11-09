@@ -43,7 +43,8 @@ public class InputFragment extends DialogFragment {
 
     public interface OnFragmentsInteractionListener {
         void onOKPressed(Item item);
-        void onEditPressed();
+        void onEditPressed(Item item);
+
     }
     @Override
     public void onAttach(@NonNull Context context) {
@@ -103,7 +104,7 @@ public class InputFragment extends DialogFragment {
                 item.setSerialNumber(item_serN);
                 item.setMake(item_make);
                 item.setComment(item_comment);
-                listener.onEditPressed();
+                listener.onEditPressed(item);
 
             }
         });

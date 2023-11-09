@@ -45,7 +45,6 @@ public class CustomCameraActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private final String[] REQUIRED_PERMISSIONS = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private File outputDirectory;
     private String currentPhotoPath;
     private ImageButton capture_btns ,flipCameraBtn;;
     private int cameraFacing ;
