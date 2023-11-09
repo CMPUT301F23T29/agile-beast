@@ -171,7 +171,6 @@ public class Item implements Serializable {
         this.value = value;
     }
 
-
     public void addTag(String tag) {
         tags.add(tag);
     }
@@ -184,7 +183,9 @@ public class Item implements Serializable {
         }
     }
 
-
+    public ArrayList<String> getTags() {
+        return tags;
+    }
 }
 
 

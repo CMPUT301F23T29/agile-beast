@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private ArrayList<Item> selectedItems;
 
-   // private FirebaseFirestore db;
-    //private CollectionReference itemsRef;
+    private FirebaseFirestore db;
+    private CollectionReference itemsRef;
    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
            new ActivityResultContracts.StartActivityForResult(),
            new ActivityResultCallback<ActivityResult>() {
