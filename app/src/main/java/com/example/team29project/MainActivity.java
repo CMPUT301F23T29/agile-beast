@@ -1,10 +1,18 @@
 package com.example.team29project;
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,24 +62,59 @@ public class MainActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SortFragment.OnFragmentInteractionListener,
         FilterFragment.OnFragmentInteractionListener{
-    private Button camera ;
+    
     private TextView addItem;
-    private ArrayList<Item> item_list;
     private TextView editTag;
+    private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
     private ArrayList<Item> dataList;
     private ListView itemsList;
+    private int itemPosition ;
+    private boolean isDelete;
 
-    private FirebaseFirestore db;
-    private CollectionReference itemsRef;
+    private ArrayList<String> tags;
+    private TagAdapter tagAdapter;
+    private boolean isSelect;
+
+    private ArrayList<Item> selectedItems;
+
+   // private FirebaseFirestore db;
+    //private CollectionReference itemsRef;
+   ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
+           new ActivityResultContracts.StartActivityForResult(),
+           new ActivityResultCallback<ActivityResult>() {
+               @Override
+               public void onActivityResult(ActivityResult result) {
+                   if (result.getData() !=null) {
+                       Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
+                       Item temp = dataList.get(itemPosition);
+                       temp.setName(newItem.getName());
+                       temp.setDate(newItem.getDate());
+                       temp.setValue(newItem.getValue());
+                       temp.setMake(newItem.getMake());
+                       temp.setModel(newItem.getModel());
+                       temp.setSerialNumber(newItem.getSerialNumber());
+                       temp.setDescription(newItem.getDescription());
+                       temp.setComment(newItem.getComment());
+                       temp.setPhotos(newItem.getPhotos());
+                       itemAdapter.notifyDataSetChanged();
+                   }
+               }
+           });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ImageButton menu =findViewById(R.id.menu);
+        Button deleteButton = findViewById(R.id.delete_button);
+        selectedItems = new ArrayList<Item>();
+        isDelete= false;
+        isSelect= false;
         dataList = new ArrayList<>();
+        tags = new ArrayList<>();
         itemAdapter = new ItemArrayAdapter(this, dataList);
+        tagAdapter = new TagAdapter(this,tags);
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
         double a = 11.25;
@@ -81,19 +124,47 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
-                    Item temp = dataList.get(position);
-                    Intent display = new Intent(MainActivity.this, DisplayActivity.class);
-                    display.putExtra("item" , temp);
-                    startActivity(display);
+                    if(isSelect){
+                        selectedItems.add(dataList.get(position));
+                    }
+
+                    else if(isDelete){
+                        dataList.remove(position);
+                        itemAdapter.notifyDataSetChanged();
+                        isDelete= false;
+                    }
+                    else {
+                        itemPosition = position;
+                        Item temp = dataList.get(position);
+                        Intent display = new Intent(MainActivity.this, DisplayActivity.class);
+                        display.putExtra("item", temp);
+                        display.putStringArrayListExtra("tags",tags);
+                        itemActivityResultLauncher.launch(display);
+                    }
 
                 }
 
+            }
+        });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isSelect){
+                    dataList.removeAll(selectedItems);
+                    isSelect= false;
+                    selectedItems.clear();
+                    itemAdapter.notifyDataSetChanged();
+                }
+                else{
+                    isDelete = true;
+                }
             }
         });
 //       ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                isDelete=false;
                 popupMenu(view);
             }
         });
@@ -124,10 +195,23 @@ public class MainActivity extends AppCompatActivity implements
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
+        selectBtn= popupView.findViewById(R.id.select_item);
+        selectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isSelect = true;
+                isDelete = false;
+                popupWindow.dismiss();
+                selectedItems = new ArrayList<Item>();
+            }
+        });
+
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new InputFragment().show(getSupportFragmentManager(), "addItems");
+                isSelect =false;
+                isDelete =false;
+                new InputFragment(tags).show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
         });
@@ -135,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new TagDialogue(tags, tagAdapter).show(getSupportFragmentManager(),"Tags");
 
             }
         });
@@ -179,8 +264,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onEditPressed() {
+    public void onEditPressed(Item item) {
         itemAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public void onCancelPressed(){
+
     }
 
     @Override

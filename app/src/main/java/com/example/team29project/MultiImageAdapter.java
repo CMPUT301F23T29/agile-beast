@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
-    private ArrayList<Uri> mData;
+    private ArrayList<String> mData;
     private Context mContext ;
 
     private SelectListener itemClickListener;
 
 
-    MultiImageAdapter(ArrayList<Uri> list, Context context,SelectListener itemClickListener) {
+    MultiImageAdapter(ArrayList<String> list, Context context,SelectListener itemClickListener) {
         mData = list ;
         mContext = context;
         this.itemClickListener = itemClickListener;
@@ -52,7 +52,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
 
     @Override
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
-            Uri image_uri = mData.get(position);
+            Uri image_uri = Uri.parse(mData.get(position));
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
