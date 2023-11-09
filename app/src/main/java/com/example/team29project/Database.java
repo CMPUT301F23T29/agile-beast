@@ -38,6 +38,7 @@ public class Database {
 
         // Load the items from FireBase remote into itemDataList and display them
         loadInitialItems();
+        loadInitialTags();
     }
 
     private void loadInitialTags() {
@@ -108,6 +109,11 @@ public class Database {
     }
 
     public void addItem(Item item) {
+        // Ensure data list does not already contain item with same name
+        assert (!itemDataList.contains(item));
+
+        itemDataList.add(item);
+
         HashMap<String, String> data = new HashMap<>();
         data.put("date", item.getDate());
         data.put("value", item.getValue().toString());
@@ -126,6 +132,12 @@ public class Database {
                         Log.d("Firestore", "Document snapshot written successfully!");
                     }
                 });
+    }
+
+    public void addTag(String tag) {
+        assert (!tagDataList.contains(tag));
+
+        tagDataList.add(tag);
     }
 
     public ArrayList<Item> getItems() {
