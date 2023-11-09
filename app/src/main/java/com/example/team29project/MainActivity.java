@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                         selectedItems.add(position);
                     }
 
-                   else if(isDelete){
+                    else if(isDelete){
                         dataList.remove(position);
                         itemAdapter.notifyDataSetChanged();
                         isDelete= false;
@@ -142,10 +142,12 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             public void onClick(View v) {
                 if(isSelect){
                     for(int i = 0; i<selectedItems.size(); i++){
-                        dataList.remove(selectedItems.get(i));
+                        int pos = selectedItems.get(i);
+                        dataList.remove(pos);
                     }
                     isSelect= false;
                     selectedItems = new ArrayList<Integer>();
+                    itemAdapter.notifyDataSetChanged();
                 }
                 else{
                     isDelete = true;
