@@ -16,7 +16,7 @@ import java.util.Objects;
 /**
  * Represents an item with a name, value, make, model, serial number, description, and comment.
  */
-public class Item implements Serializable {
+public class Item implements Serializable, Comparable {
     private String name;
     private double value;
     private String description;
@@ -185,6 +185,10 @@ public class Item implements Serializable {
     }
 
 
+    @Override
+    public int compareTo(Object item) {
+        return ((Item) item).name.compareTo(this.name);
+    }
 }
 
 

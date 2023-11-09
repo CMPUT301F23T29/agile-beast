@@ -1,38 +1,22 @@
 package com.example.team29project;
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
-
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.SlidingDrawer;
-import android.widget.TextView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -46,11 +30,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * This method is called when the activity is starting.
@@ -67,19 +47,15 @@ public class MainActivity extends AppCompatActivity implements
     private TextView editTag;
     private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
-    private ArrayList<Item> dataList;
     private ListView itemsList;
     private int itemPosition ;
     private boolean isDelete;
-
-    private ArrayList<String> tags;
     private TagAdapter tagAdapter;
     private boolean isSelect;
 
     private ArrayList<Item> selectedItems;
 
-   // private FirebaseFirestore db;
-    //private CollectionReference itemsRef;
+    private Database db;
    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
            new ActivityResultContracts.StartActivityForResult(),
            new ActivityResultCallback<ActivityResult>() {
@@ -87,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements
                public void onActivityResult(ActivityResult result) {
                    if (result.getData() !=null) {
                        Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
-                       Item temp = dataList.get(itemPosition);
+                       Item temp = db.getItem(itemPosition);
                        temp.setName(newItem.getName());
                        temp.setDate(newItem.getDate());
                        temp.setValue(newItem.getValue());
@@ -111,34 +87,39 @@ public class MainActivity extends AppCompatActivity implements
         selectedItems = new ArrayList<Item>();
         isDelete= false;
         isSelect= false;
-        dataList = new ArrayList<>();
-        tags = new ArrayList<>();
-        itemAdapter = new ItemArrayAdapter(this, dataList);
-        tagAdapter = new TagAdapter(this,tags);
+
+        // Init lists for tags and items,
+        // as well as firestore database
+        db = new Database();
+
+        itemAdapter = new ItemArrayAdapter(this, db.getItems());
+        tagAdapter = new TagAdapter(this, db.getTags());
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
-        double a = 11.25;
-        dataList.add(new Item("Name","2023-11",11.0,"Apple","Iphone","model5","nice phone","0000000000"));
+
+        db.setAdapters(itemAdapter, tagAdapter);
+        db.loadInitialItems();
+
         itemAdapter.notifyDataSetChanged();
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
                     if(isSelect){
-                        selectedItems.add(dataList.get(position));
+                        selectedItems.add(db.getItem(position));
                     }
 
                     else if(isDelete){
-                        dataList.remove(position);
+                        db.removeItem(position);
                         itemAdapter.notifyDataSetChanged();
                         isDelete= false;
                     }
                     else {
                         itemPosition = position;
-                        Item temp = dataList.get(position);
+                        Item temp = db.getItem(position);
                         Intent display = new Intent(MainActivity.this, DisplayActivity.class);
                         display.putExtra("item", temp);
-                        display.putStringArrayListExtra("tags",tags);
+                        display.putStringArrayListExtra("tags",db.getTags());
                         itemActivityResultLauncher.launch(display);
                     }
 
@@ -150,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 if(isSelect){
-                    dataList.removeAll(selectedItems);
+                    db.removeAllItems(selectedItems);
                     isSelect= false;
                     selectedItems.clear();
                     itemAdapter.notifyDataSetChanged();
@@ -211,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 isSelect =false;
                 isDelete =false;
-                new InputFragment(tags).show(getSupportFragmentManager(), "addItems");
+                new InputFragment(db.getTags()).show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
         });
@@ -219,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TagDialogue(tags, tagAdapter).show(getSupportFragmentManager(),"Tags");
+                new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(),"Tags");
 
             }
         });
@@ -258,9 +239,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onOKPressed(Item item) {
-        dataList.add(item);
-        itemAdapter.notifyDataSetChanged();
-
+        db.addItem(item);
     }
 
     @Override
