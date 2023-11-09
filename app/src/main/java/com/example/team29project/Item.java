@@ -28,58 +28,59 @@ public class Item implements Serializable {
     private boolean delete;
 
     private ArrayList<String> photos;
-    //private ArrayList<Tag> tags;
+    private ArrayList<String> tags;
 
     public Item(
-            String name , String date ,
+            String name, String date,
             double value,
             String make, String model,
             String description, String comment,
             String serialNumber
-    ){
+    ) {
         this.name = name;
         this.date = date;
         this.make = make;
         this.serialNumber = serialNumber;
-        this.description= description;
+        this.description = description;
         this.model = model;
         this.value = value;
         this.comment = comment;
         this.photos = new ArrayList<String>();
+        this.tags = new ArrayList<String>();
         this.delete = false;
     }
 
     public Item(
-            String name , String date ,
+            String name, String date,
             double value,
             String make, String model,
             String description, String comment
-    ){
+    ) {
         this.name = name;
         this.date = date;
         this.value = value;
         this.make = make;
         this.model = model;
         this.serialNumber = "N/A";
-        this.description= description;
+        this.description = description;
         this.comment = comment;
-        this. photos = new ArrayList<String>();
+        this.photos = new ArrayList<String>();
+        this.tags = new ArrayList<String>();
         this.delete = false;
     }
 
 
+    /*   public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+           @Override
+           public Item createFromParcel(Parcel in) {
+               return new Item(in);
+           }
 
- /*   public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
-        @Override
-        public Item createFromParcel(Parcel in) {
-            return new Item(in);
-        }
-
-        @Override
-        public Item[] newArray(int size) {
-            return new Item[size];
-        }
-    };*/
+           @Override
+           public Item[] newArray(int size) {
+               return new Item[size];
+           }
+       };*/
   /*  protected Item(Parcel in) {
         name = in.readString();
         value = in.readDouble();
@@ -94,9 +95,11 @@ public class Item implements Serializable {
        // in.readList(tags,Tag.class.getClassLoader());
 
     }*/
-    public ArrayList<String> getPhotos(){ return photos;}
+    public ArrayList<String> getPhotos() {
+        return photos;
+    }
 
-    public void setPhotos(ArrayList<String> photos){
+    public void setPhotos(ArrayList<String> photos) {
         this.photos = photos;
     }
 
@@ -171,37 +174,31 @@ public class Item implements Serializable {
         this.value = value;
     }
 
-    public void switchSign(){
-        if(!this.delete){
-            this.delete=true;
-        }
-        else{
-            this.delete=false;
+    public void switchSign() {
+        if (!this.delete) {
+            this.delete = true;
+        } else {
+            this.delete = false;
         }
     }
-    public boolean getDelete(){
+
+    public boolean getDelete() {
         return this.delete;
     }
 
-
-
-    /*@Override
-    public int describeContents() {
-        return 0;
+    public void addTag(String tag) {
+        tags.add(tag);
     }
-*/
-    /*@Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-        parcel.writeString(name);
-        parcel.writeDouble(value);
-        parcel.writeString(date);
-        parcel.writeString(model);
-        parcel.writeString(make);
-        parcel.writeString(serialNumber);
-        parcel.writeString(description);
-        parcel.writeString(comment);
-        parcel.writeTypedList();
-        parcel.writeList(photos);
-       // parcel.writeList(tags);
-    }*/
+
+    public void deleteTag(String tag) {
+        for (int i = 0; i < tags.size(); i++) {
+            if (tags.get(i) == tag) {
+                tags.remove(i);
+            }
+        }
+    }
+
+
 }
+
+

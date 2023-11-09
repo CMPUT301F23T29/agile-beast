@@ -19,10 +19,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -41,6 +43,10 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     MultiImageAdapter adapter;
     Intent cameraIntent , galleryIntent;
     ArrayList<String> photo_string ;
+
+    ArrayList<String> tags;
+
+    ArrayList<String> itemTags;
     ActivityResultLauncher<Intent> pictureActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -76,6 +82,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         setContentView(R.layout.activity_display);
         Intent ints = getIntent();
         item = (Item) ints.getSerializableExtra("item");
+        tags = ints.getStringArrayListExtra("tags");
         photo_string = item.getPhotos();
         Button backBton = findViewById(R.id.back_button);
         Button editBton = findViewById(R.id.edit_button);
@@ -109,15 +116,8 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
        imageListView.setAdapter(adapter);
        imageListView.setLayoutManager(new LinearLayoutManager(DisplayActivity.this, LinearLayoutManager.HORIZONTAL, false));
        changeData();
-        // set tags
-       /* ArrayList<Tag> tags = item.getTags();
-        for (Tag tag: tags) {
-            Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
-            chip.setText(tag.getName());
-            chip.setId(tags.indexOf(tag));
-            tagGroup.addView(chip);
-        }
-        */
+
+
 
         backBton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +132,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         editBton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new InputFragment(item).show(getSupportFragmentManager(), "Edit");
+                new InputFragment(item,tags).show(getSupportFragmentManager(), "Edit");
             }
         });
 
@@ -149,14 +149,8 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         itemComment.setText(item.getComment());
         adapter.notifyDataSetChanged();
         // update tags
-        tagGroup.removeAllViews();
-        /*ArrayList<Tag> tags = item.getTags();
-        for (Tag tag: tags) {
-            Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
-            chip.setText(tag.getName());
-            chip.setId(tags.indexOf(tag));
-            tagGroup.addView(chip);
-        }*/
+
+
     }
 
     @Override
@@ -196,11 +190,9 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     @Override
     public void onGalleryPressed() {
         pictureActivityResultLauncher.launch(galleryIntent);
-
     }
 
     @Override
-    public void onCameraPressed() {
-        pictureActivityResultLauncher.launch(cameraIntent);
+    public void onCameraPressed() {pictureActivityResultLauncher.launch(cameraIntent);
     }
 }

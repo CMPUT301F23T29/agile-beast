@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
                         Item temp = dataList.get(position);
                         Intent display = new Intent(MainActivity.this, DisplayActivity.class);
                         display.putExtra("item", temp);
+                        display.putStringArrayListExtra("tags",tags);
                         itemActivityResultLauncher.launch(display);
                     }
 
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             public void onClick(View v) {
                 isSelect =false;
                 isDelete =false;
-                new InputFragment().show(getSupportFragmentManager(), "addItems");
+                new InputFragment(tags).show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
         });
@@ -251,7 +252,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
 
     @Override
     public void onEditPressed(Item item) {
-
         itemAdapter.notifyDataSetChanged();
     }
     @Override

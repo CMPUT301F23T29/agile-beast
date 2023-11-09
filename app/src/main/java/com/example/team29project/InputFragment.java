@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -38,13 +39,16 @@ public class InputFragment extends DialogFragment {
     private int yearDate;
     private int monthDate;
     private int dayDate;
+    private ArrayList<String> tags;
 
-    public InputFragment() {
+    public InputFragment(ArrayList<String> tags) {
         this.item = null;
+        this.tags = tags;
     }
 
-    public InputFragment(Item aItem) {
+    public InputFragment(Item aItem,ArrayList<String> tags) {
         this.item = aItem;
+        this.tags = tags;
     }
     private OnFragmentsInteractionListener listener;
 
