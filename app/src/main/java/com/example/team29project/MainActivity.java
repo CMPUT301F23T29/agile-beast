@@ -54,7 +54,6 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener{
 
     private TextView addItem;
-    private ArrayList<Item> item_list;
     private TextView editTag;
     private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
@@ -142,8 +141,12 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             public void onClick(View v) {
                 if(isSelect){
                     for(int i = 0; i<selectedItems.size(); i++){
-                        int pos = selectedItems.get(i);
-                        dataList.remove(pos);
+                        dataList.get(selectedItems.get(i)).switchSign();
+                    }
+                    for(int i = 0; i<dataList.size(); i++){
+                        if(dataList.get(i).getDelete()){
+                            dataList.remove(i);
+                        }
                     }
                     isSelect= false;
                     selectedItems = new ArrayList<Integer>();
@@ -177,6 +180,11 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         selectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                for(int i = 0; i<selectedItems.size(); i++){
+                    if(dataList.get(selectedItems.get(i)).getDelete()){
+                        dataList.get(selectedItems.get(i)).switchSign();
+                    }
+                }
                 isSelect = true;
                 isDelete = false;
                 popupWindow.dismiss();
@@ -245,6 +253,10 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     public void onEditPressed(Item item) {
 
         itemAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public void onCancelPressed(){
+
     }
 
     /**

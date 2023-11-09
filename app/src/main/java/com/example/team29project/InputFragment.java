@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -50,6 +51,7 @@ public class InputFragment extends DialogFragment {
     public interface OnFragmentsInteractionListener {
         void onOKPressed(Item item);
         void onEditPressed(Item item);
+        void onCancelPressed();
 
     }
     @Override
@@ -61,6 +63,20 @@ public class InputFragment extends DialogFragment {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Handle with the backPressed button
+        getDialog().setOnKeyListener((dialog, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                listener.onCancelPressed();
+                dismiss();
+                return true;
+            }
+            return false;
+        });
+    }
+
 
     @NonNull
     @Override
@@ -101,7 +117,10 @@ public class InputFragment extends DialogFragment {
 
         builder.setView(view);
         builder.setTitle("Add new item");
-        builder.setNegativeButton("Cancel", null);
+        // When cancel button pressed
+        builder.setNegativeButton("Cancel", (dialog, which)->{
+            listener.onCancelPressed();
+        });
         builder.setPositiveButton("OK", (dialog, which) -> {
             try {
                 String item_name = itemName.getText().toString();
@@ -112,20 +131,24 @@ public class InputFragment extends DialogFragment {
                 String item_model = itemModel.getText().toString();
                 String item_description = itemDescription.getText().toString();
                 String item_comment = itemComment.getText().toString();
+                // Check if it is empty except comment
                 if(item_name.isEmpty() || item_date.isEmpty() || item_value.isNaN()||item_make.isEmpty() || item_model.isEmpty() || item_description.isEmpty()  || item_serN.isEmpty()){
                     throw new Exception();
                 }
+                // Check if it is future date
                 if(yearDate>=currentYear){
                     if(monthDate> currentMonth+1|| monthDate== currentMonth+1 && dayDate >currentDay){
                         throw new IllegalArgumentException();
                     }
                 }
-
+                // If it is adding
                 if (item == null) {
                     // TODO add tags selected to the item
                     // do this by checking the selected id from the chip group
                     listener.onOKPressed(new Item(item_name, item_date, item_value, item_make, item_model, item_description, item_comment, item_serN));
-                } else {
+                }
+                // if it is editing
+                else {
                     item.setName(item_name);
                     item.setDate(item_date);
                     item.setValue(item_value);

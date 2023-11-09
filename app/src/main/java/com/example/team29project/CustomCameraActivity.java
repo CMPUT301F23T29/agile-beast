@@ -9,10 +9,8 @@ import androidx.camera.core.AspectRatio;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
-import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.view.PreviewView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
@@ -20,7 +18,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -31,7 +28,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.Executors;
 
 /**
  * Represents a custom camera activity. This activity allows the user to capture images using the device's camera.
@@ -46,9 +42,11 @@ public class CustomCameraActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private final String[] REQUIRED_PERMISSIONS = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private String currentPhotoPath;
-    private ImageButton capture_btns ,flipCameraBtn;;
+    private ImageButton captureBtn,flipCameraBtn;;
     private int cameraFacing ;
     private Preview preview;
+
+    // Asking for Permission to capture Camera
     private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
         @Override
         public void onActivityResult(Boolean result) {
@@ -69,7 +67,7 @@ public class CustomCameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_custom_camera);
         cameraFacing = CameraSelector.LENS_FACING_BACK;
         previewView = findViewById(R.id.customPreview);
-        capture_btns = findViewById(R.id.capture_btn);
+        captureBtn = findViewById(R.id.capture_btn);
         okButton = findViewById(R.id.ok_btn);
         reTryButton = findViewById(R.id.retry_btn);
         capturedImage = findViewById(R.id.capture_image);
@@ -88,14 +86,14 @@ public class CustomCameraActivity extends AppCompatActivity {
     private void startCamera() {
         // Initialize your custom CameraX instance
         previewView.setVisibility(View.VISIBLE);
-        capture_btns.setVisibility(View.VISIBLE);
+        captureBtn.setVisibility(View.VISIBLE);
         flipCameraBtn.setVisibility(View.VISIBLE);
         okButton.setVisibility(View.INVISIBLE);
         reTryButton.setVisibility(View.INVISIBLE);
         capturedImage.setVisibility(View.INVISIBLE);
         customCamera = new CustomCamera(previewView);
         customCamera.startCamera(this);
-        capture_btns.setOnClickListener(new View.OnClickListener() {
+        captureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 captureImage();
@@ -112,7 +110,9 @@ public class CustomCameraActivity extends AppCompatActivity {
     }
 
     /**
+     *
      * Starts the camera and sets up the capture and flip camera buttons.
+     *
      */
     private void captureImage() {
         final File photoFile = new File(getExternalFilesDir(null), System.currentTimeMillis() + ".jpg");
@@ -125,7 +125,7 @@ public class CustomCameraActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         Uri imageUri= outputFileResults.getSavedUri();
                         previewView.setVisibility(View.INVISIBLE);
-                        capture_btns.setVisibility(View.INVISIBLE);
+                        captureBtn.setVisibility(View.INVISIBLE);
                         flipCameraBtn.setVisibility(View.INVISIBLE);
                         okButton.setVisibility(View.VISIBLE);
                         reTryButton.setVisibility(View.VISIBLE);
@@ -149,18 +149,6 @@ public class CustomCameraActivity extends AppCompatActivity {
                                 startCamera();
                             }
                         });
-
-
-
-
-
-
-
-
-
-
-
-
                     });
                 }
 
@@ -181,7 +169,10 @@ public class CustomCameraActivity extends AppCompatActivity {
     }
 
     /**
-     * Starts the camera and sets up the capture and flip camera buttons.
+     *
+     * @param height the height of the screen on camera(Y axis)
+     * @param width the width of the screen on camera(X axis)
+     * @return AspectRatio that the ratio of camera in scale
      */
     private int aspectRatio(int width, int height) {
         double previewRatio = (double) Math.max(width, height) / Math.min(width, height);

@@ -25,6 +25,7 @@ public class Item implements Serializable {
     private String model;
     private String serialNumber;
     private String comment;
+    private boolean delete;
 
     private ArrayList<String> photos;
     //private ArrayList<Tag> tags;
@@ -45,6 +46,7 @@ public class Item implements Serializable {
         this.value = value;
         this.comment = comment;
         this.photos = new ArrayList<String>();
+        this.delete = false;
     }
 
     public Item(
@@ -62,6 +64,7 @@ public class Item implements Serializable {
         this.description= description;
         this.comment = comment;
         this. photos = new ArrayList<String>();
+        this.delete = false;
     }
 
 
@@ -166,6 +169,18 @@ public class Item implements Serializable {
 
     public void setValue(Double value) {
         this.value = value;
+    }
+
+    public void switchSign(){
+        if(!this.delete){
+            this.delete=true;
+        }
+        else{
+            this.delete=false;
+        }
+    }
+    public boolean getDelete(){
+        return this.delete;
     }
 
 

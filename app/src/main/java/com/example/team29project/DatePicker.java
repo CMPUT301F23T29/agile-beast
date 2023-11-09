@@ -51,8 +51,8 @@ public class DatePicker extends DialogFragment {
         // Setting min/max value of month
 
         // Set the default value to current year nad month
-        monthPicker.setValue(current.get(Calendar.MONTH) + 1);
-        dayPicker.setValue(current.get(Calendar.DATE));
+        monthPicker.setValue(1);
+        dayPicker.setValue(1);
         year = current.get(Calendar.YEAR);
         // Set the max year to be the current year since we do not want the future date
         yearPicker.setMaxValue(year);
