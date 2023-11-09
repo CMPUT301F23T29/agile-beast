@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private TagAdapter tagAdapter;
     private boolean isSelect;
 
-    private ArrayList<Integer> selectedItems;
+    private ArrayList<Item> selectedItems;
 
 
    // private FirebaseFirestore db;
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         setContentView(R.layout.activity_main);
         ImageButton menu =findViewById(R.id.menu);
         Button deleteButton = findViewById(R.id.delete_button);
-        selectedItems = new ArrayList<Integer>();
+        selectedItems = new ArrayList<Item>();
         isDelete= false;
         isSelect= false;
         dataList = new ArrayList<>();
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
                     if(isSelect){
-                        selectedItems.add(position);
+                        selectedItems.add(dataList.get(position));
                     }
 
                     else if(isDelete){
@@ -141,16 +141,9 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             @Override
             public void onClick(View v) {
                 if(isSelect){
-                    for(int i = 0; i<selectedItems.size(); i++){
-                        dataList.get(selectedItems.get(i)).switchSign();
-                    }
-                    for(int i = 0; i<dataList.size(); i++){
-                        if(dataList.get(i).getDelete()){
-                            dataList.remove(i);
-                        }
-                    }
+                    dataList.removeAll(selectedItems);
                     isSelect= false;
-                    selectedItems = new ArrayList<Integer>();
+                    selectedItems.clear();
                     itemAdapter.notifyDataSetChanged();
                 }
                 else{
@@ -181,15 +174,10 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         selectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(int i = 0; i<selectedItems.size(); i++){
-                    if(dataList.get(selectedItems.get(i)).getDelete()){
-                        dataList.get(selectedItems.get(i)).switchSign();
-                    }
-                }
                 isSelect = true;
                 isDelete = false;
                 popupWindow.dismiss();
-                selectedItems = new ArrayList<Integer>();
+                selectedItems = new ArrayList<Item>();
             }
         });
 
