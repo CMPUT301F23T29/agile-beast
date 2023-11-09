@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
     private ArrayList<Item> dataList;
     private ListView itemsList;
     private int itemPosition ;
+    private boolean isDelete;
 
    // private FirebaseFirestore db;
     //private CollectionReference itemsRef;
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ImageButton menu =findViewById(R.id.menu);
+        Button deleteButton = findViewById(R.id.delete_button);
+        isDelete= false;
         dataList = new ArrayList<>();
         itemAdapter = new ItemArrayAdapter(this, dataList);
         itemsList = findViewById(R.id.items);
@@ -101,20 +104,34 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
-                    itemPosition =position;
-                    Item temp = dataList.get(position);
-                    Intent display = new Intent(MainActivity.this, DisplayActivity.class);
-                    display.putExtra("item" , temp);
-                    itemActivityResultLauncher.launch(display);
+                    if(isDelete){
+                        dataList.remove(position);
+                        itemAdapter.notifyDataSetChanged();
+                        isDelete= false;
+                    }
+                    else {
+                        itemPosition = position;
+                        Item temp = dataList.get(position);
+                        Intent display = new Intent(MainActivity.this, DisplayActivity.class);
+                        display.putExtra("item", temp);
+                        itemActivityResultLauncher.launch(display);
+                    }
 
                 }
 
+            }
+        });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isDelete = true;
             }
         });
 //       ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                isDelete=false;
                 popupMenu(view);
             }
         });

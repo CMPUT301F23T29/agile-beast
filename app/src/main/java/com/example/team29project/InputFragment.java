@@ -1,16 +1,20 @@
 package com.example.team29project;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import java.util.Calendar;
 
 /**
  * Allow users to input/edit data for an inventory item
@@ -30,7 +34,9 @@ public class InputFragment extends DialogFragment {
 
     private EditText itemDescription;
     private EditText itemComment;
-
+    private int yearDate;
+    private int monthDate;
+    private int dayDate;
 
     public InputFragment() {
         this.item = null;
@@ -59,6 +65,10 @@ public class InputFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_input, null);
         itemValue = view.findViewById(R.id.edit_item_value);
         itemName = view.findViewById(R.id.edit_item_name);
@@ -71,9 +81,20 @@ public class InputFragment extends DialogFragment {
         if(item !=null){
             writeData(item);
         }
+
+        DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
+            yearDate = year;
+            monthDate = month;
+            dayDate = dayOfMonth;
+            itemDate.setText(String.format("%d-%02d-%02d", yearDate,monthDate,dayDate));
+        };
+        itemDate.setOnClickListener(v -> {
+            DatePicker dat = new DatePicker();
+            dat.setListener(r);
+            dat.show(getChildFragmentManager(),"DatePicker");
+        });
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-
         // TODO set up filter chips of all tags (from firestore) and select ones already tagged by the item
 
         // TODO set add tag and scan button listeners
@@ -82,36 +103,53 @@ public class InputFragment extends DialogFragment {
         builder.setTitle("Add new item");
         builder.setNegativeButton("Cancel", null);
         builder.setPositiveButton("OK", (dialog, which) -> {
-            String item_name = itemName.getText().toString();
-            String item_date = itemDate.getText().toString();
-            String item_make = itemMake.getText().toString();
-            String item_value = itemValue.getText().toString();
-            String item_serN = itemSerialNumber.getText().toString();
-            String item_model = itemModel.getText().toString();
-            String item_description = itemDescription.getText().toString();
-            String item_comment = itemComment.getText().toString();
-            if(item==null) {
-                // TODO add tags selected to the item
-                // do this by checking the selected id from the chip group
-                listener.onOKPressed(new Item(item_name, item_date, Double.parseDouble(item_value), item_make, item_model, item_description, item_comment, item_serN));
-            }
-            else{
-                item.setName(item_name);
-                item.setDate(item_date);
-                item.setValue(Double.parseDouble(item_value));
-                item.setModel(item_model);
-                item.setDescription(item_description);
-                item.setSerialNumber(item_serN);
-                item.setMake(item_make);
-                item.setComment(item_comment);
-                listener.onEditPressed(item);
+            try {
+                String item_name = itemName.getText().toString();
+                String item_date = itemDate.getText().toString();
+                String item_make = itemMake.getText().toString();
+                Double item_value = Double.parseDouble(itemValue.getText().toString());
+                String item_serN = itemSerialNumber.getText().toString();
+                String item_model = itemModel.getText().toString();
+                String item_description = itemDescription.getText().toString();
+                String item_comment = itemComment.getText().toString();
+                if(item_name.isEmpty() || item_date.isEmpty() || item_value.isNaN()||item_make.isEmpty() || item_model.isEmpty() || item_description.isEmpty()  || item_serN.isEmpty()){
+                    throw new Exception();
+                }
+                if(yearDate>=currentYear){
+                    if(monthDate> currentMonth+1|| monthDate== currentMonth+1 && dayDate >currentDay){
+                        throw new IllegalArgumentException();
+                    }
+                }
 
+                if (item == null) {
+                    // TODO add tags selected to the item
+                    // do this by checking the selected id from the chip group
+                    listener.onOKPressed(new Item(item_name, item_date, item_value, item_make, item_model, item_description, item_comment, item_serN));
+                } else {
+                    item.setName(item_name);
+                    item.setDate(item_date);
+                    item.setValue(item_value);
+                    item.setModel(item_model);
+                    item.setDescription(item_description);
+                    item.setSerialNumber(item_serN);
+                    item.setMake(item_make);
+                    item.setComment(item_comment);
+                    listener.onEditPressed(item);
+                }
+            } catch(NumberFormatException e){
+                Toast.makeText(getContext()," Wrong format of charges check again!",Toast.LENGTH_SHORT).show();
+            }// Handle the case when dates.length() != 6
+            catch (IllegalArgumentException e) {
+                Toast.makeText(getContext(), "Wrong date. check again!", Toast.LENGTH_SHORT).show();
+            }// If one of name,amount, date is empty
+            catch(Exception e){
+                Toast.makeText(getContext(),"Can't be empty!", Toast.LENGTH_SHORT).show();
             }
         });
         return builder.create();
     }
     public void writeData(Item item){
-        itemValue.setText(item.getValue().toString());
+        itemValue.setText(String.format("%.2f",item.getValue()));
         itemName.setText(item.getName());
         itemDate.setText(item.getDate());
         itemModel.setText(item.getDate());
