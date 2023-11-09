@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -22,9 +24,13 @@ import java.util.ArrayList;
  */
 public class TagDialogue extends DialogFragment {
     private ListView tagListView;
-    private ArrayList<Tag> tag_list;
-    private EditText enteredTag;
-    private TagAdapter tag_adapter;
+    private ArrayList<String> tagList;
+    private Button addTag;
+    private Button deleteTag;
+    private TagAdapter tagAdapter;
+
+
+    private boolean isDelete;
 
     /**
      * Constructs a new TagDialogue with the given list of tags and tag adapter.
@@ -32,21 +38,18 @@ public class TagDialogue extends DialogFragment {
      * @param tagList The list of tags to be managed.
      * @param tagAdapter The adapter for displaying the tags.
      */
-    public TagDialogue(ArrayList<Tag> tagList ,TagAdapter tagAdapter)
+    public TagDialogue(ArrayList<String> tagList ,TagAdapter tagAdapter)
     {
-        this.tag_list = tagList;
-        this.tag_adapter = tagAdapter;
+        this.tagList = tagList;
+        this.tagAdapter = tagAdapter;
     }
 
-    private OnFragmentInteractionListener listener;
+
 
     /**
      * Interface for handling interactions in the TagDialogue.
      */
-    public interface OnFragmentInteractionListener {
-        void onAddPressed(Tag tag);
-        void onEditPressed();
-    }
+
 
     /**
      * Attaches the dialog fragment to its context, ensuring that it implements OnFragmentInteractionListener.
@@ -56,12 +59,6 @@ public class TagDialogue extends DialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof OnFragmentInteractionListener){
-            listener =  (OnFragmentInteractionListener) context;
-        }
-        else{
-            throw new RuntimeException("e");
-        }
     }
     
     /**
@@ -72,24 +69,50 @@ public class TagDialogue extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view  = LayoutInflater.from(getActivity()).inflate(R.layout.display_taglist , null);
-        enteredTag = view.findViewById(R.id.add_tag_edt);
+        addTag = view.findViewById(R.id.add_tag);
+        deleteTag = view.findViewById(R.id.delete_tag);
         tagListView = view.findViewById(R.id.tag_listview);
-        tagListView.setAdapter(tag_adapter);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setView(view);
-        builder.setTitle("Add Tag");
-        builder.setPositiveButton("Add", (dialog, which) -> {
-            try{
-                String tagName = enteredTag.getText().toString();
-                if(tagName.isEmpty()){
-                    throw new Exception();
+        EditText inputText = view.findViewById(R.id.input_tag);
+        tagListView.setAdapter(tagAdapter);
+        isDelete= false;
+        addTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isDelete = false;
+                if (inputText.getVisibility()==View.INVISIBLE) {
+                    inputText.setVisibility(View.VISIBLE);
                 }
-                listener.onAddPressed(new Tag(tagName));
-            }catch( Exception e){
-                Toast.makeText(getContext(), "It can't be empty!", Toast.LENGTH_SHORT).show();
+                else{
+                     String tagTemp = inputText.getText().toString();
+                     if (!tagTemp.isEmpty()) {
+                         tagList.add(inputText.getText().toString());
+                         inputText.setText("");
+                         tagAdapter.notifyDataSetChanged();
+                     }
+                     inputText.setVisibility(View.INVISIBLE);
+                }
             }
         });
-        builder.setNegativeButton("Cancel",null);
+        deleteTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isDelete = true;
+            }
+        });
+        tagListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position>=0){
+                    tagList.remove(position);
+                    isDelete=false;
+                    tagAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setView(view);
+        builder.setTitle("Tags");
+        builder.setNegativeButton("Done",null);
         return builder.create();
 
     }

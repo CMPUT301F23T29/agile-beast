@@ -5,7 +5,7 @@
     android:layout_width="300dp"
     android:layout_height="500dp"
     android:layout_gravity="center"
-    android:background="@color/borderColor"
+    android:background="@color/background"
     android:orientation="vertical"
     >
     <ListView
@@ -14,18 +14,61 @@
         android:layout_height="300dp"
         android:dividerHeight="2dp"
         android:background="@drawable/border"
+        android:fontFamily="monospace"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="30dp"
         android:layout_marginRight="30dp">
     </ListView>
     <EditText
-        android:id="@+id/add_tag_edt"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Add Tag "
-        android:visibility="visible"></EditText>
+        android:id="@+id/input_tag"
+        android:hint="Enter tag"
+        android:fontFamily="monospace"
+        android:visibility="invisible">
+
+    </EditText>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+    <Button
+        android:background="@drawable/button_style"
+        android:backgroundTint="@color/button_colour"
+        android:textColor="@color/button_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="add"
+        android:id="@+id/add_tag"
+        >
+    </Button>
+        <Button
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/button_colour"
+            android:textColor="@color/button_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/delete_tag"
+            android:text="@string/delete"
+
+            >
+
+        </Button>
+
+    </LinearLayout>
+
+
+
+
 
 
 </LinearLayout>

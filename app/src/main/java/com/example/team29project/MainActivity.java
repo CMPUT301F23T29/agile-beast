@@ -52,15 +52,23 @@ import java.util.Objects;
  * @see android.app.Activity#onCreate(Bundle)
  */
 public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener{
-    private Button camera ;
+
     private TextView addItem;
     private ArrayList<Item> item_list;
     private TextView editTag;
+    private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
     private ArrayList<Item> dataList;
     private ListView itemsList;
     private int itemPosition ;
     private boolean isDelete;
+
+    private ArrayList<String> tags;
+    private TagAdapter tagAdapter;
+    private boolean isSelect;
+
+    private ArrayList<Integer> selectedItems;
+
 
    // private FirebaseFirestore db;
     //private CollectionReference itemsRef;
@@ -92,9 +100,13 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         setContentView(R.layout.activity_main);
         ImageButton menu =findViewById(R.id.menu);
         Button deleteButton = findViewById(R.id.delete_button);
+        selectedItems = new ArrayList<Integer>();
         isDelete= false;
+        isSelect= false;
         dataList = new ArrayList<>();
+        tags = new ArrayList<>();
         itemAdapter = new ItemArrayAdapter(this, dataList);
+        tagAdapter = new TagAdapter(this,tags);
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
         double a = 11.25;
@@ -104,7 +116,11 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
-                    if(isDelete){
+                    if(isSelect){
+                        selectedItems.add(position);
+                    }
+
+                   else if(isDelete){
                         dataList.remove(position);
                         itemAdapter.notifyDataSetChanged();
                         isDelete= false;
@@ -124,7 +140,16 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isDelete = true;
+                if(isSelect){
+                    for(int i = 0; i<selectedItems.size(); i++){
+                        dataList.remove(selectedItems.get(i));
+                    }
+                    isSelect= false;
+                    selectedItems = new ArrayList<Integer>();
+                }
+                else{
+                    isDelete = true;
+                }
             }
         });
 //       ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
@@ -146,9 +171,22 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
+        selectBtn= popupView.findViewById(R.id.select_item);
+        selectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isSelect = true;
+                isDelete = false;
+                popupWindow.dismiss();
+                selectedItems = new ArrayList<Integer>();
+            }
+        });
+
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isSelect =false;
+                isDelete =false;
                 new InputFragment().show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
@@ -157,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new TagDialogue(tags, tagAdapter).show(getSupportFragmentManager(),"Tags");
 
             }
         });
