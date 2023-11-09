@@ -30,7 +30,9 @@
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
         android:hint="@string/item_value"
+        android:inputType="number"
         android:padding="10sp"
+        android:digits="0123456789.,"
         android:textColor="@color/button_text"
         android:textSize="15sp"
         android:layout_marginHorizontal="20dp"/>

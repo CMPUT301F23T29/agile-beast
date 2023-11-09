@@ -7,7 +7,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,25 +15,18 @@ import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -43,15 +35,18 @@ import java.util.ArrayList;
  */
 public class DisplayActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener, SelectListener,PickCameraDialog.ImageOrGalleryListener {
 
-    private Button back_button, edit_button;
-    private TextView item_name, item_value, item_date, item_make, item_model, item_serialno, item_description, item_comment;
+    private TextView itemName, itemValue, itemDate, itemMake, itemModel, itemSerialno, itemDescription, itemComment;
     private Item item;
     ChipGroup tagGroup;
-    ArrayList<Uri> uriList = new ArrayList<>();
 
     RecyclerView imageListView;  //
     MultiImageAdapter adapter;
     Intent cameraIntent , galleryIntent;
+    ArrayList<String> photo_string ;
+
+    ArrayList<String> tags;
+
+    ArrayList<String> itemTags;
     ActivityResultLauncher<Intent> pictureActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -62,13 +57,13 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
                         Intent data = result.getData();
                         ClipData clipData = data.getClipData();
                         if (clipData == null) {
-                            uriList.add(data.getData());
+                            photo_string.add(data.getData().toString());
                             adapter.notifyDataSetChanged();
                         } else {
                             for (int i = 0; i < clipData.getItemCount(); i++) {
                                 Uri imageUri = clipData.getItemAt(i).getUri();
                                 try {
-                                    uriList.add(imageUri);
+                                    photo_string.add(imageUri.toString());
 
                                 } catch (Exception e) {
                                     Log.e(TAG, "File select error", e);
@@ -81,34 +76,33 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
                 }
             });
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
         Intent ints = getIntent();
         item = (Item) ints.getSerializableExtra("item");
-        back_button = findViewById(R.id.back_button);
-        edit_button = findViewById(R.id.edit_button);
+        tags = ints.getStringArrayListExtra("tags");
+        photo_string = item.getPhotos();
+        Button backBton = findViewById(R.id.back_button);
+        Button editBton = findViewById(R.id.edit_button);
         tagGroup = findViewById(R.id.tagGroup);
-        item_name = findViewById(R.id.item_name);
-        item_value = findViewById(R.id.item_value);
-        item_date = findViewById(R.id.item_date);
-        item_make = findViewById(R.id.item_make);
-        item_model = findViewById(R.id.item_model);
-        item_serialno = findViewById(R.id.item_serialno);
-        item_description = findViewById(R.id.item_description);
-        item_comment = findViewById(R.id.item_comment);
+        itemName = findViewById(R.id.item_name);
+        itemValue = findViewById(R.id.item_value);
+        itemDate = findViewById(R.id.item_date);
+        itemMake = findViewById(R.id.item_make);
+        itemModel = findViewById(R.id.item_model);
+        itemSerialno = findViewById(R.id.item_serialno);
+        itemDescription = findViewById(R.id.item_description);
+        itemComment = findViewById(R.id.item_comment);
         imageListView= findViewById(R.id.photo_view);
-        changeData();
         galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         galleryIntent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         cameraIntent = new Intent(DisplayActivity.this, CustomCameraActivity.class);
-        if(uriList.size()==0){
+
+        if(photo_string.size()==0){
             int resourceId = R.drawable.plus;
             Resources resources = getResources();
             Uri uris = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
@@ -116,48 +110,45 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
                     + '/' + resources.getResourceTypeName(resourceId)
                     + '/' + resources.getResourceEntryName(resourceId));
 
-            uriList.add(uris);
+            photo_string.add(uris.toString());
         }
-       adapter = new MultiImageAdapter(uriList, getApplicationContext(),this);
+       adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this);
        imageListView.setAdapter(adapter);
        imageListView.setLayoutManager(new LinearLayoutManager(DisplayActivity.this, LinearLayoutManager.HORIZONTAL, false));
+       changeData();
 
 
 
-
-
-
-
-
-        // set tags
-       /* ArrayList<Tag> tags = item.getTags();
-        for (Tag tag: tags) {
-            Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
-            chip.setText(tag.getName());
-            chip.setId(tags.indexOf(tag));
-            tagGroup.addView(chip);
-        }
-
-        */
-
-        // TODO assign values of photos from item to photos
-      //  ArrayList<Bitmap> photos = item.getPhotos();
-
-        back_button.setOnClickListener(new View.OnClickListener() {
+        backBton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra( "changed_item",item);
+                setResult(Activity.RESULT_OK,resultIntent);
                 finish();
             }
         });
 
-        edit_button.setOnClickListener(new View.OnClickListener() {
+        editBton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new InputFragment(item).show(getSupportFragmentManager(), "Edit");
+                new InputFragment(item,tags).show(getSupportFragmentManager(), "Edit");
             }
         });
 
+    }
 
+    private void changeData() {
+        itemName.setText(item.getName());
+        itemValue.setText(item.getValue().toString());
+        itemDate.setText(item.getDate());
+        itemMake.setText(item.getMake());
+        itemModel.setText(item.getModel());
+        itemSerialno.setText(item.getSerialNumber());
+        itemDescription.setText(item.getDescription());
+        itemComment.setText(item.getComment());
+        adapter.notifyDataSetChanged();
+        // update tags
 
 
     }
@@ -173,32 +164,16 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     }
 
     @Override
-    public void onEditPressed() {
+    public void onEditPressed(Item item) {
         changeData();
 
     }
-
-    private void changeData() {
-        item_name.setText(item.getName());
-        item_value.setText(item.getValue().toString());
-        item_date.setText(item.getDate());
-        item_make.setText(item.getMake());
-        item_model.setText(item.getModel());
-        item_serialno.setText(item.getSerialNumber());
-        item_description.setText(item.getDescription());
-        item_comment.setText(item.getComment());
-
-
-        // update tags
-        tagGroup.removeAllViews();
-        /*ArrayList<Tag> tags = item.getTags();
-        for (Tag tag: tags) {
-            Chip chip = (Chip) LayoutInflater.from(DisplayActivity.this).inflate(R.layout.activity_display, null);
-            chip.setText(tag.getName());
-            chip.setId(tags.indexOf(tag));
-            tagGroup.addView(chip);
-        }*/
+    @Override
+    public void onCancelPressed(){
+        adapter.notifyDataSetChanged();
     }
+
+
     @Override
     public void onItemClick(int position) {
         if(position ==0) {
@@ -206,7 +181,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
         }
         else {
-            uriList.remove(position);
+            photo_string.remove(position);
             adapter.notifyDataSetChanged();
         }
     }
@@ -215,11 +190,9 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     @Override
     public void onGalleryPressed() {
         pictureActivityResultLauncher.launch(galleryIntent);
-
     }
 
     @Override
-    public void onCameraPressed() {
-        pictureActivityResultLauncher.launch(cameraIntent);
+    public void onCameraPressed() {pictureActivityResultLauncher.launch(cameraIntent);
     }
 }
