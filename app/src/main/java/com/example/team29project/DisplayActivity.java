@@ -45,8 +45,6 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     ArrayList<String> photo_string ;
 
     ArrayList<String> tags;
-
-    ArrayList<String> itemTags;
     ActivityResultLauncher<Intent> pictureActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
