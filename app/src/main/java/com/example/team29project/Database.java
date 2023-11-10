@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Represents the database
+ */
 public class Database {
     private FirebaseFirestore db;
 
@@ -37,6 +40,9 @@ public class Database {
     private final ArrayList<String> tagDataList;
     private TagAdapter tagAdapter;
 
+    /**
+     * Stores the items and tags in the database
+     */
     public Database() {
 
         db = FirebaseFirestore.getInstance();
@@ -47,11 +53,19 @@ public class Database {
 
     }
 
+    /**
+     * Sets the adapters
+     * @param itemAdapter itemAdapter
+     * @param tagAdapter tagAdapter
+     */
     public void setAdapters(ItemArrayAdapter itemAdapter, TagAdapter tagAdapter) {
         this.itemAdapter = itemAdapter;
         this.tagAdapter = tagAdapter;
     }
 
+    /**
+     * Loads the initial tags from firebase and adds them to the tag list. Notifies the display to show the initial tags.
+     */
     public void loadInitialTags() {
         tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -81,6 +95,9 @@ public class Database {
         });
     }
 
+    /**
+     * Loads the initial items from firebase and adds them to the item list. Notifies the display to show the initial items.
+     */
     public void loadInitialItems() {
 
         // Add a snapshot listener to the Firestore reference 'itemsRef'
@@ -144,6 +161,10 @@ public class Database {
         });
     }
 
+    /**
+     * Adds an item to the Firestore database
+     * @param item the item being added
+     */
     public void addItem(Item item) {
         // Ensure data list does not already contain item with same name
         assert (!itemDataList.contains(item));
@@ -172,6 +193,13 @@ public class Database {
 
         itemAdapter.notifyDataSetChanged();
     }
+
+
+    /**
+     * Adds a tag to the Firestore database
+     * @param tag the tag being added
+     */
+
     public void addTag(String tag) {
         assert (!tagDataList.contains(tag));
 
@@ -194,18 +222,36 @@ public class Database {
         }
     }
 
+    /**
+     * Returns the itemDataList
+     * @return the itemDataList containing the items
+     */
     public ArrayList<Item> getItems() {
         return itemDataList;
     }
 
+    /**
+     * Returns the tagDataList
+     * @return the tagDataList containing the tags
+     */
     public ArrayList<String> getTags() {
         return tagDataList;
     }
 
+    /**
+     * Returns the item at provided position in the itemDataList
+     * @param i the position of item in the itemDataList
+     * @return item at position i
+     */
     public Item getItem(int i) {
         return itemDataList.get(i);
     }
 
+    /**
+     * Removes a tag from the Firestore database
+     * @param i the position of tag to be deleted in the tagDataList
+     * @return the tag that was deleted
+     */
     public String removeTag(int i) {
         assert (i < this.tagDataList.size());
 
@@ -223,6 +269,11 @@ public class Database {
         return toDeleteTag;
     }
 
+    /**
+     * Removes an item from the Firestore database
+     * @param i the position of item to be deleted in the itemDataList
+     * @return the item that was deleted
+     */
     public Item removeItem(int i) {
         assert (i < this.itemDataList.size());
 
@@ -242,6 +293,11 @@ public class Database {
         return toDeleteItem;
     }
 
+    /**
+     * Removed all items from the list
+     * @param items the items in the ArrayList
+     * @return the empty itemDataList
+     */
     public boolean removeAllItems(ArrayList<Item> items) {
         return this.itemDataList.removeAll(items);
     }
