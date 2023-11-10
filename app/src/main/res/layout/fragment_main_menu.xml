@@ -7,7 +7,7 @@
     android:background="@color/menu_page"
     android:orientation = "vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainMenuFragment">
+    tools:context=".View.MainMenuFragment">
 
 
     <TextView

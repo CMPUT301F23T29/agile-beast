@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.team29project.R;
 
 /**
  * A dialog to pick between the gallery or camera

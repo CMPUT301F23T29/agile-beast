@@ -32,7 +32,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
 }
+
 
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
@@ -49,4 +51,5 @@ dependencies {
     implementation("androidx.camera:camera-core:1.2.2")
     implementation("androidx.camera:camera-lifecycle:1.2.2")
     implementation("androidx.camera:camera-view:1.2.2")
+    compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
 }

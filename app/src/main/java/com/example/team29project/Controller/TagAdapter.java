@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.Controller;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,8 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.example.team29project.R;
 
+import java.util.ArrayList;
+// Not used for halfway Checkpoint
 /**
  * Represents an adapter for displaying tags in a list view.
  */

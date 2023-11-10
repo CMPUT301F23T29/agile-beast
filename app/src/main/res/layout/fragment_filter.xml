@@ -13,7 +13,7 @@
     android:background="@color/background"
     android:orientation="vertical"
     android:weightSum="10"
-    tools:context=".InputFragment">
+    tools:context=".View.InputFragment">
 
     <TextView
         android:id="@+id/textView2"

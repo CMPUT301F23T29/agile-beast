@@ -1,13 +1,13 @@
-package com.example.team29project;
+package com.example.team29project.Controller;
 
 import android.util.Log;
 
+import com.example.team29project.Model.Item;
 import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.Nullable;
 import java.util.Arrays;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -17,14 +17,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class DatabaseController {
 
@@ -39,7 +36,7 @@ public class DatabaseController {
     private ArrayList<Item> itemDataList;
     private ItemArrayAdapter itemAdapter;
 
-    // Tag attributes
+    // Tag attributes not used for this checkpoint
     private final CollectionReference tagsRef;
     private final ArrayList<String> tagDataList;
     private TagAdapter tagAdapter;
@@ -59,6 +56,12 @@ public class DatabaseController {
 
     }
 
+    /**
+     * Get a snapshot from QueryDocument then get Item object from it
+     * @param doc QueryDoucmentSnapShot
+     * @return item Item object
+     */
+
     private Item createItemFromDoc(QueryDocumentSnapshot doc) {
         String name = doc.getId();
         String date = doc.getString("date");
@@ -74,6 +77,8 @@ public class DatabaseController {
         String serialNumber = doc.getString("serialNumber");
         String description = doc.getString("description");
         String comment = doc.getString("comment");
+
+        // Photos are stored as array
         Object photosObject = doc.get("photos");
         // Initialize an ArrayList to store photos
         ArrayList<String> photos = new ArrayList<>();
@@ -91,7 +96,7 @@ public class DatabaseController {
     }
 
     /**
-     * Sets the adapters
+     * Sets the item. tag adapters
      * @param itemAdapter itemAdapter
      * @param tagAdapter tagAdapter
      */
@@ -105,6 +110,7 @@ public class DatabaseController {
      * Loads the initial tags from firebase and adds them to the tag list. Notifies the display to show the initial tags.
      */
     public void loadInitialTags() {
+        // This initialize the tags from data base not used for this checkpoints
         tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -116,12 +122,10 @@ public class DatabaseController {
                 if (value != null) {
                     // Clear the 'itemDataList'
                     tagDataList.clear();
-
                     // Loop over each document in the snapshot
                     for (QueryDocumentSnapshot doc : value) {
                         // Retrieve various fields from the document
                         String tag = doc.getId();
-
                         // Add a new 'Item' object to 'itemDataList' with these fields
                         tagDataList.add(tag);
                     }
@@ -147,22 +151,8 @@ public class DatabaseController {
 
                 if (value != null) {
                     itemDataList.clear();
-
                     for (QueryDocumentSnapshot doc: value) {
                         Item item = createItemFromDoc(doc);
-
-                       /* Object photosObject = doc.get("photos");
-                        // Initialize an ArrayList to store photos
-                        ArrayList<String> photos = new ArrayList<>();
-                        if (photosObject instanceof ArrayList<?>) {
-                            // Convert 'photosObject' to ArrayList<String>
-                            for (Object photo : (ArrayList<?>) photosObject) {
-                                if (photo instanceof String) {
-                                    photos.add((String) photo);
-                                }
-                            }
-                        }
-                        item.setPhotos(photos);*/
                         itemDataList.add(item);
                     }
 
@@ -212,18 +202,25 @@ public class DatabaseController {
 
     public void addTag(String tag) {
         assert (!tagDataList.contains(tag));
-        HashMap<String, String> tags = new HashMap<>();
-        tags.put("tag",tag);
-        tagsRef.document(tag)
-                        .set(tag)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d("Firestore", "Tag written successfully!");
-                                    }
-                                });
-        tagAdapter.notifyDataSetChanged();
+        // Add or update the tag in the Firestore collection
+        tagsRef
+                .document(tag)
+                .set(tag)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Tag written successfully!");
+                    tagAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error writing tag", e);
+                });
+
     }
+
+    /**
+     *  Update the photos in item (edit/tag)
+     * @param item
+     * @param photos
+     */
     public void updatePhoto(Item item , ArrayList<String> photos){
        Map<String, Object> fieldUpdate = new HashMap<>();
         fieldUpdate.put("photos", FieldValue.delete());
@@ -313,9 +310,15 @@ public class DatabaseController {
         return this.itemDataList.removeAll(items);
     }
 
+    /**
+     * Filter the items based on fillter- by parameters
+     * @param filterBy  the filter that is trying to be implied
+     * @param data  String representations of data in firestore
+     */
+
     public void filter(String filterBy, String data) {
         db = FirebaseFirestore.getInstance();
-
+         // getting data from db of items
         Query query = db.collection("items");
 
         if(filterBy.equals("make")) {
@@ -329,6 +332,7 @@ public class DatabaseController {
                     .whereGreaterThanOrEqualTo("date", startDate)
                     .whereLessThanOrEqualTo("date", endDate);
             }
+
         } else if (filterBy.equals("description")) {
             final ArrayList<String> words = new ArrayList<>(Arrays.asList(data.toLowerCase().split("\\s+")));
 
@@ -387,8 +391,12 @@ public class DatabaseController {
         });
     }
 
+    /**
+     * Sort the list by sortBy
+     * @param sortBy  string that is the standard of sorting
+     * @param isAsc boolean value whether it is ascending or descending
+     */
 
-    //works
     public void sort(String sortBy, Boolean isAsc) {
         db = FirebaseFirestore.getInstance();
 
