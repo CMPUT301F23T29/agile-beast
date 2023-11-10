@@ -3,6 +3,7 @@ package com.example.team29project;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,21 +21,24 @@ public class SortFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
 
     @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        ((MainActivity) getActivity()).setSortFragmentShown(false);
+    }
+
+    @Override
     public void onAttach(@NonNull Context context) {
 
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context, "attached successfully", Toast.LENGTH_SHORT).show();
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
     }
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Toast.makeText(getContext(), " dialog successfully", Toast.LENGTH_SHORT).show();
-
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_sort, null);
 
         Spinner sortSpinner = view.findViewById(R.id.sort_spinner);

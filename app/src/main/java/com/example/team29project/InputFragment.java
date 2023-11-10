@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -81,7 +82,6 @@ public class InputFragment extends DialogFragment {
         });
     }
 
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -108,17 +108,19 @@ public class InputFragment extends DialogFragment {
             dayDate = dayOfMonth;
             itemDate.setText(String.format("%d-%02d-%02d", yearDate,monthDate,dayDate));
         };
-        itemDate.setOnClickListener(v -> {
-            DatePicker dat = new DatePicker();
-            dat.setListener(r);
-            dat.show(getChildFragmentManager(),"DatePicker");
+        itemDate.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                DatePicker dat = new DatePicker();
+                dat.setListener(r);
+                // Set the date to the current date
+                dat.setDate(Calendar.getInstance());
+                dat.show(getChildFragmentManager(), "DatePicker");
+            }
+            return true;
         });
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         // TODO set up filter chips of all tags (from firestore) and select ones already tagged by the item
-
         // TODO set add tag and scan button listeners
-
         builder.setView(view);
         builder.setTitle("Add new item");
         // When cancel button pressed
