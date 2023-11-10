@@ -68,7 +68,7 @@ public class Item implements Serializable, Comparable {
      * @param model the model to be used
      * @param description the description to be used
      * @param comment the comment to be used
-     * @param serialNumber the serial number to be used
+     *
      */
     public Item(
             String name, String date,

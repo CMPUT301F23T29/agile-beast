@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     private ArrayList<String> mData;
     private Context mContext ;
 
-    private SelectListener itemClickListener;
+    private com.example.team29project.Controller.SelectListener itemClickListener;
 
 
     /**
@@ -30,7 +31,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
      * @param context the context to be used
      * @param itemClickListener the callback for when an image is clicked
      */
-    MultiImageAdapter(ArrayList<String> list, Context context,SelectListener itemClickListener) {
+    MultiImageAdapter(ArrayList<String> list, Context context, com.example.team29project.Controller.SelectListener itemClickListener) {
         mData = list ;
         mContext = context;
         this.itemClickListener = itemClickListener;

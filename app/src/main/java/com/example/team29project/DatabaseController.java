@@ -37,12 +37,12 @@ public class DatabaseController {
     // Item attributes
     private CollectionReference itemsRef;
     private ArrayList<Item> itemDataList;
-    private ItemArrayAdapter itemAdapter;
+    private com.example.team29project.ItemArrayAdapter itemAdapter;
 
     // Tag attributes
     private final CollectionReference tagsRef;
     private final ArrayList<String> tagDataList;
-    private TagAdapter tagAdapter;
+    private com.example.team29project.TagAdapter tagAdapter;
     private static final String TAG = "DatabaseController";
 
     /**
@@ -58,6 +58,12 @@ public class DatabaseController {
         this.tagDataList = new ArrayList<String>();
 
     }
+
+    /**
+     * Get a snapshot from QueryDocument then get Item object from it
+     * @param doc QueryDoucmentSnapShot
+     * @return item Item object
+     */
 
     private Item createItemFromDoc(QueryDocumentSnapshot doc) {
         String name = doc.getId();
@@ -91,12 +97,12 @@ public class DatabaseController {
     }
 
     /**
-     * Sets the adapters
+     * Sets the item. tag adapters
      * @param itemAdapter itemAdapter
      * @param tagAdapter tagAdapter
      */
 
-    public void setAdapters(ItemArrayAdapter itemAdapter, TagAdapter tagAdapter) {
+    public void setAdapters(com.example.team29project.ItemArrayAdapter itemAdapter, com.example.team29project.TagAdapter tagAdapter) {
         this.itemAdapter = itemAdapter;
         this.tagAdapter = tagAdapter;
     }
@@ -116,12 +122,10 @@ public class DatabaseController {
                 if (value != null) {
                     // Clear the 'itemDataList'
                     tagDataList.clear();
-
                     // Loop over each document in the snapshot
                     for (QueryDocumentSnapshot doc : value) {
                         // Retrieve various fields from the document
                         String tag = doc.getId();
-
                         // Add a new 'Item' object to 'itemDataList' with these fields
                         tagDataList.add(tag);
                     }
@@ -212,18 +216,25 @@ public class DatabaseController {
 
     public void addTag(String tag) {
         assert (!tagDataList.contains(tag));
-        HashMap<String, String> tags = new HashMap<>();
-        tags.put("tag",tag);
-        tagsRef.document(tag)
-                        .set(tag)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d("Firestore", "Tag written successfully!");
-                                    }
-                                });
-        tagAdapter.notifyDataSetChanged();
+        // Add or update the tag in the Firestore collection
+        tagsRef
+                .document(tag)
+                .set(tag)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Tag written successfully!");
+                    tagAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error writing tag", e);
+                });
+
     }
+
+    /**
+     *  Update the photos in item (edit/tag)
+     * @param item
+     * @param photos
+     */
     public void updatePhoto(Item item , ArrayList<String> photos){
        Map<String, Object> fieldUpdate = new HashMap<>();
         fieldUpdate.put("photos", FieldValue.delete());

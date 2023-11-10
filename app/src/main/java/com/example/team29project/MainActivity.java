@@ -22,6 +22,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 
+import com.example.team29project.DatabaseController;
+import com.example.team29project.DisplayActivity;
+import com.example.team29project.FilterFragment;
+import com.example.team29project.InputFragment;
+import com.example.team29project.Item;
+import com.example.team29project.ItemArrayAdapter;
+import com.example.team29project.SortFragment;
+import com.example.team29project.TagAdapter;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -41,14 +49,14 @@ import java.util.Objects;
  * @see android.app.Activity#onCreate(Bundle)
  */
 public class MainActivity extends AppCompatActivity implements
-        InputFragment.OnFragmentsInteractionListener,
-        SortFragment.OnFragmentInteractionListener,
+        com.example.team29project.InputFragment.OnFragmentsInteractionListener,
+        com.example.team29project.SortFragment.OnFragmentInteractionListener,
         FilterFragment.OnFragmentInteractionListener {
 
     private TextView addItem;
     private TextView editTag;
     private TextView selectBtn;
-    private ItemArrayAdapter itemAdapter;
+    private com.example.team29project.ItemArrayAdapter itemAdapter;
     private ListView itemsList;
     private int itemPosition;
     private boolean isDelete;
@@ -228,7 +236,8 @@ public class MainActivity extends AppCompatActivity implements
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(), "Tags");
+              //  db.addTag("sss");
+                //new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(), "Tags");
 
             }
         });
@@ -237,33 +246,6 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         });
     }
-    /*  /**
-     * This method adds a new item to the "items" collection in the Firestore database.
-     * @param item The item to be added to the database.
-     * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
-     * @see com.google.firebase.firestore.CollectionReference#document(String)
-     * @see com.google.firebase.firestore.DocumentReference#set(Object)
-     */
-  /*  public void addItem(Item item) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("date", item.getDate());
-        data.put("value", item.getValue().toString());
-        data.put("make", item.getMake());
-        data.put("model", item.getModel());
-        data.put("serialNumber", item.getSerialNumber());
-        data.put("description", item.getDescription());
-        data.put("comment", item.getComment());
-        // Add the 'data' map to the Firestore database under a document named after the item's name.
-      /*  itemsRef
-                .document(item.getName())
-                .set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Firestore", "Document snapshot written successfully!");
-                    }
-                });
-    }*/
 
     /**
      * Adds an item to the database
