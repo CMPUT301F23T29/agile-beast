@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
-        android:hint="@string/yy_mm_dd"
+        android:hint="@string/yyyy_mm_dd"
         android:padding="10sp"
         android:textColor="@color/button_text"
         android:textSize="15sp"
