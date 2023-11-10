@@ -286,6 +286,10 @@ public class MainActivity extends AppCompatActivity implements
         isSortFragmentShown = sortFragmentShown;
     }
 
-  
+
+    @Override
+    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
+
+    }
 }
 
