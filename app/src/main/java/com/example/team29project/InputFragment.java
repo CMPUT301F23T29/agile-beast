@@ -18,6 +18,7 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Allow users to input/edit data for an inventory item
@@ -133,6 +134,7 @@ public class InputFragment extends DialogFragment {
             writeData(item);
         }
 
+
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
             yearDate = year;
             monthDate = month;
@@ -169,7 +171,7 @@ public class InputFragment extends DialogFragment {
                 String item_description = itemDescription.getText().toString();
                 String item_comment = itemComment.getText().toString();
                 // Check if it is empty except comment
-                if(item_name.isEmpty() || item_date.isEmpty() || item_value.isNaN()||item_make.isEmpty() || item_model.isEmpty() || item_description.isEmpty()  || item_serN.isEmpty()){
+                if(item_name.isEmpty() || item_date.isEmpty() || item_value.isNaN()||item_make.isEmpty() || item_model.isEmpty() || item_description.isEmpty() ||item_comment.isEmpty()) {
                     throw new Exception();
                 }
                 // Check if it is future date

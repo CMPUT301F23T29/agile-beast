@@ -55,8 +55,8 @@ public class Item implements Serializable, Comparable {
         this.model = model;
         this.value = value;
         this.comment = comment;
-        this.photos = new ArrayList<String>();
-        this.tags = new ArrayList<String>();
+        this.photos = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     /**
@@ -84,9 +84,10 @@ public class Item implements Serializable, Comparable {
         this.serialNumber = "N/A";
         this.description = description;
         this.comment = comment;
-        this.photos = new ArrayList<String>();
-        this.tags = new ArrayList<String>();
+        this.photos = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
+
 
 
     /*   public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {

@@ -1,6 +1,5 @@
 package com.example.team29project;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -9,7 +8,6 @@ import androidx.camera.core.AspectRatio;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
-import androidx.camera.core.Preview;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
@@ -39,22 +37,15 @@ public class CustomCameraActivity extends AppCompatActivity {
     private Button okButton;
     private Button reTryButton;
 
-    private static final int REQUEST_CODE_PERMISSIONS = 10;
-    private final String[] REQUIRED_PERMISSIONS = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private String currentPhotoPath;
-    private ImageButton captureBtn,flipCameraBtn;;
-    private int cameraFacing ;
-    private Preview preview;
+    private ImageButton captureBtn,flipCameraBtn;
 
     // Asking for Permission to capture Camera
-    private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
-        @Override
-        public void onActivityResult(Boolean result) {
-            if (result) {
-                startCamera();
-            }
+    private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), result -> {
+        if (result) {
+            startCamera();
         }
     });
+
 
     /**
      * Initializes the activity, sets up the camera and the buttons.
@@ -65,7 +56,7 @@ public class CustomCameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_camera);
-        cameraFacing = CameraSelector.LENS_FACING_BACK;
+        int cameraFacing = CameraSelector.LENS_FACING_BACK;
         previewView = findViewById(R.id.customPreview);
         captureBtn = findViewById(R.id.capture_btn);
         okButton = findViewById(R.id.ok_btn);
@@ -93,18 +84,10 @@ public class CustomCameraActivity extends AppCompatActivity {
         capturedImage.setVisibility(View.INVISIBLE);
         customCamera = new CustomCamera(previewView);
         customCamera.startCamera(this);
-        captureBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                captureImage();
-            }
-        });
-        flipCameraBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                customCamera.flipCamera();
-                customCamera.startCamera(CustomCameraActivity.this);
-            }
+        captureBtn.setOnClickListener(v -> captureImage());
+        flipCameraBtn.setOnClickListener(view -> {
+            customCamera.flipCamera();
+            customCamera.startCamera(CustomCameraActivity.this);
         });
 
     }
@@ -117,8 +100,7 @@ public class CustomCameraActivity extends AppCompatActivity {
     private void captureImage() {
         final File photoFile = new File(getExternalFilesDir(null), System.currentTimeMillis() + ".jpg");
         //File photoFile = createImageFile();
-        if (photoFile != null) {
-            ImageCapture.OnImageSavedCallback callback =  new ImageCapture.OnImageSavedCallback() {
+        ImageCapture.OnImageSavedCallback callback = new ImageCapture.OnImageSavedCallback() {
 
                 /**
                  * Sets buttons to visible or invisible for an image
@@ -153,8 +135,12 @@ public class CustomCameraActivity extends AppCompatActivity {
                                 startCamera();
                             }
                         });
+
+
                     });
-                }
+                    reTryButton.setOnClickListener(v -> startCamera());
+                });
+            
 
                 /**
                  * Captures the exception
@@ -171,10 +157,9 @@ public class CustomCameraActivity extends AppCompatActivity {
                         }
                     });
 
-                }
-            };
-            customCamera.captureImage(photoFile, callback);
-        }
+            }
+        };
+        customCamera.captureImage(photoFile, callback);
     }
 
     /**
@@ -209,7 +194,7 @@ public class CustomCameraActivity extends AppCompatActivity {
                     storageDir      /* directory */
             );
 
-            currentPhotoPath = image.getAbsolutePath();
+            String currentPhotoPath = image.getAbsolutePath();
             return image;
         } catch (Exception ex) {
             ex.printStackTrace();

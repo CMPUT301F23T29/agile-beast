@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 
+import java.util.ArrayList;
 /**
  * This method is called when the activity is starting.
  * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
@@ -35,24 +35,20 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SortFragment.OnFragmentInteractionListener,
-        FilterFragment.OnFragmentInteractionListener{
-    
+        FilterFragment.OnFragmentInteractionListener {
+
     private TextView addItem;
     private TextView editTag;
     private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
     private ListView itemsList;
-    private int itemPosition ;
+    private int itemPosition;
     private boolean isDelete;
     private TagAdapter tagAdapter;
     private boolean isSelect;
     private boolean isFilterFragmentShown = false;
     private boolean isSortFragmentShown = false;
-
-
-
     private ArrayList<Item> selectedItems;
-
     private DatabaseController db;
    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
            new ActivityResultContracts.StartActivityForResult(),
@@ -76,6 +72,32 @@ public class MainActivity extends AppCompatActivity implements
                }
            });
 
+   /* private Database db;
+    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    // on Edit
+                    if (result.getData() != null) {
+                        Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
+                        Item temp = db.getItem(itemPosition);
+                        temp.setName(newItem.getName());
+                        temp.setDate(newItem.getDate());
+                        temp.setValue(newItem.getValue());
+                        temp.setMake(newItem.getMake());
+                        temp.setModel(newItem.getModel());
+                        temp.setSerialNumber(newItem.getSerialNumber());
+                        temp.setDescription(newItem.getDescription());
+                        temp.setComment(newItem.getComment());
+                        db.updatePhoto(newItem, newItem.getPhotos());
+                        itemAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+            */
+
+
 
     /**
      * Creates a dialog with its components and listeners. Gets initial items and tags from database
@@ -86,11 +108,11 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ImageButton menu =findViewById(R.id.menu);
+        ImageButton menu = findViewById(R.id.menu);
         Button deleteButton = findViewById(R.id.delete_button);
         selectedItems = new ArrayList<Item>();
-        isDelete= false;
-        isSelect= false;
+        isDelete = false;
+        isSelect = false;
 
         // Init lists for tags and items,
         // as well as firestore database
@@ -115,22 +137,19 @@ public class MainActivity extends AppCompatActivity implements
              */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position >=0) {
-                    if(isSelect){
+                if (position >= 0) {
+                    if (isSelect) {
                         selectedItems.add(db.getItem(position));
-                    }
-
-                    else if(isDelete){
+                    } else if (isDelete) {
                         db.removeItem(position);
                         itemAdapter.notifyDataSetChanged();
-                        isDelete= false;
-                    }
-                    else {
+                        isDelete = false;
+                    } else {
                         itemPosition = position;
                         Item temp = db.getItem(position);
                         Intent display = new Intent(MainActivity.this, DisplayActivity.class);
                         display.putExtra("item", temp);
-                        display.putStringArrayListExtra("tags",db.getTags());
+                        display.putStringArrayListExtra("tags", db.getTags());
                         itemActivityResultLauncher.launch(display);
                     }
 
@@ -141,13 +160,12 @@ public class MainActivity extends AppCompatActivity implements
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isSelect){
+                if (isSelect) {
                     db.removeAllItems(selectedItems);
-                    isSelect= false;
+                    isSelect = false;
                     selectedItems.clear();
                     itemAdapter.notifyDataSetChanged();
-                }
-                else{
+                } else {
                     isDelete = true;
                 }
             }
@@ -156,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isDelete=false;
+                isDelete = false;
                 popupMenu(view);
             }
         });
@@ -197,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
-        selectBtn= popupView.findViewById(R.id.select_item);
+        selectBtn = popupView.findViewById(R.id.select_item);
         selectBtn.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click event
@@ -215,8 +233,8 @@ public class MainActivity extends AppCompatActivity implements
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isSelect =false;
-                isDelete =false;
+                isSelect = false;
+                isDelete = false;
                 new InputFragment(db.getTags()).show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
@@ -225,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(),"Tags");
+                new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(), "Tags");
 
             }
         });
@@ -282,11 +300,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     *
+     * When cancel button pressed on InputFragment
      */
     @Override
-    public void onCancelPressed(){
-
+    public void onCancelPressed() {
     }
 
     /**
