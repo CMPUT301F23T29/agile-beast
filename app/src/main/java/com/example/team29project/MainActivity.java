@@ -2,7 +2,6 @@ package com.example.team29project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,27 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-
-
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
-import java.util.Objects;
-
 /**
  * This method is called when the activity is starting.
  * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
@@ -43,14 +27,14 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SortFragment.OnFragmentInteractionListener,
-        FilterFragment.OnFragmentInteractionListener{
-    
+        FilterFragment.OnFragmentInteractionListener {
+
     private TextView addItem;
     private TextView editTag;
     private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
     private ListView itemsList;
-    private int itemPosition ;
+    private int itemPosition;
     private boolean isDelete;
     private TagAdapter tagAdapter;
     private boolean isSelect;
@@ -58,40 +42,41 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayList<Item> selectedItems;
 
     private Database db;
-   ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
-           new ActivityResultContracts.StartActivityForResult(),
-           new ActivityResultCallback<ActivityResult>() {
-               @Override
-               public void onActivityResult(ActivityResult result) {
-                   if (result.getData() !=null) {
-                       Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
-                       Item temp = db.getItem(itemPosition);
-                       temp.setName(newItem.getName());
-                       temp.setDate(newItem.getDate());
-                       temp.setValue(newItem.getValue());
-                       temp.setMake(newItem.getMake());
-                       temp.setModel(newItem.getModel());
-                       temp.setSerialNumber(newItem.getSerialNumber());
-                       temp.setDescription(newItem.getDescription());
-                       temp.setComment(newItem.getComment());
-                       temp.setPhotos(newItem.getPhotos());
-                       itemAdapter.notifyDataSetChanged();
-                   }
-               }
-           });
+    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    // on Edit
+                    if (result.getData() != null) {
+                        Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
+                        Item temp = db.getItem(itemPosition);
+                        temp.setName(newItem.getName());
+                        temp.setDate(newItem.getDate());
+                        temp.setValue(newItem.getValue());
+                        temp.setMake(newItem.getMake());
+                        temp.setModel(newItem.getModel());
+                        temp.setSerialNumber(newItem.getSerialNumber());
+                        temp.setDescription(newItem.getDescription());
+                        temp.setComment(newItem.getComment());
+                        db.updatePhoto(newItem, newItem.getPhotos());
+                        itemAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ImageButton menu =findViewById(R.id.menu);
+        ImageButton menu = findViewById(R.id.menu);
         Button deleteButton = findViewById(R.id.delete_button);
         selectedItems = new ArrayList<Item>();
-        isDelete= false;
-        isSelect= false;
+        isDelete = false;
+        isSelect = false;
 
         // Init lists for tags and items,
-        // as well as firestore database
+
         db = new Database();
 
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
@@ -106,22 +91,19 @@ public class MainActivity extends AppCompatActivity implements
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position >=0) {
-                    if(isSelect){
+                if (position >= 0) {
+                    if (isSelect) {
                         selectedItems.add(db.getItem(position));
-                    }
-
-                    else if(isDelete){
+                    } else if (isDelete) {
                         db.removeItem(position);
                         itemAdapter.notifyDataSetChanged();
-                        isDelete= false;
-                    }
-                    else {
+                        isDelete = false;
+                    } else {
                         itemPosition = position;
                         Item temp = db.getItem(position);
                         Intent display = new Intent(MainActivity.this, DisplayActivity.class);
                         display.putExtra("item", temp);
-                        display.putStringArrayListExtra("tags",db.getTags());
+                        display.putStringArrayListExtra("tags", db.getTags());
                         itemActivityResultLauncher.launch(display);
                     }
 
@@ -132,13 +114,12 @@ public class MainActivity extends AppCompatActivity implements
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isSelect){
+                if (isSelect) {
                     db.removeAllItems(selectedItems);
-                    isSelect= false;
+                    isSelect = false;
                     selectedItems.clear();
                     itemAdapter.notifyDataSetChanged();
-                }
-                else{
+                } else {
                     isDelete = true;
                 }
             }
@@ -147,24 +128,24 @@ public class MainActivity extends AppCompatActivity implements
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isDelete=false;
+                isDelete = false;
                 popupMenu(view);
             }
         });
 
-        Button filterButton = (Button)findViewById(R.id.filter_button);
+        Button filterButton = (Button) findViewById(R.id.filter_button);
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new FilterFragment().show(getSupportFragmentManager(),"Filter");
+                new FilterFragment().show(getSupportFragmentManager(), "Filter");
             }
         });
 
-        Button sortButton = (Button)findViewById(R.id.sort_by_button);
+        Button sortButton = (Button) findViewById(R.id.sort_by_button);
         sortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SortFragment().show(getSupportFragmentManager(),"Sort");
+                new SortFragment().show(getSupportFragmentManager(), "Sort");
             }
         });
 
@@ -178,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
-        selectBtn= popupView.findViewById(R.id.select_item);
+        selectBtn = popupView.findViewById(R.id.select_item);
         selectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,8 +173,8 @@ public class MainActivity extends AppCompatActivity implements
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isSelect =false;
-                isDelete =false;
+                isSelect = false;
+                isDelete = false;
                 new InputFragment(db.getTags()).show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
@@ -202,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(),"Tags");
+                new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(), "Tags");
 
             }
         });
@@ -211,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         });
     }
-  /*  /**
+    /*  /**
      * This method adds a new item to the "items" collection in the Firestore database.
      * @param item The item to be added to the database.
      * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
@@ -248,66 +229,23 @@ public class MainActivity extends AppCompatActivity implements
     public void onEditPressed(Item item) {
         itemAdapter.notifyDataSetChanged();
     }
+
     @Override
-    public void onCancelPressed(){
+    public void onCancelPressed() {
 
     }
 
     @Override
     public void onFilterConfirmPressed(String filterBy, String data) {
-            db.filter(filterBy, data);
-        }
+        db.filter(filterBy, data);
+    }
 
 
     @Override
     public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
-        db.sort(sortBy,isAsc);
+        db.sort(sortBy, isAsc);
     }
 
-    /**
-     * This method initializes the Firestore database and sets up a snapshot listener on the "items" collection.
-     * The snapshot listener updates the dataList and notifies the itemAdapter whenever the data in the "items" collection changes.
-     * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
-     */
-    /*private void handleDatabase() {
-        db = FirebaseFirestore.getInstance();
-        itemsRef = db.collection("items");
 
-        // Add a snapshot listener to the Firestore reference 'itemsRef'
-        itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                // If there's an error with the snapshot, log the error
-                if (error != null) {
-                    Log.e("Firebase", error.toString());
-                }
-
-                // If the snapshot is not null (i.e., there's data at 'itemsRef')
-                if (value != null) {
-                    // Clear the 'dataList'
-                    dataList.clear();
-
-                    // Loop over each document in the snapshot
-                    for (QueryDocumentSnapshot doc: value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
-
-                        // Add a new 'Item' object to 'dataList' with these fields
-                        dataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
-                    }
-
-                    // refresh ListView and display the new data
-                    itemAdapter.notifyDataSetChanged();
-                }
-            }
-        });
-    }*/
 }
 
