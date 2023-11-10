@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
@@ -19,12 +19,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.material.chip.Chip;
+
+import com.example.team29project.Model.Item;
+import com.example.team29project.Controller.MultiImageAdapter;
+import com.example.team29project.R;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
  * Display details of a selected inventory item
  * Allow users to view and potentially edit the item's information
  */
-public class DisplayActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener, SelectListener,PickCameraDialog.ImageOrGalleryListener {
+public class DisplayActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener, com.example.team29project.Controller.SelectListener, PickCameraDialog.ImageOrGalleryListener {
 
     private TextView itemName, itemValue, itemDate, itemMake, itemModel, itemSerialno, itemDescription, itemComment;
     private Item item;
@@ -45,8 +47,6 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     ArrayList<String> photo_string ;
 
     ArrayList<String> tags;
-
-    ArrayList<String> itemTags;
     ActivityResultLauncher<Intent> pictureActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -145,7 +145,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     }
 
     /**
-     * Changes the data
+     * Change Item's detail
      */
     private void changeData() {
         itemName.setText(item.getName());
@@ -171,9 +171,9 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         assert item != null;
         this.item = aitem;
         changeData();
-        Intent inte = new Intent(DisplayActivity.this, MainActivity.class);
-        inte.putExtra("new_item", item);
-        setResult(Activity.RESULT_OK, inte);
+        Intent intes = new Intent(DisplayActivity.this, MainActivity.class);
+        intes.putExtra("new_item", item);
+        setResult(Activity.RESULT_OK, intes);
     }
 
     /**

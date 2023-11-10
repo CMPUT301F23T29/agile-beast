@@ -1,12 +1,14 @@
-package com.example.team29project;
+package com.example.team29project.Controller;
 
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.team29project.R;
+
 /**
- *
+ * ViewHolder for images on ReyclerView
  */
 public class  MultiImageViewHolder extends RecyclerView.ViewHolder {
     // Define views that you want to make clickable

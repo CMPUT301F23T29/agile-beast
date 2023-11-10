@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,6 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.R;
+import com.example.team29project.Controller.TagAdapter;
 
 import java.util.ArrayList;
 

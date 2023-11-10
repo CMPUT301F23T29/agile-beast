@@ -9,7 +9,7 @@
     android:layout_centerVertical="true"
     android:weightSum="10"
     android:orientation="vertical"
-    tools:context=".InputFragment"
+    tools:context=".View.InputFragment"
     android:id="@+id/fragment_input"
     android:background="@color/background"
     android:layout_margin="40dp">

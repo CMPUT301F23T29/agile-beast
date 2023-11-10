@@ -6,32 +6,21 @@ import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.assertion.ViewAssertions.selectedDescendantsMatch;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import static com.example.team29project.NumberPickerMatchers.withValue;
 
 
-import android.widget.NumberPicker;
-
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.action.GeneralSwipeAction;
-import androidx.test.espresso.action.Press;
-import androidx.test.espresso.action.Swipe;
 import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.assertion.ViewAssertions;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import androidx.test.filters.LargeTest;
 
 
-import org.hamcrest.Matchers;
+import com.example.team29project.View.MainActivity;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +29,7 @@ public class InputFragmentTest {
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario=
-            new ActivityScenarioRule<MainActivity>(MainActivity.class);
+            new ActivityScenarioRule<>(MainActivity.class);
     @Test
     public void addValidItemTest(){
         //Test case 1 (valid)
