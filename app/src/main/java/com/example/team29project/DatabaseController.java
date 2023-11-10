@@ -2,8 +2,9 @@ package com.example.team29project;
 
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.Nullable;
-
+import java.util.Arrays;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -12,14 +13,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.checkerframework.checker.units.qual.A;
-
+import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
+import androidx.annotation.NonNull;
 import java.util.Objects;
 
-public class Database {
+public class DatabaseController {
     private FirebaseFirestore db;
 
     // Item attributes
@@ -31,8 +31,9 @@ public class Database {
     private final CollectionReference tagsRef;
     private final ArrayList<String> tagDataList;
     private TagAdapter tagAdapter;
+    private static final String TAG = "DatabaseController";
 
-    public Database() {
+    public DatabaseController() {
 
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");
@@ -41,6 +42,25 @@ public class Database {
         this.itemDataList = new ArrayList<Item>();
         this.tagDataList = new ArrayList<String>();
 
+    }
+
+    private Item createItemFromDoc(QueryDocumentSnapshot doc) {
+        String name = doc.getId();
+        String date = doc.getString("date");
+        Object itemValueObject = doc.get("value");
+        double itemValue = 0.0;
+        if (itemValueObject instanceof Long) {
+            itemValue = ((Long) itemValueObject).doubleValue();
+        } else if (itemValueObject instanceof Double) {
+            itemValue = (Double) itemValueObject;
+        }
+        String make = doc.getString("make");
+        String model = doc.getString("model");
+        String serialNumber = doc.getString("serialNumber");
+        String description = doc.getString("description");
+        String comment = doc.getString("comment");
+
+        return new Item(name, date, itemValue, make, model, description, comment, serialNumber);
     }
 
     public void setAdapters(ItemArrayAdapter itemAdapter, TagAdapter tagAdapter) {
@@ -79,45 +99,21 @@ public class Database {
 
     public void loadInitialItems() {
 
-        // Add a snapshot listener to the Firestore reference 'itemsRef'
         itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                // If there's an error with the snapshot, log the error
                 if (error != null) {
                     Log.e("Firebase", error.toString());
                 }
 
-                // If the snapshot is not null (i.e., there's data at 'itemsRef')
                 if (value != null) {
-                    // Clear the 'itemDataList'
                     itemDataList.clear();
 
-                    // Loop over each document in the snapshot
-                    for (QueryDocumentSnapshot doc : value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        // Retrieve the 'value' field as an Object
-                        Object itemValueObject = doc.get("value");
-                        double itemValue = 0.0;
-                        // Check the type of 'itemValueObject' and convert it to a double
-                        if (itemValueObject instanceof Long) {
-                            itemValue = ((Long) itemValueObject).doubleValue();
-                        } else if (itemValueObject instanceof Double) {
-                            itemValue = (Double) itemValueObject;
-                        }
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
-
-                        // Add a new 'Item' object to 'itemDataList' with these fields
-                        itemDataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
+                    for (QueryDocumentSnapshot doc: value) {
+                        Item item = createItemFromDoc(doc);
+                        itemDataList.add(item);
                     }
 
-                    // refresh ListView and display the new data
                     itemAdapter.notifyDataSetChanged();
                 }
             }
@@ -220,52 +216,70 @@ public class Database {
     public void filter(String filterBy, String data) {
         db = FirebaseFirestore.getInstance();
 
-        Query query; // Declare a Query object
+        Query query = db.collection("items");
 
         if(filterBy.equals("make")) {
             query = db.collection("items").whereEqualTo("make", data);
         } else if (filterBy.equals("date")) {
-            //TODO date range
-            query = db.collection("items");//need to change this query
+            String[] dates = data.split(",");
+            if (dates.length == 2) {
+                String startDate = dates[0].trim();
+                String endDate = dates[1].trim();
+                query = db.collection("items")
+                    .whereGreaterThanOrEqualTo("date", startDate)
+                    .whereLessThanOrEqualTo("date", endDate);
+            }
         } else if (filterBy.equals("description")) {
-            //TODO multiple description words or most number of words matched
-            query = db.collection("items");//need to change this query
-        } else {
+            final ArrayList<String> words = new ArrayList<>(Arrays.asList(data.toLowerCase().split("\\s+")));
+
             query = db.collection("items");
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        itemDataList.clear();
+
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String description = document.getString("description");
+                            boolean containsAllWords = true;
+                            for (String word : words) {
+                                if (!description.toLowerCase().contains(word)) {
+                                    containsAllWords = false;
+                                    break;
+                                }
+                            }
+                            if (containsAllWords) {
+                                Item item = createItemFromDoc(document);
+                                itemDataList.add(item);
+                            }
+                        }
+
+                        itemAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                }
+            });
+        } else {
+            query = db.collection("items");// print everything
         }
 
         // Add a snapshot listener to the Firestore query
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                // If there's an error with the snapshot, log the error
                 if (error != null) {
                     Log.e("Firebase", error.toString());
                 }
 
-                // If the snapshot is not null (i.e., there's data at 'itemsRef')
                 if (value != null) {
-                    // Clear the 'dataList'
                     itemDataList.clear();
 
-                    // Loop over each document in the snapshot
                     for (QueryDocumentSnapshot doc: value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
-
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
-
-                        // Add a new 'Item' object to 'dataList' with these fields
-                        itemDataList.add(new Item(name, date, (Double) itemValue, make, model, description, comment, serialNumber));
+                        Item item = createItemFromDoc(doc);
+                        itemDataList.add(item);
                     }
 
-                    // refresh ListView and display the new data
                     itemAdapter.notifyDataSetChanged();
                 }
             }
@@ -273,6 +287,7 @@ public class Database {
     }
 
 
+    //works
     public void sort(String sortBy, Boolean isAsc) {
         db = FirebaseFirestore.getInstance();
 
@@ -302,45 +317,21 @@ public class Database {
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                // If there's an error with the snapshot, log the error
                 if (error != null) {
                     Log.e("Firebase", error.toString());
                 }
-                // If the snapshot is not null (i.e., there's data at 'itemsRef')
-                if (value != null) {
-                    // Clear the 'dataList'
-                    itemDataList.clear();
-                    //TODO figure out how to deal with null values
-                    // Loop over each document in the snapshot
-                    for (QueryDocumentSnapshot doc: value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        Object itemValueObject = doc.get("value");
-                        double itemValue = 0.0;
-                        if (itemValueObject instanceof Long) {
-                            itemValue = ((Long) itemValueObject).doubleValue();
-                        } else if (itemValueObject instanceof Double) {
-                            itemValue = (Double) itemValueObject;
-                        }
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
 
-                        // Add a new 'Item' object to 'dataList' with these fields
-                        itemDataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
+                if (value != null) {
+                    itemDataList.clear();
+
+                    for (QueryDocumentSnapshot doc: value) {
+                        Item item = createItemFromDoc(doc);
+                        itemDataList.add(item);
                     }
 
-                    // refresh ListView and display the new data
                     itemAdapter.notifyDataSetChanged();
                 }
             }
         });
     }
-
-
-
-
 }

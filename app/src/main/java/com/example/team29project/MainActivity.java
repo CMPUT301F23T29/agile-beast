@@ -2,7 +2,6 @@ package com.example.team29project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,20 +18,12 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * This method is called when the activity is starting.
@@ -54,10 +45,11 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isDelete;
     private TagAdapter tagAdapter;
     private boolean isSelect;
-
+    private boolean isFilterFragmentShown = false;
+    private boolean isSortFragmentShown = false;
     private ArrayList<Item> selectedItems;
 
-    private Database db;
+    private DatabaseController db;
    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
            new ActivityResultContracts.StartActivityForResult(),
            new ActivityResultCallback<ActivityResult>() {
@@ -92,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Init lists for tags and items,
         // as well as firestore database
-        db = new Database();
+        db = new DatabaseController();
 
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
         tagAdapter = new TagAdapter(this, db.getTags());
@@ -152,19 +144,25 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        Button filterButton = (Button)findViewById(R.id.filter_button);
+        Button filterButton = findViewById(R.id.filter_button);
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new FilterFragment().show(getSupportFragmentManager(),"Filter");
+                if (!isFilterFragmentShown) {
+                    isFilterFragmentShown = true;
+                    new FilterFragment().show(getSupportFragmentManager(), "Filter");
+                }
             }
         });
 
-        Button sortButton = (Button)findViewById(R.id.sort_by_button);
+        Button sortButton = findViewById(R.id.sort_by_button);
         sortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SortFragment().show(getSupportFragmentManager(),"Sort");
+                if (!isSortFragmentShown) {
+                    isSortFragmentShown = true;
+                    new SortFragment().show(getSupportFragmentManager(), "Sort");
+                }
             }
         });
 
@@ -262,6 +260,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
         db.sort(sortBy,isAsc);
+    }
+
+    public void setFilterFragmentShown(boolean filterFragmentShown) {
+        isFilterFragmentShown = filterFragmentShown;
+    }
+
+    public void setSortFragmentShown(boolean sortFragmentShown) {
+        isSortFragmentShown = sortFragmentShown;
     }
 
     /**

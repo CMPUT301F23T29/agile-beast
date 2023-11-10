@@ -40,7 +40,7 @@
             android:background="@drawable/button_style"
             android:backgroundTint="@color/button_colour"
             android:fontFamily="monospace"
-            android:text="@string/filter"
+            android:text="@string/filter_by"
             android:textColor="@color/button_text"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
