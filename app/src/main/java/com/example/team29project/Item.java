@@ -185,6 +185,7 @@ public class Item implements Serializable, Comparable {
 
     public ArrayList<String> getTags() {
         return tags;
+    }
 
     @Override
     public int compareTo(Object item) {
