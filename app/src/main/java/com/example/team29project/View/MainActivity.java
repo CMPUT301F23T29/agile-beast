@@ -31,7 +31,6 @@ import java.util.ArrayList;
 /**
  * This method is called when the activity is starting.
  * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
- * @throws NullPointerException if any findViewById operation fails.
  * @see android.app.Activity#onCreate(Bundle)
  */
 public class MainActivity extends AppCompatActivity implements
