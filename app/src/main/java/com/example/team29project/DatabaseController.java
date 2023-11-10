@@ -13,13 +13,11 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class Database {
+public class DatabaseController {
     private FirebaseFirestore db;
 
     // Item attributes
@@ -32,7 +30,7 @@ public class Database {
     private final ArrayList<String> tagDataList;
     private TagAdapter tagAdapter;
 
-    public Database() {
+    public DatabaseController() {
 
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");

@@ -15,17 +15,27 @@
     android:weightSum="10"
     tools:context=".InputFragment">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/sort_by"
+        android:textColor="@color/button_text"
+        android:textSize="36dp" />
+
     <Spinner
         android:id="@+id/sort_spinner"
-        android:layout_marginTop="24dp"
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:layout_marginLeft="24dp"
+        android:layout_marginTop="12dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="10dp"
-        android:entries="@array/sort_items"
         android:background="@drawable/border_black"
-        />
+        android:entries="@array/sort_items" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -71,7 +81,7 @@
         android:background="@drawable/square_button"
         android:backgroundTint="@color/taskbar"
         android:fontFamily="monospace"
-        android:text="@string/confrim"
+        android:text="@string/confirm"
         android:textColor="@color/button_text"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -26,15 +26,12 @@ public class SortFragment extends DialogFragment {
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context, "attached successfully", Toast.LENGTH_SHORT).show();
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
     }
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Toast.makeText(getContext(), " dialog successfully", Toast.LENGTH_SHORT).show();
-
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_sort, null);
 
         Spinner sortSpinner = view.findViewById(R.id.sort_spinner);

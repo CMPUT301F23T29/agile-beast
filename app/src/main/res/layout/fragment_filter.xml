@@ -15,17 +15,75 @@
     android:weightSum="10"
     tools:context=".InputFragment">
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/filter_by"
+        android:textColor="@color/button_text"
+        android:textSize="36dp" />
+
     <Spinner
         android:id="@+id/filter_spinner"
-        android:layout_marginTop="24dp"
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:layout_marginLeft="24dp"
+        android:layout_marginTop="12dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="10dp"
-        android:entries="@array/filter_items"
         android:background="@drawable/border_black"
-        />
+        android:entries="@array/filter_items" />
+
+    <EditText
+        android:id="@+id/filter_by_make_editview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:fontFamily="monospace"
+        android:hint="@string/make_hint"
+        android:padding="10sp"
+        android:textColor="@color/button_text"
+        android:textSize="15sp"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/filter_by_start_date_editview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:fontFamily="monospace"
+        android:hint="@string/start_date_hint"
+        android:padding="10sp"
+        android:textColor="@color/button_text"
+        android:textSize="15sp"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/filter_by_end_date_editview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:fontFamily="monospace"
+        android:hint="@string/end_date_hint"
+        android:padding="10sp"
+        android:textColor="@color/button_text"
+        android:textSize="15sp"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/filter_by_description_editview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:fontFamily="monospace"
+        android:hint="@string/description_hint"
+        android:padding="10sp"
+        android:textColor="@color/button_text"
+        android:textSize="15sp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,9 +103,10 @@
         android:background="@drawable/square_button"
         android:backgroundTint="@color/taskbar"
         android:fontFamily="monospace"
-        android:text="@string/confrim"
+        android:text="@string/confirm"
         android:textColor="@color/button_text"
         android:textSize="15sp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

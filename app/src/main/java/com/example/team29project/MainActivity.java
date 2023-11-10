@@ -2,7 +2,6 @@ package com.example.team29project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,20 +18,11 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * This method is called when the activity is starting.
@@ -57,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private ArrayList<Item> selectedItems;
 
-    private Database db;
+    private DatabaseController db;
    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
            new ActivityResultContracts.StartActivityForResult(),
            new ActivityResultCallback<ActivityResult>() {
@@ -92,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Init lists for tags and items,
         // as well as firestore database
-        db = new Database();
+        db = new DatabaseController();
 
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
         tagAdapter = new TagAdapter(this, db.getTags());

@@ -13,27 +13,31 @@
     <string name="description">description</string>
     <string name="comment">comment</string>
     <string name="delete">Delete</string>
-    <string name="filter">Filter</string>
+    <string name="filter_by">Filter By</string>
     <string name="sort_by">Sort By</string>
     <string name="value">Value: </string>
-    <string name="confrim">confrim</string>
+    <string name="confirm">confirm</string>
     <string name="cancel">cancel</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
+    <string name="description_hint">Enter space between words</string>
+    <string name="end_date_hint">Enter end date</string>
+    <string name="start_date_hint">Enter start date</string>
+    <string name="make_hint">Enter a make to filter by</string>
     <string-array name="sort_items">
 <!--        <item>serialNumber</item>-->
+        <item>Default</item>
         <item>Date</item>
         <item>Value</item>
         <item>Make</item>
         <item>Model</item>
         <item>Description</item>
 <!--        <item>Comment</item>-->
-        <item>Default</item>
     </string-array>
     <string-array name="filter_items">
+        <item>Default</item>
         <item>Date</item>
         <item>Make</item>
         <item>Description</item>
-        <item>Default</item>
     </string-array>
 </resources>
