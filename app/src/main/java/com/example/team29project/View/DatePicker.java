@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 
 import androidx.fragment.app.DialogFragment;
+
+import com.example.team29project.R;
 
 import java.util.Calendar;
 

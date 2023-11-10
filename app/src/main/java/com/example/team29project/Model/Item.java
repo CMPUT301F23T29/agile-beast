@@ -1,17 +1,7 @@
-package com.example.team29project;
-
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
+package com.example.team29project.Model;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Represents an item with a name, value, make, model, serial number, description, and comment.
@@ -90,31 +80,6 @@ public class Item implements Serializable, Comparable {
 
 
 
-    /*   public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
-           @Override
-           public Item createFromParcel(Parcel in) {
-               return new Item(in);
-           }
-
-           @Override
-           public Item[] newArray(int size) {
-               return new Item[size];
-           }
-       };*/
-  /*  protected Item(Parcel in) {
-        name = in.readString();
-        value = in.readDouble();
-        date = in.readString();
-        model = in.readString();
-        make = in.readString();
-        serialNumber = in.readString();
-        description = in.readString();
-        comment = in.readString();
-
-      //  in.readList(photos, Uri.class.getClassLoader());
-       // in.readList(tags,Tag.class.getClassLoader());
-
-    }*/
 
     /**
      * Gets the photos

@@ -21,22 +21,15 @@
         android:theme="@style/Theme.Team29project"
         tools:targetApi="31">
         <activity
-            android:name=".TagActivity"
+            android:name=".View.DisplayActivity"
             android:exported="false" />
+
         <activity
-            android:name=".DisplayActivity"
+            android:name=".View.CustomCameraActivity"
             android:exported="false" />
+
         <activity
-            android:name=".DisplayImageActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CustomCameraActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CameraActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".View.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

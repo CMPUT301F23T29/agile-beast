@@ -1,11 +1,10 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -19,28 +18,15 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 
-import com.example.team29project.DatabaseController;
-import com.example.team29project.DisplayActivity;
-import com.example.team29project.FilterFragment;
-import com.example.team29project.InputFragment;
-import com.example.team29project.Item;
-import com.example.team29project.ItemArrayAdapter;
-import com.example.team29project.SortFragment;
-import com.example.team29project.TagAdapter;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Model.Item;
+import com.example.team29project.Controller.ItemArrayAdapter;
+import com.example.team29project.R;
+import com.example.team29project.Controller.TagAdapter;
 
 import java.util.ArrayList;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * This method is called when the activity is starting.
@@ -49,14 +35,14 @@ import java.util.Objects;
  * @see android.app.Activity#onCreate(Bundle)
  */
 public class MainActivity extends AppCompatActivity implements
-        com.example.team29project.InputFragment.OnFragmentsInteractionListener,
-        com.example.team29project.SortFragment.OnFragmentInteractionListener,
+        InputFragment.OnFragmentsInteractionListener,
+        SortFragment.OnFragmentInteractionListener,
         FilterFragment.OnFragmentInteractionListener {
 
     private TextView addItem;
     private TextView editTag;
     private TextView selectBtn;
-    private com.example.team29project.ItemArrayAdapter itemAdapter;
+    private ItemArrayAdapter itemAdapter;
     private ListView itemsList;
     private int itemPosition;
     private boolean isDelete;

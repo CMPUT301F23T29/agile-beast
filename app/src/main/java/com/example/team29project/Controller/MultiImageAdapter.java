@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.Controller;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.team29project.R;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Helper class to hold an array of images
@@ -31,7 +31,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
      * @param context the context to be used
      * @param itemClickListener the callback for when an image is clicked
      */
-    MultiImageAdapter(ArrayList<String> list, Context context, com.example.team29project.Controller.SelectListener itemClickListener) {
+    public MultiImageAdapter(ArrayList<String> list, Context context, com.example.team29project.Controller.SelectListener itemClickListener) {
         mData = list ;
         mContext = context;
         this.itemClickListener = itemClickListener;

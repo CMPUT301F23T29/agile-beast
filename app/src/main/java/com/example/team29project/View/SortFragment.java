@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,15 +8,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.team29project.R;
+import com.example.team29project.View.MainActivity;
 
 
 /**
@@ -27,7 +27,7 @@ public class SortFragment extends DialogFragment {
 
     /**
      * Assigns the listeners in the dialog
-     * @param context the context
+     * @param dialog the context
      */
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
