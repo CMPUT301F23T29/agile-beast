@@ -6,7 +6,9 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -16,7 +18,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -43,7 +48,6 @@ public class Database {
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");
         tagsRef = db.collection("tags");
-
         this.itemDataList = new ArrayList<Item>();
         this.tagDataList = new ArrayList<String>();
 
@@ -129,9 +133,25 @@ public class Database {
                         String serialNumber = doc.getString("serialNumber");
                         String description = doc.getString("description");
                         String comment = doc.getString("comment");
+                        Object photosObject = doc.get("photos");
 
-                        // Add a new 'Item' object to 'itemDataList' with these fields
-                        itemDataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
+                        // Initialize an ArrayList to store photos
+                        ArrayList<String> photos = new ArrayList<>();
+
+                        // Check if 'photosObject' is an ArrayList
+                        if (photosObject instanceof ArrayList<?>) {
+                            // Convert 'photosObject' to ArrayList<String>
+                            for (Object photo : (ArrayList<?>) photosObject) {
+                                if (photo instanceof String) {
+                                    photos.add((String) photo);
+                                }
+                            }
+                        }
+
+                        // Add a new 'Item' object to 'itemDataList' with these fields*/
+                        Item item1 = new Item(name, date, itemValue, make, model, description, comment, serialNumber);
+                        item1.setPhotos(photos);
+                        itemDataList.add(item1);
                     }
 
                     // refresh ListView and display the new data
@@ -157,7 +177,9 @@ public class Database {
         data.put("serialNumber", item.getSerialNumber());
         data.put("description", item.getDescription());
         data.put("comment", item.getComment());
-        data.put("photo", item.getPhotos());
+        data.put("photos", Arrays.asList(item.getPhotos().toArray()));
+
+
         // Add the 'data' map to the Firestore database under a document named after the item's name.
         itemsRef
                 .document(item.getName())
@@ -172,10 +194,12 @@ public class Database {
         itemAdapter.notifyDataSetChanged();
     }
 
+
     /**
      * Adds a tag to the Firestore database
      * @param tag the tag being added
      */
+
     public void addTag(String tag) {
         assert (!tagDataList.contains(tag));
 
@@ -188,6 +212,14 @@ public class Database {
                                     }
                                 });
         tagAdapter.notifyDataSetChanged();
+    }
+    public void updatePhoto(Item item , ArrayList<String> photos){
+       Map<String, Object> fieldUpdate = new HashMap<>();
+        fieldUpdate.put("photos", FieldValue.delete());
+        itemsRef.document(item.getName()).update(fieldUpdate);
+        for(String photo : photos) {
+            itemsRef.document(item.getName()).update("photos", FieldValue.arrayUnion(photo));
+        }
     }
 
     /**
@@ -307,7 +339,6 @@ public class Database {
                         String name = doc.getId();
                         String date = doc.getString("date");
                         Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
-
                         String make = doc.getString("make");
                         String model = doc.getString("model");
                         String serialNumber = doc.getString("serialNumber");

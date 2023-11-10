@@ -7,6 +7,7 @@
     android:layout_gravity="center"
     android:background="@color/background"
     android:orientation="vertical"
+    android:id="@+id/display_tag"
     >
     <ListView
         android:id="@+id/tag_listview"

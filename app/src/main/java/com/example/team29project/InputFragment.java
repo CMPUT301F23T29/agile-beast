@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Allow users to input/edit data for an inventory item
@@ -45,6 +47,7 @@ public class InputFragment extends DialogFragment {
      * set current item to null and set tags
      * @param tags the tags to be used
      */
+
     public InputFragment(ArrayList<String> tags) {
         this.item = null;
         this.tags = tags;
@@ -130,16 +133,20 @@ public class InputFragment extends DialogFragment {
             writeData(item);
         }
 
+
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
             yearDate = year;
             monthDate = month;
             dayDate = dayOfMonth;
             itemDate.setText(String.format("%d-%02d-%02d", yearDate,monthDate,dayDate));
         };
-        itemDate.setOnClickListener(v -> {
-            DatePicker dat = new DatePicker();
-            dat.setListener(r);
-            dat.show(getChildFragmentManager(),"DatePicker");
+        itemDate.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                DatePicker dat = new DatePicker();
+                dat.setListener(r);
+                dat.show(getChildFragmentManager(), "DatePicker");
+            }
+            return true;
         });
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -164,7 +171,7 @@ public class InputFragment extends DialogFragment {
                 String item_description = itemDescription.getText().toString();
                 String item_comment = itemComment.getText().toString();
                 // Check if it is empty except comment
-                if(item_name.isEmpty() || item_date.isEmpty() || item_value.isNaN()||item_make.isEmpty() || item_model.isEmpty() || item_description.isEmpty()  || item_serN.isEmpty()){
+                if(item_name.isEmpty() || item_date.isEmpty() || item_value.isNaN()||item_make.isEmpty() || item_model.isEmpty() || item_description.isEmpty() ||item_comment.isEmpty()) {
                     throw new Exception();
                 }
                 // Check if it is future date
