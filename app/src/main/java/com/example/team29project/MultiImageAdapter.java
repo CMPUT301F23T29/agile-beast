@@ -14,6 +14,9 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Helper class to hold an array of images
+ */
 public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
     private ArrayList<String> mData;
     private Context mContext ;
@@ -21,6 +24,12 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     private SelectListener itemClickListener;
 
 
+    /**
+     * Creates an instance of MultiImageAdapter
+     * @param list the list of images
+     * @param context the context to be used
+     * @param itemClickListener the callback for when an image is clicked
+     */
     MultiImageAdapter(ArrayList<String> list, Context context,SelectListener itemClickListener) {
         mData = list ;
         mContext = context;
@@ -28,7 +37,9 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     }
 
 
-
+    /**
+     * Helper class to hold an image view
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView image;
@@ -39,6 +50,14 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
 
     }
 
+    /**
+     * Create a view holder associated with a view
+     * @param parent The ViewGroup into which the new View will be added after it is bound to
+     * an adapter position.
+     * @param viewType The view type of the new View.
+     *
+     * @return the view holder
+     */
     @Override
     public MultiImageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext() ;
@@ -50,6 +69,12 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     }
 
 
+    /**
+     * Callback for when a view holder is bound to a view
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     * item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
             Uri image_uri = Uri.parse(mData.get(position));
@@ -68,6 +93,10 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     }
 
 
+    /**
+     * Gets the number of items
+     * @return the number of items
+     */
     @Override
     public int getItemCount() {
         return mData.size() ;

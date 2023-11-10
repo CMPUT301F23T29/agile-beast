@@ -12,16 +12,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * A dialog to pick between the gallery or camera
+ */
 public class PickCameraDialog extends DialogFragment {
     private TextView cameraPicked, galleryPicked;
     private ImageOrGalleryListener listener;
 
+    /**
+     * An interface for user input callbacks
+     */
     public interface ImageOrGalleryListener {
         void onGalleryPressed();
 
         void onCameraPressed();
     }
 
+    /**
+     * Assign the image gallery listener
+     * @param context assigns the listener for the user to decide between camera or gallery
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -32,6 +42,13 @@ public class PickCameraDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Create the dialog and initialize user input listeners
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return the dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -50,6 +67,10 @@ public class PickCameraDialog extends DialogFragment {
             }
         });
         galleryPicked.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click event
+             * @param v the view to be used
+             */
             @Override
             public void onClick(View v) {
                 listener.onGalleryPressed();

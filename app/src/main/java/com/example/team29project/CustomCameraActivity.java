@@ -120,6 +120,10 @@ public class CustomCameraActivity extends AppCompatActivity {
         if (photoFile != null) {
             ImageCapture.OnImageSavedCallback callback =  new ImageCapture.OnImageSavedCallback() {
 
+                /**
+                 * Sets buttons to visible or invisible for an image
+                 * @param outputFileResults the image that was taken
+                 */
                 @Override
                 public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                     runOnUiThread(() -> {
@@ -152,6 +156,11 @@ public class CustomCameraActivity extends AppCompatActivity {
                     });
                 }
 
+                /**
+                 * Captures the exception
+                 * @param exception An {@link ImageCaptureException} that contains the type of error, the error message and the throwable that caused it.
+                 *
+                 */
                 @Override
                 public void onError(@NonNull ImageCaptureException exception) {
                     // Handle error

@@ -83,6 +83,11 @@ public class MainActivity extends AppCompatActivity implements
            });
 
 
+    /**
+     * Creates a dialog with its components and listeners. Gets initial items and tags from database
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     * this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +112,13 @@ public class MainActivity extends AppCompatActivity implements
 
         itemAdapter.notifyDataSetChanged();
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * Handles the event click of the item
+             * @param parent the parent to be used
+             * @param view the view to be used
+             * @param position the position to be used
+             * @param id the id to be used
+             */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
@@ -173,6 +185,10 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Creates the main menu popup and shows it
+     * @param view the view to lay the popup over
+     */
     public void popupMenu(View view) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.fragment_main_menu, null);
@@ -183,6 +199,10 @@ public class MainActivity extends AppCompatActivity implements
         addItem = popupView.findViewById(R.id.add_new_item);
         selectBtn= popupView.findViewById(R.id.select_item);
         selectBtn.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click event
+             * @param v the popup menu view
+             */
             @Override
             public void onClick(View v) {
                 isSelect = true;
@@ -242,20 +262,38 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }*/
 
+    /**
+     * Adds an item to the database
+     * @param item the item to be used
+     */
+
     @Override
     public void onOKPressed(Item item) {
         db.addItem(item);
     }
 
+    /**
+     * Notifies iten adapter that its contents have changed
+     * @param item the item to be used
+     */
     @Override
     public void onEditPressed(Item item) {
         itemAdapter.notifyDataSetChanged();
     }
+
+    /**
+     *
+     */
     @Override
     public void onCancelPressed(){
 
     }
 
+    /**
+     * Applies a filter to all of the items
+     * @param filterBy the filter criteria
+     * @param  data the string to match
+     */
     @Override
     public void onFilterConfirmPressed(String filterBy, String data) {
             db = FirebaseFirestore.getInstance();
@@ -276,6 +314,11 @@ public class MainActivity extends AppCompatActivity implements
 
             // Add a snapshot listener to the Firestore query
             query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                /**
+                 * Handles a Firebase event
+                 * @param  value value to be used
+                 * @param error any error that occurs
+                 */
                 @Override
                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                     // If there's an error with the snapshot, log the error
@@ -313,6 +356,11 @@ public class MainActivity extends AppCompatActivity implements
         }
 
 
+    /**
+     * Sorts items based on some criteria
+     * @param sortBy criteria to sort by
+     * @param isAsc whether to reverse the order
+     */
     @Override
     public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
         db = FirebaseFirestore.getInstance();
@@ -341,6 +389,11 @@ public class MainActivity extends AppCompatActivity implements
 
         // Add a snapshot listener to the Firestore query
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            /**
+             * Handles firebase event
+             * @param value to be used
+             * @param error any error that occurs
+             */
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 // If there's an error with the snapshot, log the error

@@ -16,9 +16,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * A dialog to select a sorting method
+ */
 public class SortFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
 
+    /**
+     * Assigns the listeners in the dialog
+     * @param context the context
+     */
     @Override
     public void onAttach(@NonNull Context context) {
 
@@ -30,6 +37,14 @@ public class SortFragment extends DialogFragment {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
     }
+
+    /**
+     * Creates a dialog and adds listeners
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return the dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -64,6 +79,9 @@ public class SortFragment extends DialogFragment {
                 .create();
     }
 
+    /**
+     * An interface for sort dialog listeners
+     */
     public interface OnFragmentInteractionListener {
         void onSortConfirmPressed(String sortBy, Boolean isAsc);
     }
