@@ -1,5 +1,6 @@
 package com.example.team29project;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
@@ -12,6 +13,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -31,6 +35,6 @@ public class DisplayActivityTest {
             new ActivityScenarioRule<MainActivity>(MainActivity.class);
 
     @Test public void checkItemDetailsDisplayed(){
-        onView(withId(R.id.item_name)).check(matches(isDisplayed()));
+        onData(is(instanceOf(Item.class))).inAdapterView(withId(R.id.items)).atPosition(0).perform(click());
     }
 }
