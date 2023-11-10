@@ -130,6 +130,10 @@ public class CustomCameraActivity extends AppCompatActivity {
                     reTryButton.setOnClickListener(v -> startCamera());
                 });
             }
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
                 // Handle error
