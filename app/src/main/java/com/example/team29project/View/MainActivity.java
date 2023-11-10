@@ -47,11 +47,13 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isDelete;
     private TagAdapter tagAdapter;
     private boolean isSelect;
+    private TextView sumItem;
     private boolean isFilterFragmentShown = false;
     private boolean isSortFragmentShown = false;
     private ArrayList<String> tags;
     private ArrayList<Item> selectedItems;
     private DatabaseController db;
+    double total ;
    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
            new ActivityResultContracts.StartActivityForResult(),
            new ActivityResultCallback<ActivityResult>() {
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements
                        temp.setComment(newItem.getComment());
                        db.updatePhoto(temp,newItem.getPhotos());
                        itemAdapter.notifyDataSetChanged();
+                       updateSum();
                    }
                }
            });
@@ -91,18 +94,17 @@ public class MainActivity extends AppCompatActivity implements
         selectedItems = new ArrayList<Item>();
         isDelete = false;
         isSelect = false;
-
+        sumItem = findViewById(R.id.value_display);
         // Init lists for tags and items,
         // as well as firestore database
         db = new DatabaseController();
-
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
         tagAdapter = new TagAdapter(this,db.getTags());
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
-
         db.setAdapters(itemAdapter, tagAdapter);
         db.loadInitialItems();
+        updateSum();
 
         itemAdapter.notifyDataSetChanged();
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -182,6 +184,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
+     * Update the summary of value of item
+     */
+    public void updateSum(){
+        total =0.0;
+        for(Item item : db.getItems()){
+            total = total +  item.getValue();
+        }
+
+        sumItem.setText( String.valueOf(total));
+
+    }
+
+    /**
      * Creates the main menu popup and shows it
      * @param view the view to lay the popup over
      */
@@ -239,7 +254,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onOKPressed(Item item) {
+
         db.addItem(item);
+        updateSum();
     }
 
     /**
@@ -249,6 +266,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onEditPressed(Item item) {
         itemAdapter.notifyDataSetChanged();
+        updateSum();
     }
 
 
