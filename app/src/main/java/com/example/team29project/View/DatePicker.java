@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -11,8 +11,13 @@ import android.widget.NumberPicker;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.example.team29project.R;
+
 import java.util.Calendar;
 
+/**
+ * Helper class to allow a user to select a date using a popup dialog
+ */
 public class DatePicker extends DialogFragment {
     private DatePickerDialog.OnDateSetListener listener;
     public Calendar current = Calendar.getInstance();
@@ -21,6 +26,13 @@ public class DatePicker extends DialogFragment {
         this.listener = listener;
     }
 
+    /**
+     * Creates a date picker dialog
+     * @param savedInstanceState The last saved instance state of the Fragment, or null if this is a freshly created Fragment.
+     *
+     *
+     * @return the DatePicker dialog
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         int year;
@@ -62,6 +74,13 @@ dayPicker.setValue(current.get(Calendar.DAY_OF_MONTH));
         builder.setView(dialog);
         return builder.create();
     }
+
+    /**
+     * Gets the maximum days in a month
+     * @param month the month to be used
+     * @param year the year to be used
+     * @return the maximum day in the provided month and year
+     */
     private int getMaxDaysInMonth(int month, int year) {
         if (month == 2) {  // February
             if (isLeapYear(year)) {
@@ -75,6 +94,12 @@ dayPicker.setValue(current.get(Calendar.DAY_OF_MONTH));
             return 31;
         }
     }
+
+    /**
+     * Checks if a year is a leap year
+     * @param year the year to be used
+     * @return a true or false value
+     */
     private boolean isLeapYear(int year) {
         return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }

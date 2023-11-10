@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.Controller;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,10 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.team29project.Model.Item;
+import com.example.team29project.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents an ArrayAdapter for displaying items in a list view.

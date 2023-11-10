@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,12 +10,15 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.R;
+import com.example.team29project.Controller.TagAdapter;
 
 import java.util.ArrayList;
 
@@ -28,6 +31,7 @@ public class TagDialogue extends DialogFragment {
     private Button addTag;
     private Button deleteTag;
     private TagAdapter tagAdapter;
+    private DatabaseController db;
 
 
     private boolean isDelete;
@@ -35,13 +39,14 @@ public class TagDialogue extends DialogFragment {
     /**
      * Constructs a new TagDialogue with the given list of tags and tag adapter.
      *
-     * @param tagList The list of tags to be managed.
+     * @param tagList    The list of tags to be managed.
      * @param tagAdapter The adapter for displaying the tags.
      */
     public TagDialogue(ArrayList<String> tagList ,TagAdapter tagAdapter)
     {
         this.tagList = tagList;
         this.tagAdapter = tagAdapter;
+        this.db = db;
     }
 
 
@@ -85,9 +90,12 @@ public class TagDialogue extends DialogFragment {
                 else{
                      String tagTemp = inputText.getText().toString();
                      if (!tagTemp.isEmpty()) {
-                         tagList.add(inputText.getText().toString());
-                         inputText.setText("");
+                         String tag =inputText.getText().toString();
+                         tagList.add(tag);
+                         //db.addTag(tag);
                          tagAdapter.notifyDataSetChanged();
+                         inputText.setText("");
+
                      }
                      inputText.setVisibility(View.INVISIBLE);
                 }
@@ -103,9 +111,11 @@ public class TagDialogue extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position>=0){
+                    //tagList.remove(position);
                     tagList.remove(position);
+                    //db.removeTag(position);
                     isDelete=false;
-                    tagAdapter.notifyDataSetChanged();
+                    //tagAdapter.notifyDataSetChanged();
                 }
             }
         });

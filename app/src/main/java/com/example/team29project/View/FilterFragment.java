@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -20,7 +19,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+
+import com.example.team29project.R;
+
 import java.util.Calendar;
+
+
+/**
+ * A dialog to filter items on the main menu
+ */
 
 public class FilterFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
@@ -32,6 +39,10 @@ public class FilterFragment extends DialogFragment {
         ((MainActivity) getActivity()).setFilterFragmentShown(false);
     }
 
+    /**
+     * Assign the fragment listener if context is a valid instance f one, and display a success message to the user
+     * @param context the context to be used
+     */
     @Override
     public void onAttach(@NonNull Context context) {
 
@@ -43,6 +54,14 @@ public class FilterFragment extends DialogFragment {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
     }
+
+    /**
+     * Initializes the filter activity
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return the dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -92,6 +111,11 @@ public class FilterFragment extends DialogFragment {
                         break;
                 }
             }
+
+            /**
+             * When nothing is being selected
+             * @param adapterView The AdapterView that now contains no selected item.
+             */
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -169,6 +193,9 @@ public class FilterFragment extends DialogFragment {
                 .create();
     }
 
+    /**
+     * An interface containing a method for when a new filter should be applied
+     */
     public interface OnFragmentInteractionListener {
         void onFilterConfirmPressed(String filterBy, String data);
     }

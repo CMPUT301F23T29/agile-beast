@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -15,6 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.team29project.Model.Item;
+import com.example.team29project.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,23 +45,40 @@ public class InputFragment extends DialogFragment {
     private int dayDate;
     private ArrayList<String> tags;
 
+    /**
+     * set current item to null and set tags
+     * @param tags the tags to be used
+     */
     public InputFragment(ArrayList<String> tags) {
         this.item = null;
         this.tags = tags;
     }
 
+    /**
+     * Set item and teags
+     * @param aItem an item to be used
+     * @param tags tags to be used
+     */
     public InputFragment(Item aItem,ArrayList<String> tags) {
         this.item = aItem;
         this.tags = tags;
     }
     private OnFragmentsInteractionListener listener;
 
+    /**
+     * Interface for user interaction with fragments
+     */
     public interface OnFragmentsInteractionListener {
         void onOKPressed(Item item);
         void onEditPressed(Item item);
         void onCancelPressed();
 
     }
+
+    /**
+     * Assign the FragmentInteractionListener
+     * @param context FragmentInteractionListener
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -68,6 +88,10 @@ public class InputFragment extends DialogFragment {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
     }
+
+    /**
+     * Create key listener to dismiss dialog when back key is released
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -81,6 +105,16 @@ public class InputFragment extends DialogFragment {
             return false;
         });
     }
+
+
+
+    /**
+     * Create a dialog to edit the details of an item
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return the dialog
+     */
 
     @NonNull
     @Override
@@ -101,6 +135,7 @@ public class InputFragment extends DialogFragment {
         if(item !=null){
             writeData(item);
         }
+
 
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
             yearDate = year;
@@ -138,7 +173,7 @@ public class InputFragment extends DialogFragment {
                 String item_description = itemDescription.getText().toString();
                 String item_comment = itemComment.getText().toString();
                 // Check if it is empty except comment
-                if(item_name.isEmpty() || item_date.isEmpty() || item_value.isNaN()||item_make.isEmpty() || item_model.isEmpty() || item_description.isEmpty()  || item_serN.isEmpty()){
+                if(item_name.isEmpty() || item_date.isEmpty() || item_value.isNaN()||item_make.isEmpty() || item_model.isEmpty() || item_description.isEmpty() ||item_comment.isEmpty()) {
                     throw new Exception();
                 }
                 // Check if it is future date
@@ -177,6 +212,11 @@ public class InputFragment extends DialogFragment {
         });
         return builder.create();
     }
+
+    /**
+     * Get the item properties from a given item
+     * @param item the item to collect data from
+     */
     public void writeData(Item item){
         itemValue.setText(String.format("%.2f",item.getValue()));
         itemName.setText(item.getName());

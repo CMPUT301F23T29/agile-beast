@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.Model;
 import android.widget.Toast;
 
 import androidx.camera.core.CameraSelector;
