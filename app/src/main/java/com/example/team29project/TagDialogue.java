@@ -27,7 +27,7 @@ public class TagDialogue extends DialogFragment {
     private Button addTag;
     private Button deleteTag;
     private TagAdapter tagAdapter;
-    private Database db;
+    private DatabaseController db;
 
 
     private boolean isDelete;

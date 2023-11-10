@@ -74,8 +74,20 @@ public class DatabaseController {
         String serialNumber = doc.getString("serialNumber");
         String description = doc.getString("description");
         String comment = doc.getString("comment");
-
-        return new Item(name, date, itemValue, make, model, description, comment, serialNumber);
+        Object photosObject = doc.get("photos");
+        // Initialize an ArrayList to store photos
+        ArrayList<String> photos = new ArrayList<>();
+        if (photosObject instanceof ArrayList<?>) {
+            // Convert 'photosObject' to ArrayList<String>
+            for (Object photo : (ArrayList<?>) photosObject) {
+                if (photo instanceof String) {
+                    photos.add((String) photo);
+                }
+            }
+        }
+       Item item= new Item(name, date, itemValue, make, model, description, comment, serialNumber);
+        item.setPhotos(photos);
+        return item;
     }
 
     /**
@@ -138,33 +150,10 @@ public class DatabaseController {
 
                     for (QueryDocumentSnapshot doc: value) {
                         Item item = createItemFromDoc(doc);
-                        itemDataList.add(item);
 
-                    // Loop over each document in the snapshot
-       /*             for (QueryDocumentSnapshot doc : value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        // Retrieve the 'value' field as an Object
-                        Object itemValueObject = doc.get("value");
-                        double itemValue = 0.0;
-                        // Check the type of 'itemValueObject' and convert it to a double
-                        if (itemValueObject instanceof Long) {
-                            itemValue = ((Long) itemValueObject).doubleValue();
-                        } else if (itemValueObject instanceof Double) {
-                            itemValue = (Double) itemValueObject;
-                        }
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
-                        Object photosObject = doc.get("photos");
-
+                       /* Object photosObject = doc.get("photos");
                         // Initialize an ArrayList to store photos
                         ArrayList<String> photos = new ArrayList<>();
-
-                        // Check if 'photosObject' is an ArrayList
                         if (photosObject instanceof ArrayList<?>) {
                             // Convert 'photosObject' to ArrayList<String>
                             for (Object photo : (ArrayList<?>) photosObject) {
@@ -173,12 +162,8 @@ public class DatabaseController {
                                 }
                             }
                         }
-
-                        // Add a new 'Item' object to 'itemDataList' with these fields//
-                        Item item1 = new Item(name, date, itemValue, make, model, description, comment, serialNumber);
-                        item1.setPhotos(photos);
-                        itemDataList.add(item1);*/
-                
+                        item.setPhotos(photos);*/
+                        itemDataList.add(item);
                     }
 
                     itemAdapter.notifyDataSetChanged();
@@ -205,7 +190,6 @@ public class DatabaseController {
         data.put("comment", item.getComment());
         data.put("photos", Arrays.asList(item.getPhotos().toArray()));
 
-
         // Add the 'data' map to the Firestore database under a document named after the item's name.
         itemsRef
                 .document(item.getName())
@@ -228,7 +212,8 @@ public class DatabaseController {
 
     public void addTag(String tag) {
         assert (!tagDataList.contains(tag));
-
+        HashMap<String, String> tags = new HashMap<>();
+        tags.put("tag",tag);
         tagsRef.document(tag)
                         .set(tag)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -391,23 +376,9 @@ public class DatabaseController {
                     itemDataList.clear();
 
                     for (QueryDocumentSnapshot doc: value) {
-
                         Item item = createItemFromDoc(doc);
                         itemDataList.add(item);
-                /*
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
 
-                        // Add a new 'Item' object to 'dataList' with these fields
-                        itemDataList.add(new Item(name, date, (Double) itemValue, make, model, description, comment, serialNumber));
-*/
                     }
 
                     itemAdapter.notifyDataSetChanged();
