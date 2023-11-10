@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -22,6 +24,13 @@ import java.util.Calendar;
 
 public class FilterFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
+    private String selectedItem ="default";
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        ((MainActivity) getActivity()).setFilterFragmentShown(false);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -51,6 +60,47 @@ public class FilterFragment extends DialogFragment {
         EditText endDate = view.findViewById(R.id.filter_by_end_date_editview);
         EditText description = view.findViewById(R.id.filter_by_description_editview);
         Spinner filterSpinner = view.findViewById(R.id.filter_spinner);
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Code to execute when an item is selected
+                selectedItem = parent.getItemAtPosition(position).toString().toLowerCase();
+                switch (selectedItem) {
+                    case "make":
+                        make.setVisibility(View.VISIBLE);
+                        startDate.setVisibility(View.GONE);
+                        endDate.setVisibility(View.GONE);
+                        description.setVisibility(View.GONE);
+                        break;
+                    case "date":
+                        make.setVisibility(View.GONE);
+                        startDate.setVisibility(View.VISIBLE);
+                        endDate.setVisibility(View.VISIBLE);
+                        description.setVisibility(View.GONE);
+                        break;
+                    case "description":
+                        make.setVisibility(View.GONE);
+                        startDate.setVisibility(View.GONE);
+                        endDate.setVisibility(View.GONE);
+                        description.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        make.setVisibility(View.GONE);
+                        startDate.setVisibility(View.GONE);
+                        endDate.setVisibility(View.GONE);
+                        description.setVisibility(View.GONE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                make.setVisibility(View.GONE);
+                startDate.setVisibility(View.GONE);
+                endDate.setVisibility(View.GONE);
+                description.setVisibility(View.GONE);
+            }
+        });
 
         DatePickerDialog.OnDateSetListener startDatePicker = (view1, year, month, dayOfMonth) -> {
             int yearDate = year;
@@ -88,8 +138,24 @@ public class FilterFragment extends DialogFragment {
 
         // Set OnClickListener for confirm button
         confirm.setOnClickListener(v -> {
-            String filterBy = filterSpinner.getSelectedItem().toString(); // Get selected item from Spinner
+            String filterBy = selectedItem; // Get the selected filter
             String data="";
+            //TODO: data validation
+            switch (filterBy) {
+                case "make":
+                    data = make.getText().toString();
+                    break;
+                case "date":
+                    data = startDate.getText().toString() + "," + endDate.getText().toString();
+                    break;
+                case "description":
+                    data = description.getText().toString();
+                    break;
+                default:
+                    filterBy="default";
+                    data="";
+                    break;
+            }
             listener.onFilterConfirmPressed(filterBy, data); // Call onConfirmPressed with the selected values
             dismiss(); // Close the dialog
         });

@@ -3,6 +3,7 @@ package com.example.team29project;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,12 @@ import androidx.fragment.app.DialogFragment;
 
 public class SortFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        ((MainActivity) getActivity()).setSortFragmentShown(false);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {

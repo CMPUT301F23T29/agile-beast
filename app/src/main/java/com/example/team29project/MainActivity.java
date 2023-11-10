@@ -18,6 +18,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -44,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isDelete;
     private TagAdapter tagAdapter;
     private boolean isSelect;
-
+    private boolean isFilterFragmentShown = false;
+    private boolean isSortFragmentShown = false;
     private ArrayList<Item> selectedItems;
 
     private DatabaseController db;
@@ -142,19 +144,25 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        Button filterButton = (Button)findViewById(R.id.filter_button);
+        Button filterButton = findViewById(R.id.filter_button);
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new FilterFragment().show(getSupportFragmentManager(),"Filter");
+                if (!isFilterFragmentShown) {
+                    isFilterFragmentShown = true;
+                    new FilterFragment().show(getSupportFragmentManager(), "Filter");
+                }
             }
         });
 
-        Button sortButton = (Button)findViewById(R.id.sort_by_button);
+        Button sortButton = findViewById(R.id.sort_by_button);
         sortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SortFragment().show(getSupportFragmentManager(),"Sort");
+                if (!isSortFragmentShown) {
+                    isSortFragmentShown = true;
+                    new SortFragment().show(getSupportFragmentManager(), "Sort");
+                }
             }
         });
 
@@ -252,6 +260,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
         db.sort(sortBy,isAsc);
+    }
+
+    public void setFilterFragmentShown(boolean filterFragmentShown) {
+        isFilterFragmentShown = filterFragmentShown;
+    }
+
+    public void setSortFragmentShown(boolean sortFragmentShown) {
+        isSortFragmentShown = sortFragmentShown;
     }
 
     /**

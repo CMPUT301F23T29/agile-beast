@@ -41,6 +41,25 @@ public class DatabaseController {
 
     }
 
+    private Item createItemFromDoc(QueryDocumentSnapshot doc) {
+        String name = doc.getId();
+        String date = doc.getString("date");
+        Object itemValueObject = doc.get("value");
+        double itemValue = 0.0;
+        if (itemValueObject instanceof Long) {
+            itemValue = ((Long) itemValueObject).doubleValue();
+        } else if (itemValueObject instanceof Double) {
+            itemValue = (Double) itemValueObject;
+        }
+        String make = doc.getString("make");
+        String model = doc.getString("model");
+        String serialNumber = doc.getString("serialNumber");
+        String description = doc.getString("description");
+        String comment = doc.getString("comment");
+
+        return new Item(name, date, itemValue, make, model, description, comment, serialNumber);
+    }
+
     public void setAdapters(ItemArrayAdapter itemAdapter, TagAdapter tagAdapter) {
         this.itemAdapter = itemAdapter;
         this.tagAdapter = tagAdapter;
@@ -77,45 +96,21 @@ public class DatabaseController {
 
     public void loadInitialItems() {
 
-        // Add a snapshot listener to the Firestore reference 'itemsRef'
         itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                // If there's an error with the snapshot, log the error
                 if (error != null) {
                     Log.e("Firebase", error.toString());
                 }
 
-                // If the snapshot is not null (i.e., there's data at 'itemsRef')
                 if (value != null) {
-                    // Clear the 'itemDataList'
                     itemDataList.clear();
 
-                    // Loop over each document in the snapshot
-                    for (QueryDocumentSnapshot doc : value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        // Retrieve the 'value' field as an Object
-                        Object itemValueObject = doc.get("value");
-                        double itemValue = 0.0;
-                        // Check the type of 'itemValueObject' and convert it to a double
-                        if (itemValueObject instanceof Long) {
-                            itemValue = ((Long) itemValueObject).doubleValue();
-                        } else if (itemValueObject instanceof Double) {
-                            itemValue = (Double) itemValueObject;
-                        }
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
-
-                        // Add a new 'Item' object to 'itemDataList' with these fields
-                        itemDataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
+                    for (QueryDocumentSnapshot doc: value) {
+                        Item item = createItemFromDoc(doc);
+                        itemDataList.add(item);
                     }
 
-                    // refresh ListView and display the new data
                     itemAdapter.notifyDataSetChanged();
                 }
             }
@@ -236,34 +231,18 @@ public class DatabaseController {
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                // If there's an error with the snapshot, log the error
                 if (error != null) {
                     Log.e("Firebase", error.toString());
                 }
 
-                // If the snapshot is not null (i.e., there's data at 'itemsRef')
                 if (value != null) {
-                    // Clear the 'dataList'
                     itemDataList.clear();
 
-                    // Loop over each document in the snapshot
                     for (QueryDocumentSnapshot doc: value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
-
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
-
-                        // Add a new 'Item' object to 'dataList' with these fields
-                        itemDataList.add(new Item(name, date, (Double) itemValue, make, model, description, comment, serialNumber));
+                        Item item = createItemFromDoc(doc);
+                        itemDataList.add(item);
                     }
 
-                    // refresh ListView and display the new data
                     itemAdapter.notifyDataSetChanged();
                 }
             }
@@ -271,6 +250,7 @@ public class DatabaseController {
     }
 
 
+    //works
     public void sort(String sortBy, Boolean isAsc) {
         db = FirebaseFirestore.getInstance();
 
@@ -300,45 +280,21 @@ public class DatabaseController {
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                // If there's an error with the snapshot, log the error
                 if (error != null) {
                     Log.e("Firebase", error.toString());
                 }
-                // If the snapshot is not null (i.e., there's data at 'itemsRef')
-                if (value != null) {
-                    // Clear the 'dataList'
-                    itemDataList.clear();
-                    //TODO figure out how to deal with null values
-                    // Loop over each document in the snapshot
-                    for (QueryDocumentSnapshot doc: value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        Object itemValueObject = doc.get("value");
-                        double itemValue = 0.0;
-                        if (itemValueObject instanceof Long) {
-                            itemValue = ((Long) itemValueObject).doubleValue();
-                        } else if (itemValueObject instanceof Double) {
-                            itemValue = (Double) itemValueObject;
-                        }
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
 
-                        // Add a new 'Item' object to 'dataList' with these fields
-                        itemDataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
+                if (value != null) {
+                    itemDataList.clear();
+
+                    for (QueryDocumentSnapshot doc: value) {
+                        Item item = createItemFromDoc(doc);
+                        itemDataList.add(item);
                     }
 
-                    // refresh ListView and display the new data
                     itemAdapter.notifyDataSetChanged();
                 }
             }
         });
     }
-
-
-
-
 }
