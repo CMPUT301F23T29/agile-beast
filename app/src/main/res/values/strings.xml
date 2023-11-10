@@ -16,4 +16,24 @@
     <string name="filter">Filter</string>
     <string name="sort_by">Sort By</string>
     <string name="value">Value: </string>
+    <string name="confrim">confrim</string>
+    <string name="cancel">cancel</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string-array name="sort_items">
+        <item>serialNumber</item>
+        <item>Date</item>
+        <item>Value</item>
+        <item>Make</item>
+        <item>Model</item>
+        <item>Description</item>
+        <item>Comment</item>
+        <item>Default</item>
+    </string-array>
+    <string-array name="filter_items">
+        <item>Date</item>
+        <item>Make</item>
+        <item>Description</item>
+        <item>Default</item>
+    </string-array>
 </resources>

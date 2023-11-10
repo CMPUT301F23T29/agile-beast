@@ -1,40 +1,38 @@
 package com.example.team29project;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.SlidingDrawer;
-import android.widget.TextView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
-
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -43,48 +41,133 @@ import java.util.Objects;
  * @throws NullPointerException if any findViewById operation fails.
  * @see android.app.Activity#onCreate(Bundle)
  */
-public class MainActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener{
-    private Button camera ;
+public class MainActivity extends AppCompatActivity implements
+        InputFragment.OnFragmentsInteractionListener,
+        SortFragment.OnFragmentInteractionListener,
+        FilterFragment.OnFragmentInteractionListener{
+    
     private TextView addItem;
-    private ArrayList<Item> item_list;
     private TextView editTag;
+    private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
-    private ArrayList<Item> dataList;
     private ListView itemsList;
+    private int itemPosition ;
+    private boolean isDelete;
+    private TagAdapter tagAdapter;
+    private boolean isSelect;
 
-    // private FirebaseFirestore db;
-    //private CollectionReference itemsRef;
+
+    private ArrayList<Item> selectedItems;
+
+    private Database db;
+   ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
+           new ActivityResultContracts.StartActivityForResult(),
+           new ActivityResultCallback<ActivityResult>() {
+               @Override
+               public void onActivityResult(ActivityResult result) {
+                   if (result.getData() !=null) {
+                       Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
+                       Item temp = db.getItem(itemPosition);
+                       temp.setName(newItem.getName());
+                       temp.setDate(newItem.getDate());
+                       temp.setValue(newItem.getValue());
+                       temp.setMake(newItem.getMake());
+                       temp.setModel(newItem.getModel());
+                       temp.setSerialNumber(newItem.getSerialNumber());
+                       temp.setDescription(newItem.getDescription());
+                       temp.setComment(newItem.getComment());
+                       temp.setPhotos(newItem.getPhotos());
+                       itemAdapter.notifyDataSetChanged();
+                   }
+               }
+           });
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ImageButton menu =findViewById(R.id.menu);
-        dataList = new ArrayList<>();
-        itemAdapter = new ItemArrayAdapter(this, dataList);
+        Button deleteButton = findViewById(R.id.delete_button);
+        selectedItems = new ArrayList<Item>();
+        isDelete= false;
+        isSelect= false;
+
+        // Init lists for tags and items,
+        // as well as firestore database
+        db = new Database();
+
+        itemAdapter = new ItemArrayAdapter(this, db.getItems());
+        tagAdapter = new TagAdapter(this, db.getTags());
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
-        double a = 11.25;
-        dataList.add(new Item("Name","2023-11",11.0,"Apple","Iphone","model5","nice phone","0000000000"));
+
+        db.setAdapters(itemAdapter, tagAdapter);
+        db.loadInitialItems();
+
         itemAdapter.notifyDataSetChanged();
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
-                    Item temp = dataList.get(position);
-                    Intent display = new Intent(MainActivity.this, DisplayActivity.class);
-                    display.putExtra("item" , temp);
-                    startActivity(display);
+                    if(isSelect){
+                        selectedItems.add(db.getItem(position));
+                    }
+
+                    else if(isDelete){
+                        db.removeItem(position);
+                        itemAdapter.notifyDataSetChanged();
+                        isDelete= false;
+                    }
+                    else {
+                        itemPosition = position;
+                        Item temp = db.getItem(position);
+                        Intent display = new Intent(MainActivity.this, DisplayActivity.class);
+                        display.putExtra("item", temp);
+                        display.putStringArrayListExtra("tags",db.getTags());
+                        itemActivityResultLauncher.launch(display);
+                    }
 
                 }
 
+            }
+        });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isSelect){
+                    db.removeAllItems(selectedItems);
+                    isSelect= false;
+                    selectedItems.clear();
+                    itemAdapter.notifyDataSetChanged();
+                }
+                else{
+                    isDelete = true;
+                }
             }
         });
 //       ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                isDelete=false;
                 popupMenu(view);
+            }
+        });
+
+        Button filterButton = (Button)findViewById(R.id.filter_button);
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new FilterFragment().show(getSupportFragmentManager(),"Filter");
+            }
+        });
+
+        Button sortButton = (Button)findViewById(R.id.sort_by_button);
+        sortButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new SortFragment().show(getSupportFragmentManager(),"Sort");
             }
         });
 
@@ -98,10 +181,23 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
+        selectBtn= popupView.findViewById(R.id.select_item);
+        selectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isSelect = true;
+                isDelete = false;
+                popupWindow.dismiss();
+                selectedItems = new ArrayList<Item>();
+            }
+        });
+
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new InputFragment().show(getSupportFragmentManager(), "addItems");
+                isSelect =false;
+                isDelete =false;
+                new InputFragment(db.getTags()).show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
         });
@@ -109,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(),"Tags");
 
             }
         });
@@ -147,14 +244,139 @@ public class MainActivity extends AppCompatActivity implements InputFragment.OnF
 
     @Override
     public void onOKPressed(Item item) {
-        dataList.add(item);
+        db.addItem(item);
+    }
+
+    @Override
+    public void onEditPressed(Item item) {
         itemAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public void onCancelPressed(){
 
     }
 
     @Override
-    public void onEditPressed() {
-        itemAdapter.notifyDataSetChanged();
+    public void onFilterConfirmPressed(String filterBy, String data) {
+            db = FirebaseFirestore.getInstance();
+
+            Query query; // Declare a Query object
+
+            if(filterBy.equals("make")) {
+                query = db.collection("items").whereEqualTo("make", data);
+            } else if (filterBy.equals("date")) {
+                //TODO date range
+                query = db.collection("items");//need to change this query
+            } else if (filterBy.equals("description")) {
+                //TODO multiple description words or most number of words matched
+                query = db.collection("items");//need to change this query
+            } else {
+                query = db.collection("items");
+            }
+
+            // Add a snapshot listener to the Firestore query
+            query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    // If there's an error with the snapshot, log the error
+                    if (error != null) {
+                        Log.e("Firebase", error.toString());
+                    }
+
+                    // If the snapshot is not null (i.e., there's data at 'itemsRef')
+                    if (value != null) {
+                        // Clear the 'dataList'
+                        dataList.clear();
+
+                        // Loop over each document in the snapshot
+                        for (QueryDocumentSnapshot doc: value) {
+                            // Retrieve various fields from the document
+                            String name = doc.getId();
+                            String date = doc.getString("date");
+                            Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
+
+                            String make = doc.getString("make");
+                            String model = doc.getString("model");
+                            String serialNumber = doc.getString("serialNumber");
+                            String description = doc.getString("description");
+                            String comment = doc.getString("comment");
+
+                            // Add a new 'Item' object to 'dataList' with these fields
+                            dataList.add(new Item(name, date, (Double) itemValue, make, model, description, comment, serialNumber));
+                        }
+
+                        // refresh ListView and display the new data
+                        itemAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+
+
+    @Override
+    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
+        db = FirebaseFirestore.getInstance();
+
+        // sorting the data by the sortBy field in ascending or descending order
+        Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
+        Query query; // New Query variable
+        sortBy=sortBy.toLowerCase();
+        if (sortBy.equals("date")) {
+            query = db.collection("items").orderBy("date", direction);
+        } else if (sortBy.equals("value")) {
+            query = db.collection("items").orderBy("value", direction);
+        } else if (sortBy.equals("make")) {
+            query = db.collection("items").orderBy("make", direction);
+        } else if (sortBy.equals("model")) {
+            query = db.collection("items").orderBy("model", direction);
+        } else if (sortBy.equals("serialnumber")) {
+            query = db.collection("items").orderBy("serialnumber", direction);
+        } else if (sortBy.equals("description")) {
+            query = db.collection("items").orderBy("description", direction);
+        } else if (sortBy.equals("comment")) {
+            query = db.collection("items").orderBy("comment", direction);
+        } else {
+            query = db.collection("items");
+        }
+
+        // Add a snapshot listener to the Firestore query
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                // If there's an error with the snapshot, log the error
+                if (error != null) {
+                    Log.e("Firebase", error.toString());
+                }
+
+                // If the snapshot is not null (i.e., there's data at 'itemsRef')
+                if (value != null) {
+                    // Clear the 'dataList'
+                    dataList.clear();
+
+                    //TODO figure out how to deal with null values
+
+
+                    // Loop over each document in the snapshot
+                    for (QueryDocumentSnapshot doc: value) {
+                        // Retrieve various fields from the document
+                        String name = doc.getId();
+                        String date = doc.getString("date");
+                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
+                        String make = doc.getString("make");
+                        String model = doc.getString("model");
+                        String serialNumber = doc.getString("serialNumber");
+                        String description = doc.getString("description");
+                        String comment = doc.getString("comment");
+
+                        // Add a new 'Item' object to 'dataList' with these fields
+                        dataList.add(new Item(name, date, (Double) itemValue, make, model, description, comment, serialNumber));
+                    }
+
+                    // refresh ListView and display the new data
+                    itemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     /**

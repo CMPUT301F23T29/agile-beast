@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,9 +16,9 @@ import java.util.ArrayList;
 public class TagAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater mLayoutInflater;
-    private ArrayList<Tag> tagList;
+    private ArrayList<String> tagList;
 
-    public TagAdapter(Context context, ArrayList<Tag> tagList) {
+    public TagAdapter(Context context, ArrayList<String> tagList) {
         this.context = context;
         this.tagList = tagList;
         this.mLayoutInflater = LayoutInflater.from(context);
@@ -33,7 +34,7 @@ public class TagAdapter extends BaseAdapter {
     }
 
     @Override
-    public Tag getItem(int position) {
+    public String getItem(int position) {
         return tagList.get(position);
 
     }
@@ -41,7 +42,7 @@ public class TagAdapter extends BaseAdapter {
     public View getView(int position, View converView, ViewGroup parent) {
         View view = mLayoutInflater.inflate(R.layout.display_tag, null);
         TextView title =  view.findViewById(R.id.each_tag);
-        title.setText(tagList.get(position).getName());
+        title.setText(tagList.get(position));
         return view;
     }
 
