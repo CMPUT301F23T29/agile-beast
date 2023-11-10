@@ -1,7 +1,8 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,43 +13,44 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 
-import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Model.Item;
+import com.example.team29project.Controller.ItemArrayAdapter;
+import com.example.team29project.R;
+import com.example.team29project.Controller.TagAdapter;
 
 import java.util.ArrayList;
 
 /**
  * This method is called when the activity is starting.
  * It initializes the database, dataList, itemAdapter, and sets up the UI listeners.
- * @throws NullPointerException if any findViewById operation fails.
  * @see android.app.Activity#onCreate(Bundle)
  */
 public class MainActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SortFragment.OnFragmentInteractionListener,
-        FilterFragment.OnFragmentInteractionListener{
-    
+        FilterFragment.OnFragmentInteractionListener {
+
     private TextView addItem;
     private TextView editTag;
     private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
     private ListView itemsList;
-    private int itemPosition ;
+    private int itemPosition;
     private boolean isDelete;
     private TagAdapter tagAdapter;
     private boolean isSelect;
     private boolean isFilterFragmentShown = false;
     private boolean isSortFragmentShown = false;
+    private ArrayList<String> tags;
     private ArrayList<Item> selectedItems;
-
     private DatabaseController db;
    ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
            new ActivityResultContracts.StartActivityForResult(),
@@ -66,28 +68,36 @@ public class MainActivity extends AppCompatActivity implements
                        temp.setSerialNumber(newItem.getSerialNumber());
                        temp.setDescription(newItem.getDescription());
                        temp.setComment(newItem.getComment());
-                       temp.setPhotos(newItem.getPhotos());
+                       db.updatePhoto(temp,newItem.getPhotos());
                        itemAdapter.notifyDataSetChanged();
                    }
                }
            });
 
+
+
+
+    /**
+     * Creates a dialog with its components and listeners. Gets initial items and tags from database
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     * this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ImageButton menu =findViewById(R.id.menu);
+        ImageButton menu = findViewById(R.id.menu);
         Button deleteButton = findViewById(R.id.delete_button);
         selectedItems = new ArrayList<Item>();
-        isDelete= false;
-        isSelect= false;
+        isDelete = false;
+        isSelect = false;
 
         // Init lists for tags and items,
         // as well as firestore database
         db = new DatabaseController();
 
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
-        tagAdapter = new TagAdapter(this, db.getTags());
+        tagAdapter = new TagAdapter(this,db.getTags());
         itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
 
@@ -96,24 +106,28 @@ public class MainActivity extends AppCompatActivity implements
 
         itemAdapter.notifyDataSetChanged();
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * Handles the event click of the item
+             * @param parent the parent to be used
+             * @param view the view to be used
+             * @param position the position to be used
+             * @param id the id to be used
+             */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position >=0) {
-                    if(isSelect){
+                if (position >= 0) {
+                    if (isSelect) {
                         selectedItems.add(db.getItem(position));
-                    }
-
-                    else if(isDelete){
+                    } else if (isDelete) {
                         db.removeItem(position);
                         itemAdapter.notifyDataSetChanged();
-                        isDelete= false;
-                    }
-                    else {
+                        isDelete = false;
+                    } else {
                         itemPosition = position;
                         Item temp = db.getItem(position);
                         Intent display = new Intent(MainActivity.this, DisplayActivity.class);
                         display.putExtra("item", temp);
-                        display.putStringArrayListExtra("tags",db.getTags());
+                        display.putStringArrayListExtra("tags", db.getTags());
                         itemActivityResultLauncher.launch(display);
                     }
 
@@ -124,13 +138,12 @@ public class MainActivity extends AppCompatActivity implements
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isSelect){
+                if (isSelect) {
                     db.removeAllItems(selectedItems);
-                    isSelect= false;
+                    isSelect = false;
                     selectedItems.clear();
                     itemAdapter.notifyDataSetChanged();
-                }
-                else{
+                } else {
                     isDelete = true;
                 }
             }
@@ -139,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isDelete=false;
+                isDelete = false;
                 popupMenu(view);
             }
         });
@@ -168,6 +181,10 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Creates the main menu popup and shows it
+     * @param view the view to lay the popup over
+     */
     public void popupMenu(View view) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.fragment_main_menu, null);
@@ -176,8 +193,12 @@ public class MainActivity extends AppCompatActivity implements
         final PopupWindow popupWindow = new PopupWindow(popupView, 750, height, focusable);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
-        selectBtn= popupView.findViewById(R.id.select_item);
+        selectBtn = popupView.findViewById(R.id.select_item);
         selectBtn.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click event
+             * @param v the popup menu view
+             */
             @Override
             public void onClick(View v) {
                 isSelect = true;
@@ -190,8 +211,8 @@ public class MainActivity extends AppCompatActivity implements
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isSelect =false;
-                isDelete =false;
+                isSelect = false;
+                isDelete = false;
                 new InputFragment(db.getTags()).show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
@@ -200,7 +221,8 @@ public class MainActivity extends AppCompatActivity implements
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(),"Tags");
+              //  db.addTag("sss");
+                //new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(), "Tags");
 
             }
         });
@@ -209,54 +231,48 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         });
     }
-  /*  /**
-     * This method adds a new item to the "items" collection in the Firestore database.
-     * @param item The item to be added to the database.
-     * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
-     * @see com.google.firebase.firestore.CollectionReference#document(String)
-     * @see com.google.firebase.firestore.DocumentReference#set(Object)
+
+    /**
+     * Adds an item to the database
+     * @param item the item to be used
      */
-  /*  public void addItem(Item item) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("date", item.getDate());
-        data.put("value", item.getValue().toString());
-        data.put("make", item.getMake());
-        data.put("model", item.getModel());
-        data.put("serialNumber", item.getSerialNumber());
-        data.put("description", item.getDescription());
-        data.put("comment", item.getComment());
-        // Add the 'data' map to the Firestore database under a document named after the item's name.
-      /*  itemsRef
-                .document(item.getName())
-                .set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Firestore", "Document snapshot written successfully!");
-                    }
-                });
-    }*/
 
     @Override
     public void onOKPressed(Item item) {
         db.addItem(item);
     }
 
+    /**
+     * Notifies iten adapter that its contents have changed
+     * @param item the item to be used
+     */
     @Override
     public void onEditPressed(Item item) {
         itemAdapter.notifyDataSetChanged();
     }
-    @Override
-    public void onCancelPressed(){
 
+
+    /**
+     * When cancel button pressed on InputFragment
+     */
+    @Override
+    public void onCancelPressed() {
     }
 
+    /**
+     * Applies a filter to all of the items
+     * @param filterBy the filter criteria
+     * @param  data the string to match
+     */
     @Override
     public void onFilterConfirmPressed(String filterBy, String data) {
-            db.filter(filterBy, data);
-        }
-
-
+        db.filter(filterBy, data);
+    }
+    /**
+     * Sorts items based on some criteria
+     * @param sortBy criteria to sort by
+     * @param isAsc whether to reverse the order
+     */
     @Override
     public void onSortConfirmPressed(String sortBy, boolean isAsc) {
         db.sort(sortBy,isAsc);
@@ -270,50 +286,6 @@ public class MainActivity extends AppCompatActivity implements
         isSortFragmentShown = sortFragmentShown;
     }
 
-    /**
-     * This method initializes the Firestore database and sets up a snapshot listener on the "items" collection.
-     * The snapshot listener updates the dataList and notifies the itemAdapter whenever the data in the "items" collection changes.
-     * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
-     */
-    /*private void handleDatabase() {
-        db = FirebaseFirestore.getInstance();
-        itemsRef = db.collection("items");
-
-        // Add a snapshot listener to the Firestore reference 'itemsRef'
-        itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                // If there's an error with the snapshot, log the error
-                if (error != null) {
-                    Log.e("Firebase", error.toString());
-                }
-
-                // If the snapshot is not null (i.e., there's data at 'itemsRef')
-                if (value != null) {
-                    // Clear the 'dataList'
-                    dataList.clear();
-
-                    // Loop over each document in the snapshot
-                    for (QueryDocumentSnapshot doc: value) {
-                        // Retrieve various fields from the document
-                        String name = doc.getId();
-                        String date = doc.getString("date");
-                        Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
-                        String make = doc.getString("make");
-                        String model = doc.getString("model");
-                        String serialNumber = doc.getString("serialNumber");
-                        String description = doc.getString("description");
-                        String comment = doc.getString("comment");
-
-                        // Add a new 'Item' object to 'dataList' with these fields
-                        dataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
-                    }
-
-                    // refresh ListView and display the new data
-                    itemAdapter.notifyDataSetChanged();
-                }
-            }
-        });
-    }*/
+  
 }
 

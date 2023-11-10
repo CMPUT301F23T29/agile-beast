@@ -1,4 +1,4 @@
-package com.example.team29project;
+package com.example.team29project.View;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
@@ -19,12 +19,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.material.chip.Chip;
+
+import com.example.team29project.Model.Item;
+import com.example.team29project.Controller.MultiImageAdapter;
+import com.example.team29project.R;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
  * Display details of a selected inventory item
  * Allow users to view and potentially edit the item's information
  */
-public class DisplayActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener, SelectListener,PickCameraDialog.ImageOrGalleryListener {
+public class DisplayActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener, com.example.team29project.Controller.SelectListener, PickCameraDialog.ImageOrGalleryListener {
 
     private TextView itemName, itemValue, itemDate, itemMake, itemModel, itemSerialno, itemDescription, itemComment;
     private Item item;
@@ -74,6 +76,12 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
                 }
             });
 
+    /**
+     * Initializes the item detail activity. If the activity is being re-initialized after previously being shut down,
+     * this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     * this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +144,9 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
     }
 
+    /**
+     * Change Item's detail
+     */
     private void changeData() {
         itemName.setText(item.getName());
         itemValue.setText(item.getValue().toString());
@@ -151,27 +162,43 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
     }
 
+    /**
+     * Handles if ok was pressed and changes the data
+     * @param aitem the item to be used
+     */
     @Override
     public void onOKPressed(Item aitem) {
         assert item != null;
         this.item = aitem;
         changeData();
-        Intent inte = new Intent(DisplayActivity.this, MainActivity.class);
-        inte.putExtra("new_item", item);
-        setResult(Activity.RESULT_OK, inte);
+        Intent intes = new Intent(DisplayActivity.this, MainActivity.class);
+        intes.putExtra("new_item", item);
+        setResult(Activity.RESULT_OK, intes);
     }
 
+    /**
+     * Handles if edit was pressed and changes the data
+     * @param item the item to be used
+     */
     @Override
     public void onEditPressed(Item item) {
         changeData();
 
     }
+
+    /**
+     * Handles if cancel was pressed
+     */
     @Override
     public void onCancelPressed(){
         adapter.notifyDataSetChanged();
     }
 
 
+    /**
+     * Handles if an item was pressed
+     * @param position the position to be used
+     */
     @Override
     public void onItemClick(int position) {
         if(position ==0) {
@@ -185,11 +212,17 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     }
 
 
+    /**
+     * Handles if gallery photo was pressed
+     */
     @Override
     public void onGalleryPressed() {
         pictureActivityResultLauncher.launch(galleryIntent);
     }
 
+    /**
+     * Handles if the camera was pressed
+     */
     @Override
     public void onCameraPressed() {pictureActivityResultLauncher.launch(cameraIntent);
     }
