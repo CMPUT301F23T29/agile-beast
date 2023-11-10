@@ -146,7 +146,7 @@
     <ListView
         android:id="@+id/items"
         android:layout_width="409dp"
-        android:layout_height="503dp"
+        android:layout_height="0dp"
         android:background="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/footer_layout"
         app:layout_constraintEnd_toEndOf="parent"

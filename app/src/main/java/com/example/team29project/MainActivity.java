@@ -296,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onFilterConfirmPressed(String filterBy, String data) {
+
             db = FirebaseFirestore.getInstance();
 
             Query query; // Declare a Query object
@@ -353,6 +354,9 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
             });
+
+            db.filter(filterBy, data);
+
         }
 
 
@@ -363,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
+
         db = FirebaseFirestore.getInstance();
 
         // sorting the data by the sortBy field in ascending or descending order
@@ -430,6 +435,8 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
+        db.sort(sortBy,isAsc);
+
     }
 
     /**
