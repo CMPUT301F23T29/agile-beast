@@ -21,9 +21,9 @@
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
     <string name="description_hint">Enter space between words</string>
-    <string name="end_date_hint">Enter end date</string>
-    <string name="start_date_hint">Enter start date</string>
-    <string name="make_hint">Enter a make to filter by</string>
+    <string name="end_date_hint">To YYYY-MM-DD</string>
+    <string name="start_date_hint">From YYYY-MM-DD</string>
+    <string name="make_hint">Enter a make</string>
     <string-array name="sort_items">
 <!--        <item>serialNumber</item>-->
         <item>Default</item>

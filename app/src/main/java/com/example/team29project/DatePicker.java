@@ -33,6 +33,7 @@ public class DatePicker extends DialogFragment {
         // MonthPicker
         final NumberPicker yearPicker =  dialog.findViewById(R.id.picker_year);
         final NumberPicker dayPicker = dialog.findViewById(R.id.picker_date);
+        // Setting min/max value of month and year
         dayPicker.setMinValue(1);
         monthPicker.setMinValue(1);
         monthPicker.setMaxValue(12);
@@ -48,12 +49,13 @@ public class DatePicker extends DialogFragment {
             listener.onDateSet(null, yearPicker.getValue(), monthPicker.getValue(), dayPicker.getValue());
             DatePicker.this.getDialog().cancel();
         });
-        // Setting min/max value of month
-
-        // Set the default value to current year nad month
-        monthPicker.setValue(1);
-        dayPicker.setValue(1);
-        year = current.get(Calendar.YEAR);
+        // Set the default value to current year, month, and day
+       // Set the default value to current year, month, and day
+monthPicker.setValue(current.get(Calendar.MONTH) + 1); // Months are 0-indexed in Calendar
+year = current.get(Calendar.YEAR);
+int maxDays = getMaxDaysInMonth(monthPicker.getValue(), year);
+dayPicker.setMaxValue(maxDays);
+dayPicker.setValue(current.get(Calendar.DAY_OF_MONTH));
         // Set the max year to be the current year since we do not want the future date
         yearPicker.setMaxValue(year);
         yearPicker.setValue(year);
@@ -78,6 +80,7 @@ public class DatePicker extends DialogFragment {
     }
 
 
-
-
+    public void setDate(Calendar instance) {
+        current = instance;
+    }
 }
