@@ -5,10 +5,17 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ *
+ */
 public class  MultiImageViewHolder extends RecyclerView.ViewHolder {
     // Define views that you want to make clickable
     public TextView itemTextView;
 
+    /**
+     * Constructs an instance of MultiImageViewHolder
+     * @param itemView the view containing the image
+     */
     public MultiImageViewHolder(View itemView) {
         super(itemView);
 

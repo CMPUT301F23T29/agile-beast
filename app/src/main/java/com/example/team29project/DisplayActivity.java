@@ -76,6 +76,12 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
                 }
             });
 
+    /**
+     * Initializes the item detail activity. If the activity is being re-initialized after previously being shut down,
+     * this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     * this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +144,9 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
     }
 
+    /**
+     * Changes the data
+     */
     private void changeData() {
         itemName.setText(item.getName());
         itemValue.setText(item.getValue().toString());
@@ -153,6 +162,10 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
     }
 
+    /**
+     * Handles if ok was pressed and changes the data
+     * @param aitem the item to be used
+     */
     @Override
     public void onOKPressed(Item aitem) {
         assert item != null;
@@ -163,17 +176,29 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         setResult(Activity.RESULT_OK, inte);
     }
 
+    /**
+     * Handles if edit was pressed and changes the data
+     * @param item the item to be used
+     */
     @Override
     public void onEditPressed(Item item) {
         changeData();
 
     }
+
+    /**
+     * Handles if cancel was pressed
+     */
     @Override
     public void onCancelPressed(){
         adapter.notifyDataSetChanged();
     }
 
 
+    /**
+     * Handles if an item was pressed
+     * @param position the position to be used
+     */
     @Override
     public void onItemClick(int position) {
         if(position ==0) {
@@ -187,11 +212,17 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     }
 
 
+    /**
+     * Handles if gallery photo was pressed
+     */
     @Override
     public void onGalleryPressed() {
         pictureActivityResultLauncher.launch(galleryIntent);
     }
 
+    /**
+     * Handles if the camera was pressed
+     */
     @Override
     public void onCameraPressed() {pictureActivityResultLauncher.launch(cameraIntent);
     }
