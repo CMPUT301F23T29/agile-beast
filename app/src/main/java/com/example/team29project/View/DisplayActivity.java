@@ -151,7 +151,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
      */
     private void changeData() {
         itemName.setText(item.getName());
-        itemValue.setText(item.getValue().toString());
+        itemValue.setText(String.format("$ %.2f",item.getValue()));
         itemDate.setText(item.getDate());
         itemMake.setText(item.getMake());
         itemModel.setText(item.getModel());
