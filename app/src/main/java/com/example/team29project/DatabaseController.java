@@ -20,6 +20,11 @@ import androidx.annotation.NonNull;
 import java.util.Objects;
 
 public class DatabaseController {
+
+/**
+ * Represents the database
+ */
+
     private FirebaseFirestore db;
 
     // Item attributes
@@ -33,8 +38,12 @@ public class DatabaseController {
     private TagAdapter tagAdapter;
     private static final String TAG = "DatabaseController";
 
+    /**
+     * Stores the items and tags in the database
+     */
     public DatabaseController() {
 
+ 
         db = FirebaseFirestore.getInstance();
         itemsRef = db.collection("items");
         tagsRef = db.collection("tags");
@@ -63,11 +72,20 @@ public class DatabaseController {
         return new Item(name, date, itemValue, make, model, description, comment, serialNumber);
     }
 
+    /**
+     * Sets the adapters
+     * @param itemAdapter itemAdapter
+     * @param tagAdapter tagAdapter
+     */
+
     public void setAdapters(ItemArrayAdapter itemAdapter, TagAdapter tagAdapter) {
         this.itemAdapter = itemAdapter;
         this.tagAdapter = tagAdapter;
     }
 
+    /**
+     * Loads the initial tags from firebase and adds them to the tag list. Notifies the display to show the initial tags.
+     */
     public void loadInitialTags() {
         tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -97,6 +115,9 @@ public class DatabaseController {
         });
     }
 
+    /**
+     * Loads the initial items from firebase and adds them to the item list. Notifies the display to show the initial items.
+     */
     public void loadInitialItems() {
 
         itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -120,6 +141,10 @@ public class DatabaseController {
         });
     }
 
+    /**
+     * Adds an item to the Firestore database
+     * @param item the item being added
+     */
     public void addItem(Item item) {
         // Ensure data list does not already contain item with same name
         assert (!itemDataList.contains(item));
@@ -147,6 +172,10 @@ public class DatabaseController {
         itemAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Adds a tag to the Firestore database
+     * @param tag the tag being added
+     */
     public void addTag(String tag) {
         assert (!tagDataList.contains(tag));
 
@@ -161,18 +190,36 @@ public class DatabaseController {
         tagAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Returns the itemDataList
+     * @return the itemDataList containing the items
+     */
     public ArrayList<Item> getItems() {
         return itemDataList;
     }
 
+    /**
+     * Returns the tagDataList
+     * @return the tagDataList containing the tags
+     */
     public ArrayList<String> getTags() {
         return tagDataList;
     }
 
+    /**
+     * Returns the item at provided position in the itemDataList
+     * @param i the position of item in the itemDataList
+     * @return item at position i
+     */
     public Item getItem(int i) {
         return itemDataList.get(i);
     }
 
+    /**
+     * Removes a tag from the Firestore database
+     * @param i the position of tag to be deleted in the tagDataList
+     * @return the tag that was deleted
+     */
     public String removeTag(int i) {
         assert (i < this.tagDataList.size());
 
@@ -190,6 +237,11 @@ public class DatabaseController {
         return toDeleteTag;
     }
 
+    /**
+     * Removes an item from the Firestore database
+     * @param i the position of item to be deleted in the itemDataList
+     * @return the item that was deleted
+     */
     public Item removeItem(int i) {
         assert (i < this.itemDataList.size());
 
@@ -209,6 +261,11 @@ public class DatabaseController {
         return toDeleteItem;
     }
 
+    /**
+     * Removed all items from the list
+     * @param items the items in the ArrayList
+     * @return the empty itemDataList
+     */
     public boolean removeAllItems(ArrayList<Item> items) {
         return this.itemDataList.removeAll(items);
     }

@@ -20,7 +20,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+
 import java.util.Calendar;
+
+
+/**
+ * A dialog to filter items on the main menu
+ */
 
 public class FilterFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
@@ -32,6 +38,10 @@ public class FilterFragment extends DialogFragment {
         ((MainActivity) getActivity()).setFilterFragmentShown(false);
     }
 
+    /**
+     * Assign the fragment listener if context is a valid instance f one, and display a success message to the user
+     * @param context the context to be used
+     */
     @Override
     public void onAttach(@NonNull Context context) {
 
@@ -43,6 +53,14 @@ public class FilterFragment extends DialogFragment {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
     }
+
+    /**
+     * Initializes the filter activity
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return the dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -169,6 +187,9 @@ public class FilterFragment extends DialogFragment {
                 .create();
     }
 
+    /**
+     * An interface containing a method for when a new filter should be applied
+     */
     public interface OnFragmentInteractionListener {
         void onFilterConfirmPressed(String filterBy, String data);
     }

@@ -42,23 +42,40 @@ public class InputFragment extends DialogFragment {
     private int dayDate;
     private ArrayList<String> tags;
 
+    /**
+     * set current item to null and set tags
+     * @param tags the tags to be used
+     */
     public InputFragment(ArrayList<String> tags) {
         this.item = null;
         this.tags = tags;
     }
 
+    /**
+     * Set item and teags
+     * @param aItem an item to be used
+     * @param tags tags to be used
+     */
     public InputFragment(Item aItem,ArrayList<String> tags) {
         this.item = aItem;
         this.tags = tags;
     }
     private OnFragmentsInteractionListener listener;
 
+    /**
+     * Interface for user interaction with fragments
+     */
     public interface OnFragmentsInteractionListener {
         void onOKPressed(Item item);
         void onEditPressed(Item item);
         void onCancelPressed();
 
     }
+
+    /**
+     * Assign the FragmentInteractionListener
+     * @param context FragmentInteractionListener
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -68,6 +85,10 @@ public class InputFragment extends DialogFragment {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
     }
+
+    /**
+     * Create key listener to dismiss dialog when back key is released
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -81,6 +102,16 @@ public class InputFragment extends DialogFragment {
             return false;
         });
     }
+
+
+
+    /**
+     * Create a dialog to edit the details of an item
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return the dialog
+     */
 
     @NonNull
     @Override
@@ -177,6 +208,11 @@ public class InputFragment extends DialogFragment {
         });
         return builder.create();
     }
+
+    /**
+     * Get the item properties from a given item
+     * @param item the item to collect data from
+     */
     public void writeData(Item item){
         itemValue.setText(String.format("%.2f",item.getValue()));
         itemName.setText(item.getName());

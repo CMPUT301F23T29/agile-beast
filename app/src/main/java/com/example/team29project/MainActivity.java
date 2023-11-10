@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -47,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isSelect;
     private boolean isFilterFragmentShown = false;
     private boolean isSortFragmentShown = false;
+
+
+
     private ArrayList<Item> selectedItems;
 
     private DatabaseController db;
@@ -72,6 +76,12 @@ public class MainActivity extends AppCompatActivity implements
                }
            });
 
+
+    /**
+     * Creates a dialog with its components and listeners. Gets initial items and tags from database
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     * this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +106,13 @@ public class MainActivity extends AppCompatActivity implements
 
         itemAdapter.notifyDataSetChanged();
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * Handles the event click of the item
+             * @param parent the parent to be used
+             * @param view the view to be used
+             * @param position the position to be used
+             * @param id the id to be used
+             */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position >=0) {
@@ -168,6 +185,10 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Creates the main menu popup and shows it
+     * @param view the view to lay the popup over
+     */
     public void popupMenu(View view) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.fragment_main_menu, null);
@@ -178,6 +199,10 @@ public class MainActivity extends AppCompatActivity implements
         addItem = popupView.findViewById(R.id.add_new_item);
         selectBtn= popupView.findViewById(R.id.select_item);
         selectBtn.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click event
+             * @param v the popup menu view
+             */
             @Override
             public void onClick(View v) {
                 isSelect = true;
@@ -209,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         });
     }
-  /*  /**
+    /*  /**
      * This method adds a new item to the "items" collection in the Firestore database.
      * @param item The item to be added to the database.
      * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
@@ -237,50 +262,143 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }*/
 
+    /**
+     * Adds an item to the database
+     * @param item the item to be used
+     */
+
     @Override
     public void onOKPressed(Item item) {
         db.addItem(item);
     }
 
+    /**
+     * Notifies iten adapter that its contents have changed
+     * @param item the item to be used
+     */
     @Override
     public void onEditPressed(Item item) {
         itemAdapter.notifyDataSetChanged();
     }
+
+    /**
+     *
+     */
     @Override
     public void onCancelPressed(){
 
     }
 
+    /**
+     * Applies a filter to all of the items
+     * @param filterBy the filter criteria
+     * @param  data the string to match
+     */
     @Override
     public void onFilterConfirmPressed(String filterBy, String data) {
+
+            db = FirebaseFirestore.getInstance();
+
+            Query query; // Declare a Query object
+
+            if(filterBy.equals("make")) {
+                query = db.collection("items").whereEqualTo("make", data);
+            } else if (filterBy.equals("date")) {
+                //TODO date range
+                query = db.collection("items");//need to change this query
+            } else if (filterBy.equals("description")) {
+                //TODO multiple description words or most number of words matched
+                query = db.collection("items");//need to change this query
+            } else {
+                query = db.collection("items");
+            }
+
+            // Add a snapshot listener to the Firestore query
+            query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                /**
+                 * Handles a Firebase event
+                 * @param  value value to be used
+                 * @param error any error that occurs
+                 */
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    // If there's an error with the snapshot, log the error
+                    if (error != null) {
+                        Log.e("Firebase", error.toString());
+                    }
+
+                    // If the snapshot is not null (i.e., there's data at 'itemsRef')
+                    if (value != null) {
+                        // Clear the 'dataList'
+                        dataList.clear();
+
+                        // Loop over each document in the snapshot
+                        for (QueryDocumentSnapshot doc: value) {
+                            // Retrieve various fields from the document
+                            String name = doc.getId();
+                            String date = doc.getString("date");
+                            Number itemValue = Float.parseFloat(Objects.requireNonNull(doc.getString("value")));
+
+                            String make = doc.getString("make");
+                            String model = doc.getString("model");
+                            String serialNumber = doc.getString("serialNumber");
+                            String description = doc.getString("description");
+                            String comment = doc.getString("comment");
+
+                            // Add a new 'Item' object to 'dataList' with these fields
+                            dataList.add(new Item(name, date, (Double) itemValue, make, model, description, comment, serialNumber));
+                        }
+
+                        // refresh ListView and display the new data
+                        itemAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+
             db.filter(filterBy, data);
+
         }
 
 
+    /**
+     * Sorts items based on some criteria
+     * @param sortBy criteria to sort by
+     * @param isAsc whether to reverse the order
+     */
     @Override
     public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
-        db.sort(sortBy,isAsc);
-    }
 
-    public void setFilterFragmentShown(boolean filterFragmentShown) {
-        isFilterFragmentShown = filterFragmentShown;
-    }
-
-    public void setSortFragmentShown(boolean sortFragmentShown) {
-        isSortFragmentShown = sortFragmentShown;
-    }
-
-    /**
-     * This method initializes the Firestore database and sets up a snapshot listener on the "items" collection.
-     * The snapshot listener updates the dataList and notifies the itemAdapter whenever the data in the "items" collection changes.
-     * @throws FirebaseFirestoreException if any Firebase Firestore operation fails.
-     */
-    /*private void handleDatabase() {
         db = FirebaseFirestore.getInstance();
-        itemsRef = db.collection("items");
 
-        // Add a snapshot listener to the Firestore reference 'itemsRef'
-        itemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        // sorting the data by the sortBy field in ascending or descending order
+        Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
+        Query query; // New Query variable
+        sortBy=sortBy.toLowerCase();
+        if (sortBy.equals("date")) {
+            query = db.collection("items").orderBy("date", direction);
+        } else if (sortBy.equals("value")) {
+            query = db.collection("items").orderBy("value", direction);
+        } else if (sortBy.equals("make")) {
+            query = db.collection("items").orderBy("make", direction);
+        } else if (sortBy.equals("model")) {
+            query = db.collection("items").orderBy("model", direction);
+        } else if (sortBy.equals("serialnumber")) {
+            query = db.collection("items").orderBy("serialnumber", direction);
+        } else if (sortBy.equals("description")) {
+            query = db.collection("items").orderBy("description", direction);
+        } else if (sortBy.equals("comment")) {
+            query = db.collection("items").orderBy("comment", direction);
+        } else {
+            query = db.collection("items");
+        }
+
+        // Add a snapshot listener to the Firestore query
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            /**
+             * Handles firebase event
+             * @param value to be used
+             * @param error any error that occurs
+             */
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 // If there's an error with the snapshot, log the error
@@ -292,6 +410,9 @@ public class MainActivity extends AppCompatActivity implements
                 if (value != null) {
                     // Clear the 'dataList'
                     dataList.clear();
+
+                    //TODO figure out how to deal with null values
+
 
                     // Loop over each document in the snapshot
                     for (QueryDocumentSnapshot doc: value) {
@@ -306,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements
                         String comment = doc.getString("comment");
 
                         // Add a new 'Item' object to 'dataList' with these fields
-                        dataList.add(new Item(name, date, itemValue, make, model, description, comment, serialNumber));
+                        dataList.add(new Item(name, date, (Double) itemValue, make, model, description, comment, serialNumber));
                     }
 
                     // refresh ListView and display the new data
@@ -314,6 +435,18 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
-    }*/
+        db.sort(sortBy,isAsc);
+
+    }
+
+    public void setFilterFragmentShown(boolean filterFragmentShown) {
+        isFilterFragmentShown = filterFragmentShown;
+    }
+
+    public void setSortFragmentShown(boolean sortFragmentShown) {
+        isSortFragmentShown = sortFragmentShown;
+    }
+
+  
 }
 
