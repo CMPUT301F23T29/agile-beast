@@ -2,8 +2,9 @@ package com.example.team29project;
 
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.Nullable;
-
+import java.util.Arrays;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -12,9 +13,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
+import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
+import androidx.annotation.NonNull;
 import java.util.Objects;
 
 public class DatabaseController {
@@ -29,6 +31,7 @@ public class DatabaseController {
     private final CollectionReference tagsRef;
     private final ArrayList<String> tagDataList;
     private TagAdapter tagAdapter;
+    private static final String TAG = "DatabaseController";
 
     public DatabaseController() {
 
@@ -213,18 +216,52 @@ public class DatabaseController {
     public void filter(String filterBy, String data) {
         db = FirebaseFirestore.getInstance();
 
-        Query query; // Declare a Query object
+        Query query = db.collection("items");
 
         if(filterBy.equals("make")) {
             query = db.collection("items").whereEqualTo("make", data);
         } else if (filterBy.equals("date")) {
-            //TODO date range
-            query = db.collection("items");//need to change this query
+            String[] dates = data.split(",");
+            if (dates.length == 2) {
+                String startDate = dates[0].trim();
+                String endDate = dates[1].trim();
+                query = db.collection("items")
+                    .whereGreaterThanOrEqualTo("date", startDate)
+                    .whereLessThanOrEqualTo("date", endDate);
+            }
         } else if (filterBy.equals("description")) {
-            //TODO multiple description words or most number of words matched
-            query = db.collection("items");//need to change this query
-        } else {
+            final ArrayList<String> words = new ArrayList<>(Arrays.asList(data.toLowerCase().split("\\s+")));
+
             query = db.collection("items");
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        itemDataList.clear();
+
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String description = document.getString("description");
+                            boolean containsAllWords = true;
+                            for (String word : words) {
+                                if (!description.toLowerCase().contains(word)) {
+                                    containsAllWords = false;
+                                    break;
+                                }
+                            }
+                            if (containsAllWords) {
+                                Item item = createItemFromDoc(document);
+                                itemDataList.add(item);
+                            }
+                        }
+
+                        itemAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                }
+            });
+        } else {
+            query = db.collection("items");// print everything
         }
 
         // Add a snapshot listener to the Firestore query
