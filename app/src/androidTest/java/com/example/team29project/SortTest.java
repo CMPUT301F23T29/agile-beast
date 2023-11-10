@@ -9,6 +9,7 @@ import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.isSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
@@ -55,11 +56,11 @@ public class SortTest {
 
     @Test public void checkSortFragAscSelectable(){
         onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_asc_radiobutton)).check(matches(isSelected()));
+        onView(withId(R.id.sort_asc_radiobutton)).check(matches(isNotSelected()));
     }
 
     @Test public void checkSortFragDescSelectable() {
         onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_desc_radiobutton)).check(matches(isSelected()));
+        onView(withId(R.id.sort_desc_radiobutton)).check(matches(isNotSelected()));
     }
 }

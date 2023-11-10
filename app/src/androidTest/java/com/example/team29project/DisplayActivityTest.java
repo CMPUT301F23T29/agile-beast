@@ -14,6 +14,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -35,6 +36,6 @@ public class DisplayActivityTest {
             new ActivityScenarioRule<MainActivity>(MainActivity.class);
 
     @Test public void checkItemDetailsDisplayed(){
-        onData(is(instanceOf(Item.class))).inAdapterView(withId(R.id.items)).atPosition(0).perform(click());
+        onData(allOf(instanceOf(Item.class))).inAdapterView(withId(R.id.items)).atPosition(0).perform(click());
     }
 }
