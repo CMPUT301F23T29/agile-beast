@@ -18,6 +18,13 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import java.util.ArrayList;
+
 import java.util.ArrayList;
 /**
  * This method is called when the activity is starting.
@@ -39,11 +46,33 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isDelete;
     private TagAdapter tagAdapter;
     private boolean isSelect;
-
-
+    private boolean isFilterFragmentShown = false;
+    private boolean isSortFragmentShown = false;
     private ArrayList<Item> selectedItems;
+    private DatabaseController db;
+   ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
+           new ActivityResultContracts.StartActivityForResult(),
+           new ActivityResultCallback<ActivityResult>() {
+               @Override
+               public void onActivityResult(ActivityResult result) {
+                   if (result.getData() !=null) {
+                       Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
+                       Item temp = db.getItem(itemPosition);
+                       temp.setName(newItem.getName());
+                       temp.setDate(newItem.getDate());
+                       temp.setValue(newItem.getValue());
+                       temp.setMake(newItem.getMake());
+                       temp.setModel(newItem.getModel());
+                       temp.setSerialNumber(newItem.getSerialNumber());
+                       temp.setDescription(newItem.getDescription());
+                       temp.setComment(newItem.getComment());
+                       temp.setPhotos(newItem.getPhotos());
+                       itemAdapter.notifyDataSetChanged();
+                   }
+               }
+           });
 
-    private Database db;
+   /* private Database db;
     ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -66,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
             });
+            */
+
 
 
     /**
@@ -84,8 +115,8 @@ public class MainActivity extends AppCompatActivity implements
         isSelect = false;
 
         // Init lists for tags and items,
-
-        db = new Database();
+        // as well as firestore database
+        db = new DatabaseController();
 
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
         tagAdapter = new TagAdapter(this, db.getTags());
@@ -148,19 +179,25 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        Button filterButton = (Button) findViewById(R.id.filter_button);
+        Button filterButton = findViewById(R.id.filter_button);
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new FilterFragment().show(getSupportFragmentManager(), "Filter");
+                if (!isFilterFragmentShown) {
+                    isFilterFragmentShown = true;
+                    new FilterFragment().show(getSupportFragmentManager(), "Filter");
+                }
             }
         });
 
-        Button sortButton = (Button) findViewById(R.id.sort_by_button);
+        Button sortButton = findViewById(R.id.sort_by_button);
         sortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SortFragment().show(getSupportFragmentManager(), "Sort");
+                if (!isSortFragmentShown) {
+                    isSortFragmentShown = true;
+                    new SortFragment().show(getSupportFragmentManager(), "Sort");
+                }
             }
         });
 
@@ -264,13 +301,10 @@ public class MainActivity extends AppCompatActivity implements
 
 
     /**
-     *
+     * When cancel button pressed on InputFragment
      */
-
-
     @Override
     public void onCancelPressed() {
-
     }
 
     /**
@@ -344,7 +378,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
 
-
     /**
      * Sorts items based on some criteria
      * @param sortBy criteria to sort by
@@ -352,8 +385,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
-
-
         db = FirebaseFirestore.getInstance();
 
         // sorting the data by the sortBy field in ascending or descending order
@@ -426,6 +457,14 @@ public class MainActivity extends AppCompatActivity implements
    
     }
 
+    public void setFilterFragmentShown(boolean filterFragmentShown) {
+        isFilterFragmentShown = filterFragmentShown;
+    }
 
+    public void setSortFragmentShown(boolean sortFragmentShown) {
+        isSortFragmentShown = sortFragmentShown;
+    }
+
+  
 }
 

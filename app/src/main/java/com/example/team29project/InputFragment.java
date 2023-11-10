@@ -47,7 +47,6 @@ public class InputFragment extends DialogFragment {
      * set current item to null and set tags
      * @param tags the tags to be used
      */
-
     public InputFragment(ArrayList<String> tags) {
         this.item = null;
         this.tags = tags;
@@ -106,6 +105,7 @@ public class InputFragment extends DialogFragment {
     }
 
 
+
     /**
      * Create a dialog to edit the details of an item
      * @param savedInstanceState The last saved instance state of the Fragment,
@@ -113,6 +113,7 @@ public class InputFragment extends DialogFragment {
      *
      * @return the dialog
      */
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -144,16 +145,15 @@ public class InputFragment extends DialogFragment {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 DatePicker dat = new DatePicker();
                 dat.setListener(r);
+                // Set the date to the current date
+                dat.setDate(Calendar.getInstance());
                 dat.show(getChildFragmentManager(), "DatePicker");
             }
             return true;
         });
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         // TODO set up filter chips of all tags (from firestore) and select ones already tagged by the item
-
         // TODO set add tag and scan button listeners
-
         builder.setView(view);
         builder.setTitle("Add new item");
         // When cancel button pressed

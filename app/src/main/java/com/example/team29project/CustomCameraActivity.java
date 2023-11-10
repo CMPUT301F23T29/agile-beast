@@ -129,7 +129,7 @@ public class CustomCameraActivity extends AppCompatActivity {
                     });
                     reTryButton.setOnClickListener(v -> startCamera());
                 });
-            }
+            
 
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
