@@ -27,7 +27,6 @@ public class DisplayActivityTest {
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
     @Test public void checkEditFragmentDisplayed(){
-        Intent intent =
         onView(withId(R.id.edit_button)).perform(click());
         onView(withId(R.id.fragment_input)).check(matches(isDisplayed()));
     }

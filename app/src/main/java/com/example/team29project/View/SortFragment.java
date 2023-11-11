@@ -89,6 +89,8 @@ public class SortFragment extends DialogFragment {
      * An interface for sort dialog listeners
      */
     public interface OnFragmentInteractionListener {
+        void onSortConfirmPressed(String sortBy, boolean isAsc);
+
         void onSortConfirmPressed(String sortBy, Boolean isAsc);
     }
 }
