@@ -17,13 +17,17 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.ItemCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.MultiImageAdapter;
 import com.example.team29project.R;
@@ -35,7 +39,13 @@ import java.util.ArrayList;
  * Display details of a selected inventory item
  * Allow users to view and potentially edit the item's information
  */
-public class DisplayActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener, com.example.team29project.Controller.SelectListener, PickCameraDialog.ImageOrGalleryListener {
+public class DisplayActivity extends AppCompatActivity implements
+        InputFragment.OnFragmentsInteractionListener,
+        com.example.team29project.Controller.SelectListener,
+        PickCameraDialog.ImageOrGalleryListener,
+        ItemCallback
+
+{
 
     private TextView itemName, itemValue, itemDate, itemMake, itemModel, itemSerialno, itemDescription, itemComment;
     private Item item;
@@ -47,6 +57,8 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     ArrayList<String> photo_string ;
 
     ArrayList<String> tags;
+
+    DatabaseController db;
     ActivityResultLauncher<Intent> pictureActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -73,6 +85,7 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
                         }
                     }
+                    db.updatePhoto(item, photo_string);
                 }
             });
 
@@ -87,9 +100,9 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
         Intent ints = getIntent();
-        item = (Item) ints.getSerializableExtra("item");
-        tags = ints.getStringArrayListExtra("tags");
-        photo_string = item.getPhotos();
+        String documentId = ints.getStringExtra("documentId");
+        db = new DatabaseController();
+        db.getItem(documentId, this);
         Button backBton = findViewById(R.id.back_button);
         Button editBton = findViewById(R.id.edit_button);
         tagGroup = findViewById(R.id.tagGroup);
@@ -108,6 +121,31 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         galleryIntent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         cameraIntent = new Intent(DisplayActivity.this, CustomCameraActivity.class);
 
+
+
+
+        backBton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               /* Intent resultIntent = new Intent();
+                resultIntent.putExtra( "changed_item",item);
+                setResult(Activity.RESULT_OK,resultIntent);*/
+                finish();
+            }
+        });
+
+        editBton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new InputFragment(db,item).show(getSupportFragmentManager(), "Edit");
+            }
+        });
+
+    }
+    @Override
+    public void onItemLoaded(Item newItem) {
+        item = newItem;
+        photo_string = item.getPhotos();
         if(photo_string.size()==0){
             int resourceId = R.drawable.plus;
             Resources resources = getResources();
@@ -118,31 +156,17 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
             photo_string.add(uris.toString());
         }
-       adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this);
-       imageListView.setAdapter(adapter);
-       imageListView.setLayoutManager(new LinearLayoutManager(DisplayActivity.this, LinearLayoutManager.HORIZONTAL, false));
-       changeData();
-
-
-
-        backBton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra( "changed_item",item);
-                setResult(Activity.RESULT_OK,resultIntent);
-                finish();
-            }
-        });
-
-        editBton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new InputFragment(item,tags).show(getSupportFragmentManager(), "Edit");
-            }
-        });
+        adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this);
+        imageListView.setAdapter(adapter);
+        imageListView.setLayoutManager(new LinearLayoutManager(DisplayActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        changeData();
 
     }
+    @Override
+    public void onFailure(Exception e) {
+        Toast.makeText(DisplayActivity.this, "Failed to find", Toast.LENGTH_SHORT).show();
+    }
+
 
     /**
      * Change Item's detail
@@ -178,12 +202,10 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
 
     /**
      * Handles if edit was pressed and changes the data
-     * @param item the item to be used
      */
     @Override
-    public void onEditPressed(Item item) {
+    public void onEditPressed() {
         changeData();
-
     }
 
     /**
@@ -202,11 +224,11 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     @Override
     public void onItemClick(int position) {
         if(position ==0) {
-            new PickCameraDialog().show(getSupportFragmentManager(),"Photo");
-
+            new PickCameraDialog().show(getSupportFragmentManager(), "Photo");
         }
         else {
             photo_string.remove(position);
+            db.updatePhoto(item,photo_string);
             adapter.notifyDataSetChanged();
         }
     }

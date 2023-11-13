@@ -18,6 +18,7 @@ public class Item implements Serializable, Comparable {
 
     private ArrayList<String> photos;
     private ArrayList<String> tags;
+    private String docId ;
 
     /**
      * Constructs an instance of item
@@ -230,6 +231,13 @@ public class Item implements Serializable, Comparable {
      */
     public void setValue(Double value) {
         this.value = value;
+    }
+
+    public void setDocId(String id){
+        this.docId =id;
+    }
+    public  String getDocId(){
+        return this.docId;
     }
 
 
