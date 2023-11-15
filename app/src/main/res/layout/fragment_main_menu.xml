@@ -10,52 +10,50 @@
 
 
     <TextView
-        android:id ="@+id/menu_layout"
+        android:id="@+id/menu_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Main Menu"
-        android:textSize="28sp"
-        android:fontFamily="monospace"
-        android:textStyle="bold"
+        android:layout_marginLeft="24sp"
         android:layout_marginTop="20sp"
-        android:layout_marginLeft="23sp"
+        android:layout_marginBottom="24dp"
+        android:fontFamily="monospace"
+        android:text="Main Menu"
         android:textColor="@color/menu_page_text"
-        android:paddingBottom = "60sp"
-        />
+        android:textSize="40dp"
+        android:textStyle="bold" />
 
     <TextView
-        android:id ="@+id/select_item"
+        android:id="@+id/select_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="24sp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="monospace"
         android:text="Select"
-        android:fontFamily="monospace"
-        android:textSize="20sp"
-        android:textColor = "@color/white"
-        android:layout_marginLeft="23sp"
+        android:textColor="@color/white"
 
-        />
+        android:textSize="32dp" />
 
     <TextView
-        android:id ="@+id/add_new_item"
+        android:id="@+id/add_new_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="24sp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="monospace"
         android:text="Add New"
-        android:fontFamily="monospace"
-        android:textSize="20sp"
-        android:textColor = "@color/white"
-        android:layout_marginLeft="23sp"
-        />
+        android:textColor="@color/white"
+        android:textSize="32dp" />
 
     <TextView
-        android:id ="@+id/edit_tag_item"
+        android:id="@+id/edit_tag_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Tag"
+        android:layout_marginLeft="24sp"
         android:fontFamily="monospace"
-        android:textSize="20sp"
-        android:textColor = "@color/white"
-        android:layout_marginLeft="23sp"
-        />
+        android:text="Edit Tag"
+        android:textColor="@color/white"
+        android:textSize="32dp" />
 
 
 </LinearLayout>
