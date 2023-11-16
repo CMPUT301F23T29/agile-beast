@@ -62,31 +62,6 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayList<Integer> selectedItems;
     private DatabaseController db;
 
-   ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
-           new ActivityResultContracts.StartActivityForResult(),
-           new ActivityResultCallback<ActivityResult>() {
-               @Override
-               public void onActivityResult(ActivityResult result) {
-                   if (result.getData() !=null) {
-                       Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
-                       Item temp = db.getItem(itemPosition);
-                       temp.setName(newItem.getName());
-                       temp.setDate(newItem.getDate());
-                       temp.setValue(newItem.getValue());
-                       temp.setMake(newItem.getMake());
-                       temp.setModel(newItem.getModel());
-                       temp.setSerialNumber(newItem.getSerialNumber());
-                       temp.setDescription(newItem.getDescription());
-                       temp.setComment(newItem.getComment());
-                       db.updatePhoto(temp,newItem.getPhotos());
-                       itemAdapter.notifyDataSetChanged();
-                       updateSum();
-                   }
-               }
-           });
-
-
-
 
     /**
      * Creates a dialog with its components and listeners. Gets initial items and tags from database
@@ -134,9 +109,8 @@ public class MainActivity extends AppCompatActivity implements
                         itemPosition = position;
                         Intent display = new Intent(MainActivity.this, ImageViewActivity.class);
                         display.putExtra("documentId", db.getItem(position).getDocId());
-                        //display.putStringArrayListExtra("tags", db.getTags());
+
                         startActivity(display);
-                       // itemActivityResultLauncher.launch(display);
                     }
 
                 }
