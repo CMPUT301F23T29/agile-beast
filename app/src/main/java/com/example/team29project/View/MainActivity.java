@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -146,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements
                     selectedItems.clear();
                     itemAdapter.notifyDataSetChanged();
                 } else {
+                    Toast.makeText(MainActivity.this, "Delete mode activated. Click on an item to delete.", Toast.LENGTH_SHORT).show();
                     isDelete = true;
                 }
             }
@@ -216,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements
              */
             @Override
             public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Select mode activated. Click on items to select them.", Toast.LENGTH_SHORT).show();
                 isSelect = true;
                 isDelete = false;
                 popupWindow.dismiss();
@@ -292,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param isAsc whether to reverse the order
      */
     @Override
-    public void onSortConfirmPressed(String sortBy, boolean isAsc) {
+    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
         db.sort(sortBy,isAsc);
     }
 
@@ -304,10 +308,5 @@ public class MainActivity extends AppCompatActivity implements
         isSortFragmentShown = sortFragmentShown;
     }
 
-
-    @Override
-    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
-
-    }
 }
 
