@@ -19,7 +19,7 @@
         android:fontFamily="monospace"
         android:text="Main Menu"
         android:textColor="@color/menu_page_text"
-        android:textSize="40dp"
+        android:textSize="32dp"
         android:textStyle="bold" />
 
     <TextView
@@ -32,7 +32,7 @@
         android:text="Select"
         android:textColor="@color/white"
 
-        android:textSize="32dp" />
+        android:textSize="26dp" />
 
     <TextView
         android:id="@+id/add_new_item"
@@ -43,7 +43,7 @@
         android:fontFamily="monospace"
         android:text="Add New"
         android:textColor="@color/white"
-        android:textSize="32dp" />
+        android:textSize="26dp" />
 
     <TextView
         android:id="@+id/edit_tag_item"
@@ -53,7 +53,7 @@
         android:fontFamily="monospace"
         android:text="Edit Tag"
         android:textColor="@color/white"
-        android:textSize="32dp" />
+        android:textSize="26dp" />
 
 
 </LinearLayout>

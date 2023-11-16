@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param isAsc whether to reverse the order
      */
     @Override
-    public void onSortConfirmPressed(String sortBy, boolean isAsc) {
+    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
         db.sort(sortBy,isAsc);
     }
 
@@ -304,10 +304,5 @@ public class MainActivity extends AppCompatActivity implements
         isSortFragmentShown = sortFragmentShown;
     }
 
-
-    @Override
-    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
-
-    }
 }
 

@@ -16,10 +16,11 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="match_parent"
+        android:layout_width="289dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/border_black"
         android:gravity="center"
         android:text="@string/add_item"
         android:textColor="@color/button_text"
