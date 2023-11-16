@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
-//       ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -216,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  db.addTag("sss");
                 //new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(), "Tags");
 
             }
