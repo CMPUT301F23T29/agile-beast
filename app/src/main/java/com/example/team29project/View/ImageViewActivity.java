@@ -36,7 +36,7 @@ import java.util.UUID;
  * Display details of a selected inventory item
  * Allow users to view and potentially edit the item's information
  */
-public class DisplayActivity extends AppCompatActivity implements
+public class ImageViewActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SelectListener, PickCameraDialog.ImageOrGalleryListener,
         ItemCallback, OnPhotoUploadCompleteListener
@@ -68,7 +68,7 @@ public class DisplayActivity extends AppCompatActivity implements
                         if (clipData == null) {
                             String uniqueId = UUID.randomUUID().toString();
                             photo_string.add(uniqueId);
-                            db.uploadPhoto(data.getData(),DisplayActivity.this,uniqueId,1);
+                            db.uploadPhoto(data.getData(),ImageViewActivity.this,uniqueId,1);
                            // adapter.notifyDataSetChanged();
                         } else {
                             for (int i = 0; i < clipData.getItemCount(); i++) {
@@ -77,7 +77,7 @@ public class DisplayActivity extends AppCompatActivity implements
                                    String uniqueId = UUID.randomUUID().toString();
                                     photo_string.add(uniqueId);
                                   // photo_string.add(imageUri.toString());
-                                  db.uploadPhoto(imageUri,DisplayActivity.this,uniqueId,i+1);
+                                  db.uploadPhoto(imageUri,ImageViewActivity.this,uniqueId,i+1);
                                 } catch (Exception e) {
                                     Log.e(TAG, "File select error", e);
                                 }
@@ -119,7 +119,7 @@ public class DisplayActivity extends AppCompatActivity implements
         galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         galleryIntent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        cameraIntent = new Intent(DisplayActivity.this, CustomCameraActivity.class);
+        cameraIntent = new Intent(ImageViewActivity.this, CustomCameraActivity.class);
 
 
         backBton.setOnClickListener(view -> {
@@ -143,7 +143,7 @@ public class DisplayActivity extends AppCompatActivity implements
 
         adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this,db);
         imageListView.setAdapter(adapter);
-        imageListView.setLayoutManager(new LinearLayoutManager(DisplayActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        imageListView.setLayoutManager(new LinearLayoutManager(ImageViewActivity.this, LinearLayoutManager.HORIZONTAL, false));
         changeData();
 
     }
@@ -151,7 +151,7 @@ public class DisplayActivity extends AppCompatActivity implements
 
     @Override
     public void onFailure(Exception e) {
-        Toast.makeText(DisplayActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ImageViewActivity.this, "Failed", Toast.LENGTH_SHORT).show();
     }
     /**
      * Change Item's detail
@@ -180,7 +180,7 @@ public class DisplayActivity extends AppCompatActivity implements
         assert item != null;
         this.item = aitem;
         changeData();
-        Intent intes = new Intent(DisplayActivity.this, MainActivity.class);
+        Intent intes = new Intent(ImageViewActivity.this, MainActivity.class);
         intes.putExtra("new_item", item);
         setResult(Activity.RESULT_OK, intes);
     }

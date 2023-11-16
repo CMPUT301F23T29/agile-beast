@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements
                         isDelete = false;
                     } else {
                         itemPosition = position;
-                        Intent display = new Intent(MainActivity.this, DisplayActivity.class);
+                        Intent display = new Intent(MainActivity.this, ImageViewActivity.class);
                         display.putExtra("documentId", db.getItem(position).getDocId());
                         //display.putStringArrayListExtra("tags", db.getTags());
                         startActivity(display);
