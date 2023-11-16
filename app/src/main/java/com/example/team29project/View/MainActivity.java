@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements
                     if (isSelect) {
                         selectedItems.add(position);
                     } else if (isDelete) {
+
                         db.removeItem(position);
                         itemAdapter.notifyDataSetChanged();
                         isDelete = false;
