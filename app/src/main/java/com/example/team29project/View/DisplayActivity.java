@@ -148,6 +148,11 @@ public class DisplayActivity extends AppCompatActivity implements
         });
 
     }
+
+    /**
+     * This is called when it runs through load initalize items
+     * @param newItem
+     */
     @Override
     public void onItemLoaded(Item newItem) {
         item = newItem;
