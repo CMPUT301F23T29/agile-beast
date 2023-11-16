@@ -90,7 +90,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_weight="0.8"
         android:background="@color/button_text"
         android:orientation="horizontal"
@@ -100,13 +100,13 @@
 
         <TextView
             android:id="@+id/item_name"
-            android:layout_width="60dp"
+            android:layout_width="70dp"
             android:layout_height="30dp"
+            android:layout_gravity="center"
             android:layout_margin="8dp"
             android:text="Name"
-            android:layout_gravity="center"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="26dp" />
 
         <View
             android:layout_width="1dp"
@@ -120,12 +120,12 @@
             android:id="@+id/item_date"
             android:layout_width="130dp"
             android:layout_height="30sp"
+            android:layout_gravity="center"
             android:layout_margin="5dp"
             android:fontFamily="monospace"
             android:text="Date"
-            android:layout_gravity="center"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="26dp" />
 
         <View
             android:layout_width="1dp"
@@ -138,12 +138,12 @@
             android:id="@+id/item_value"
             android:layout_width="100dp"
             android:layout_height="30dp"
+            android:layout_gravity="center"
             android:layout_margin="5dp"
             android:fontFamily="monospace"
             android:text="Value"
-            android:layout_gravity="center"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="26dp" />
 
     </LinearLayout>
 
@@ -176,9 +176,9 @@
 
         <ImageButton
             android:id="@+id/menu"
-            android:layout_width="63dp"
-            android:layout_height="64dp"
-            android:layout_margin="8dp"
+            android:layout_width="75dp"
+            android:layout_height="78dp"
+            android:layout_margin="16dp"
             android:contentDescription="Menu button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
