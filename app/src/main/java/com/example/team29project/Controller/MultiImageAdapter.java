@@ -2,6 +2,7 @@ package com.example.team29project.Controller;
 
 import android.content.Context;
 import android.net.Uri;
+import android.net.UrlQuerySanitizer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,12 @@ import java.util.ArrayList;
 /**
  * Helper class to hold an array of images
  */
-public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
+public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder> {
     private ArrayList<String> mData;
     private Context mContext ;
 
     private com.example.team29project.Controller.SelectListener itemClickListener;
+    private DatabaseController db;
 
 
     /**
@@ -31,12 +33,12 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
      * @param context the context to be used
      * @param itemClickListener the callback for when an image is clicked
      */
-    public MultiImageAdapter(ArrayList<String> list, Context context, com.example.team29project.Controller.SelectListener itemClickListener) {
+    public MultiImageAdapter(ArrayList<String> list, Context context, SelectListener itemClickListener) {
         mData = list ;
         mContext = context;
         this.itemClickListener = itemClickListener;
+        this.db =db;
     }
-
 
     /**
      * Helper class to hold an image view

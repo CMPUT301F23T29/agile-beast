@@ -1,8 +1,11 @@
 package com.example.team29project.Controller;
 
+import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.team29project.Model.Item;
+import com.example.team29project.View.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.Nullable;
 
@@ -11,6 +14,7 @@ import java.util.Arrays;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Firebase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,6 +26,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,6 +37,7 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class DatabaseController  {
 
@@ -37,9 +46,11 @@ public class DatabaseController  {
  */
 
     private FirebaseFirestore db;
+    private FirebaseStorage sb;
 
     // Item attributes
     private CollectionReference itemsRef;
+    private StorageReference imageRef;
     private ArrayList<Item> itemDataList;
     // Adapters
     private ItemArrayAdapter itemAdapter;
@@ -57,13 +68,14 @@ public class DatabaseController  {
 
     /**
      * Stores the items and tags in the database
+     * images are saved on firebase Storage
      */
     public DatabaseController() {
-
- 
-        db = FirebaseFirestore.getInstance();
-        itemsRef = db.collection("items");
-        tagsRef = db.collection("tags");
+        this.db = FirebaseFirestore.getInstance();
+        this.sb = FirebaseStorage.getInstance();
+        this.imageRef = sb.getReference();
+        this.itemsRef = db.collection("items");
+        this.tagsRef = db.collection("tags");
         this.itemDataList = new ArrayList<Item>();
         this.tagDataList = new ArrayList<String>();
         this.tagAdapter=null;
@@ -116,6 +128,70 @@ public class DatabaseController  {
         this.tagAdapter = tagAdapter;
     }
     // setting TagAdapter
+    public void uploadPhoto(Uri filePath,OnPhotoUploadCompleteListener listener){
+        String uniqueId = UUID.randomUUID().toString();
+        StorageReference ref
+                = imageRef
+                .child(
+                        "images/"
+                                + uniqueId);
+        ref.putFile(filePath)
+                .addOnSuccessListener(
+                        new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                            {
+                                listener.onPhotoUploadComplete(uniqueId);
+                            }
+                        })
+
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+                    }
+                });
+
+    }
+    public void deletePhoto(String uniqueId) {
+        StorageReference photoRef = imageRef.child("images/" + uniqueId);
+        // Delete the file
+        photoRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    // File deleted successfully
+                    // You can perform any additional actions here
+                })
+                .addOnFailureListener(exception -> {
+                    // Handle any errors that occurred during the deletion
+                    // For example, you might want to log the error
+                    Log.e("FirebaseStorage", "Error deleting file: " + exception.getMessage());
+                });
+    }
+    public void getURlPhotos(ArrayList<String> urls){
+
+    }
+
+    /**
+     *
+     * @param id  unique Id that is stored in firebase storage
+     * @param listener listener when photo is being reteriev
+     */
+    public void getPhoto(String id,OnPhotoListener listener){
+        StorageReference uniqueImageRef = imageRef.child("images/" + id);
+        uniqueImageRef.getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    // 'uri' is the download URL for the image with the specified unique ID
+                    String downloadUrl = uri.toString();
+                    listener.onPhotoUrlReady(downloadUrl);
+                    // Load the image into an ImageView using Picasso
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failures (e.g., image not found for the specified unique ID)
+
+                });
+
+    }
 
 
 
@@ -244,6 +320,13 @@ public class DatabaseController  {
             itemsRef.document(item.getDocId()).update("photos", FieldValue.arrayUnion(photo));
         }
     }
+
+
+    /**
+     *
+     * @param documentId unique string ID that represents the item
+     * @param item item that has updated info
+     */
     public void updateItem(String documentId , Item item){
         DocumentReference docRef = itemsRef.document(documentId);
         Map<String, Object> data = new HashMap<>();

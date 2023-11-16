@@ -28,6 +28,9 @@ import android.widget.Toast;
 
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Controller.ItemCallback;
+import com.example.team29project.Controller.OnPhotoListener;
+import com.example.team29project.Controller.OnPhotoUploadCompleteListener;
+import com.example.team29project.Controller.SelectListener;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.MultiImageAdapter;
 import com.example.team29project.R;
@@ -41,9 +44,8 @@ import java.util.ArrayList;
  */
 public class DisplayActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
-        com.example.team29project.Controller.SelectListener,
-        PickCameraDialog.ImageOrGalleryListener,
-        ItemCallback
+        SelectListener, PickCameraDialog.ImageOrGalleryListener,
+        ItemCallback, OnPhotoListener, OnPhotoUploadCompleteListener
 
 {
 
@@ -55,10 +57,14 @@ public class DisplayActivity extends AppCompatActivity implements
     MultiImageAdapter adapter;
     Intent cameraIntent , galleryIntent;
     ArrayList<String> photo_string ;
+    ArrayList<String> urLImages;
 
     ArrayList<String> tags;
 
+
+
     DatabaseController db;
+    // When it gets images from camera or gallery,
     ActivityResultLauncher<Intent> pictureActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -76,7 +82,7 @@ public class DisplayActivity extends AppCompatActivity implements
                                 Uri imageUri = clipData.getItemAt(i).getUri();
                                 try {
                                     photo_string.add(imageUri.toString());
-
+                                   // db.uploadPhoto(imageUri,DisplayActivity.this);
                                 } catch (Exception e) {
                                     Log.e(TAG, "File select error", e);
                                 }
@@ -153,8 +159,7 @@ public class DisplayActivity extends AppCompatActivity implements
                     "://" + resources.getResourcePackageName(resourceId)
                     + '/' + resources.getResourceTypeName(resourceId)
                     + '/' + resources.getResourceEntryName(resourceId));
-
-            photo_string.add(uris.toString());
+            photo_string.add(uris.toString());;
         }
         adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this);
         imageListView.setAdapter(adapter);
@@ -162,9 +167,20 @@ public class DisplayActivity extends AppCompatActivity implements
         changeData();
 
     }
+
+    /**
+     *
+     * @param photoUrl download Url of photos
+     */
+
+    @Override
+    public void onPhotoUrlReady(String photoUrl) {
+        urLImages.add(photoUrl);
+    }
+
     @Override
     public void onFailure(Exception e) {
-        Toast.makeText(DisplayActivity.this, "Failed to find", Toast.LENGTH_SHORT).show();
+        Toast.makeText(DisplayActivity.this, "Failed", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -232,8 +248,6 @@ public class DisplayActivity extends AppCompatActivity implements
             adapter.notifyDataSetChanged();
         }
     }
-
-
     /**
      * Handles if gallery photo was pressed
      */
@@ -247,5 +261,16 @@ public class DisplayActivity extends AppCompatActivity implements
      */
     @Override
     public void onCameraPressed() {pictureActivityResultLauncher.launch(cameraIntent);
+    }
+
+    @Override
+    public void onPhotoUploadComplete(String uniqueId) {
+        photo_string.add(uniqueId);
+
+    }
+
+    @Override
+    public void onPhotoUploadFailure(Exception e) {
+
     }
 }
