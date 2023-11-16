@@ -125,7 +125,6 @@ public class DisplayActivity extends AppCompatActivity implements
         backBton.setOnClickListener(view -> {
             finish();
         });
-
         editBton.setOnClickListener(view -> new InputFragment(db,item).show(getSupportFragmentManager(), "Edit"));
 
     }
@@ -231,7 +230,8 @@ public class DisplayActivity extends AppCompatActivity implements
      * Handles if the camera was pressed
      */
     @Override
-    public void onCameraPressed() {pictureActivityResultLauncher.launch(cameraIntent);
+    public void onCameraPressed() {
+        pictureActivityResultLauncher.launch(cameraIntent);
     }
 
     /**

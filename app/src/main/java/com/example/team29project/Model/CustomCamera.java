@@ -25,6 +25,7 @@ public class CustomCamera {
     private ImageCapture imageCapture;
     private Executor executor = Executors.newSingleThreadExecutor();
     private int cameraFacing;
+    ProcessCameraProvider cameraProvider;
 
     /**
      * Constructs a new CustomCamera with the given PreviewView.
@@ -58,10 +59,10 @@ public class CustomCamera {
 
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                 cameraProvider = cameraProviderFuture.get();
 
                 // Set up the camera use cases
-                bindCameraUseCases(cameraProvider, lifecycleOwner);
+                bindCameraUseCases(lifecycleOwner);
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -70,26 +71,19 @@ public class CustomCamera {
 
     /**
      * Binds the camera use cases to the given ProcessCameraProvider and LifecycleOwner.
-     *
-     * @param cameraProvider The ProcessCameraProvider that the camera use cases are bound to.
      * @param lifecycleOwner The LifecycleOwner that the camera use cases are bound to.
      */
-    private void bindCameraUseCases(ProcessCameraProvider cameraProvider, LifecycleOwner lifecycleOwner) {
+    private void bindCameraUseCases(LifecycleOwner lifecycleOwner) {
         Preview preview = new Preview.Builder().build();
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(cameraFacing)
                 .build();
-
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
         imageCapture = new ImageCapture.Builder()
-                .setTargetRotation(previewView.getDisplay().getRotation())
-                .build();
-
+                    .build();
         cameraProvider.unbindAll();
         cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageCapture);
     }
-    
     /**
      * Captures an image and saves it to the given file. If the image capture is not initialized, this method does nothing.
      *

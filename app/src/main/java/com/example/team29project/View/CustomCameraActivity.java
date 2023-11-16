@@ -129,7 +129,6 @@ public class CustomCameraActivity extends AppCompatActivity {
                         resultIntent.setData(imageUri1);
                         setResult(Activity.RESULT_OK, resultIntent);
                         finish();
-
                     });
                     reTryButton.setOnClickListener(v -> startCamera());
                 });
