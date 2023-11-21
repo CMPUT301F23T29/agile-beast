@@ -9,17 +9,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -282,11 +277,6 @@ public class MainActivity extends AppCompatActivity implements
         isSortFragmentShown = sortFragmentShown;
     }
 
-
-    @Override
-    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
-
-    }
 
     /**
      * Implemented methods from LoadItemsCallback
