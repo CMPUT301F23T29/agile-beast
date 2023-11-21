@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements
                         isDelete = false;
                     } else {
                         itemPosition = position;
-                        Intent display = new Intent(MainActivity.this, ImageViewActivity.class);
+                        Intent display = new Intent(MainActivity.this, ItemViewActivity.class);
                         display.putExtra("documentId", db.getItem(position).getDocId());
 
                         startActivity(display);
