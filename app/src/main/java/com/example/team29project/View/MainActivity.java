@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -23,12 +24,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.LoadItemsCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.ItemArrayAdapter;
 import com.example.team29project.R;
 import com.example.team29project.Controller.TagAdapter;
 
 import java.util.ArrayList;
+
 
 /**
  * This method is called when the activity is starting.
@@ -38,7 +41,10 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SortFragment.OnFragmentInteractionListener,
-        FilterFragment.OnFragmentInteractionListener {
+        FilterFragment.OnFragmentInteractionListener,
+        LoadItemsCallback
+
+{
 
     private TextView addItem;
     private TextView editTag;
@@ -53,33 +59,8 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isFilterFragmentShown = false;
     private boolean isSortFragmentShown = false;
     private ArrayList<String> tags;
-    private ArrayList<Item> selectedItems;
+    private ArrayList<Integer> selectedItems;
     private DatabaseController db;
-    double total ;
-   ActivityResultLauncher<Intent> itemActivityResultLauncher = registerForActivityResult(
-           new ActivityResultContracts.StartActivityForResult(),
-           new ActivityResultCallback<ActivityResult>() {
-               @Override
-               public void onActivityResult(ActivityResult result) {
-                   if (result.getData() !=null) {
-                       Item newItem = (Item) result.getData().getExtras().getSerializable("changed_item");
-                       Item temp = db.getItem(itemPosition);
-                       temp.setName(newItem.getName());
-                       temp.setDate(newItem.getDate());
-                       temp.setValue(newItem.getValue());
-                       temp.setMake(newItem.getMake());
-                       temp.setModel(newItem.getModel());
-                       temp.setSerialNumber(newItem.getSerialNumber());
-                       temp.setDescription(newItem.getDescription());
-                       temp.setComment(newItem.getComment());
-                       db.updatePhoto(temp,newItem.getPhotos());
-                       itemAdapter.notifyDataSetChanged();
-                       updateSum();
-                   }
-               }
-           });
-
-
 
 
     /**
@@ -93,22 +74,19 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ImageButton menu = findViewById(R.id.menu);
         Button deleteButton = findViewById(R.id.delete_button);
-        selectedItems = new ArrayList<Item>();
+        sumItem = findViewById(R.id.value_display);
+        itemsList = findViewById(R.id.items);
+        selectedItems = new ArrayList<>();
         isDelete = false;
         isSelect = false;
-        sumItem = findViewById(R.id.value_display);
         // Init lists for tags and items,
-        // as well as firestore database
+        // as well as FireStore database
         db = new DatabaseController();
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
         tagAdapter = new TagAdapter(this,db.getTags());
-        itemsList = findViewById(R.id.items);
         itemsList.setAdapter(itemAdapter);
-        db.setAdapters(itemAdapter, tagAdapter);
-        db.loadInitialItems();
-        updateSum();
-
-        itemAdapter.notifyDataSetChanged();
+        db.setAdapter(itemAdapter, tagAdapter);
+        db.loadInitialItems(this);
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             /**
              * Handles the event click of the item
@@ -121,18 +99,18 @@ public class MainActivity extends AppCompatActivity implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
                     if (isSelect) {
-                        selectedItems.add(db.getItem(position));
+                        selectedItems.add(position);
                     } else if (isDelete) {
+
                         db.removeItem(position);
                         itemAdapter.notifyDataSetChanged();
                         isDelete = false;
                     } else {
                         itemPosition = position;
-                        Item temp = db.getItem(position);
-                        Intent display = new Intent(MainActivity.this, DisplayActivity.class);
-                        display.putExtra("item", temp);
-                        display.putStringArrayListExtra("tags", db.getTags());
-                        itemActivityResultLauncher.launch(display);
+                        Intent display = new Intent(MainActivity.this, ItemViewActivity.class);
+                        display.putExtra("documentId", db.getItem(position).getDocId());
+
+                        startActivity(display);
                     }
 
                 }
@@ -148,12 +126,10 @@ public class MainActivity extends AppCompatActivity implements
                     selectedItems.clear();
                     itemAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(MainActivity.this, "Delete mode activated. Click on an item to delete.", Toast.LENGTH_SHORT).show();
                     isDelete = true;
                 }
             }
         });
-//       ConstraintLayout menuBackgroundLayout = (ConstraintLayout) findViewById(R.id.menu_background_layout);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,12 +166,12 @@ public class MainActivity extends AppCompatActivity implements
      * Update the summary of value of item
      */
     public void updateSum(){
-        total =0.0;
+        Double total =0.0;
         for(Item item : db.getItems()){
             total = total +  item.getValue();
         }
 
-        sumItem.setText( String.valueOf(total));
+        sumItem.setText(String.valueOf(total));
 
     }
 
@@ -219,11 +195,10 @@ public class MainActivity extends AppCompatActivity implements
              */
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Select mode activated. Click on items to select them.", Toast.LENGTH_SHORT).show();
                 isSelect = true;
                 isDelete = false;
                 popupWindow.dismiss();
-                selectedItems = new ArrayList<Item>();
+                selectedItems = new ArrayList<>();
             }
         });
 
@@ -232,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 isSelect = false;
                 isDelete = false;
-                new InputFragment(db.getTags()).show(getSupportFragmentManager(), "addItems");
+                new InputFragment(db).show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
         });
@@ -240,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  db.addTag("sss");
                 //new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(), "Tags");
 
             }
@@ -258,17 +232,17 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onOKPressed(Item item) {
-
         db.addItem(item);
+        itemAdapter.notifyDataSetChanged();
         updateSum();
     }
 
     /**
      * Notifies iten adapter that its contents have changed
-     * @param item the item to be used
+     *
      */
     @Override
-    public void onEditPressed(Item item) {
+    public void onEditPressed() {
         itemAdapter.notifyDataSetChanged();
         updateSum();
     }
@@ -296,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param isAsc whether to reverse the order
      */
     @Override
-    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
+    public void onSortConfirmPressed(String sortBy, boolean isAsc) {
         db.sort(sortBy,isAsc);
     }
 
@@ -308,5 +282,28 @@ public class MainActivity extends AppCompatActivity implements
         isSortFragmentShown = sortFragmentShown;
     }
 
+
+    @Override
+    public void onSortConfirmPressed(String sortBy, Boolean isAsc) {
+
+    }
+
+    /**
+     * Implemented methods from LoadItemsCallback
+     */
+    @Override
+    public void onItemsLoaded() {
+        itemAdapter.notifyDataSetChanged();
+        updateSum();
+
+    }
+
+    /**
+     * Implemented methods from LoadItemsCallback
+     */
+    @Override
+    public void onLoadFailure(Exception e) {
+        Toast.makeText(MainActivity.this, "Failed to load", Toast.LENGTH_SHORT).show();
+    }
 }
 

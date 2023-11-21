@@ -18,6 +18,7 @@ public class Item implements Serializable, Comparable {
 
     private ArrayList<String> photos;
     private ArrayList<String> tags;
+    private String docId ;
 
     /**
      * Constructs an instance of item
@@ -82,15 +83,15 @@ public class Item implements Serializable, Comparable {
 
 
     /**
-     * Gets the photos
-     * @return the photos
+     * Photos represents array of string indicating unique IID stored in firebase storage
+     * @return the photos string
      */
     public ArrayList<String> getPhotos() {
         return photos;
     }
 
     /**
-     * Sets the photos
+     * Sets the photos string
      * @param photos photos
      */
     public void setPhotos(ArrayList<String> photos) {
@@ -230,6 +231,13 @@ public class Item implements Serializable, Comparable {
      */
     public void setValue(Double value) {
         this.value = value;
+    }
+
+    public void setDocId(String id){
+        this.docId =id;
+    }
+    public  String getDocId(){
+        return this.docId;
     }
 
 

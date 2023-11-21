@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Model.Item;
 import com.example.team29project.R;
 
@@ -44,24 +45,25 @@ public class InputFragment extends DialogFragment {
     private int monthDate;
     private int dayDate;
     private ArrayList<String> tags;
+    DatabaseController db;
 
     /**
      * set current item to null and set tags
-     * @param tags the tags to be used
      */
-    public InputFragment(ArrayList<String> tags) {
+    public InputFragment(DatabaseController db)  {
         this.item = null;
         this.tags = tags;
+        this.db = db;
     }
 
     /**
      * Set item and teags
      * @param aItem an item to be used
-     * @param tags tags to be used
      */
-    public InputFragment(Item aItem,ArrayList<String> tags) {
+    public InputFragment(DatabaseController db, Item aItem) {
         this.item = aItem;
-        this.tags = tags;
+        this.db= db;
+
     }
     private OnFragmentsInteractionListener listener;
 
@@ -70,7 +72,7 @@ public class InputFragment extends DialogFragment {
      */
     public interface OnFragmentsInteractionListener {
         void onOKPressed(Item item);
-        void onEditPressed(Item item);
+        void onEditPressed();
         void onCancelPressed();
 
     }
@@ -92,19 +94,7 @@ public class InputFragment extends DialogFragment {
     /**
      * Create key listener to dismiss dialog when back key is released
      */
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Handle with the backPressed button
-        getDialog().setOnKeyListener((dialog, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
-                listener.onCancelPressed();
-                dismiss();
-                return true;
-            }
-            return false;
-        });
-    }
+
 
 
 
@@ -135,7 +125,6 @@ public class InputFragment extends DialogFragment {
         if(item !=null){
             writeData(item);
         }
-
 
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
             yearDate = year;
@@ -185,7 +174,7 @@ public class InputFragment extends DialogFragment {
                 if (item == null) {
                     // TODO add tags selected to the item
                     // do this by checking the selected id from the chip group
-                    listener.onOKPressed(new Item(item_name, item_date, item_value, item_make, item_model, item_description, item_comment, item_serN));
+                    db.addItem(new Item(item_name, item_date, item_value, item_make, item_model, item_description, item_comment, item_serN));
                 }
                 // if it is editing
                 else {
@@ -197,7 +186,8 @@ public class InputFragment extends DialogFragment {
                     item.setSerialNumber(item_serN);
                     item.setMake(item_make);
                     item.setComment(item_comment);
-                    listener.onEditPressed(item);
+                    db.updateItem(item.getDocId(),item);
+                    listener.onEditPressed();
                 }
             } catch(NumberFormatException e){
                 Toast.makeText(getContext()," Wrong format of charges check again!",Toast.LENGTH_SHORT).show();
@@ -225,6 +215,5 @@ public class InputFragment extends DialogFragment {
         itemMake.setText(item.getMake());
         itemDescription.setText((item.getDescription()));
         itemComment.setText(item.getComment());
-
     }
 }

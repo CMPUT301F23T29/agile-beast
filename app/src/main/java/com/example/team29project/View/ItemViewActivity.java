@@ -12,41 +12,50 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.ClipData;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-
+import android.widget.Toast;
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.ItemCallback;
+import com.example.team29project.Controller.OnPhotoUploadCompleteListener;
+import com.example.team29project.Controller.SelectListener;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.MultiImageAdapter;
 import com.example.team29project.R;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Display details of a selected inventory item
  * Allow users to view and potentially edit the item's information
  */
-public class DisplayActivity extends AppCompatActivity implements InputFragment.OnFragmentsInteractionListener, com.example.team29project.Controller.SelectListener, PickCameraDialog.ImageOrGalleryListener {
+public class ItemViewActivity extends AppCompatActivity implements
+        InputFragment.OnFragmentsInteractionListener,
+        SelectListener, PickCameraDialog.ImageOrGalleryListener,
+        ItemCallback, OnPhotoUploadCompleteListener
+
+{
 
     private TextView itemName, itemValue, itemDate, itemMake, itemModel, itemSerialno, itemDescription, itemComment;
     private Item item;
     ChipGroup tagGroup;
 
-    RecyclerView imageListView;  //
+    RecyclerView imageListView;
     MultiImageAdapter adapter;
     Intent cameraIntent , galleryIntent;
     ArrayList<String> photo_string ;
 
     ArrayList<String> tags;
+    DatabaseController db;
+
+    // When it gets images from camera or gallery,
     ActivityResultLauncher<Intent> pictureActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -57,22 +66,26 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
                         Intent data = result.getData();
                         ClipData clipData = data.getClipData();
                         if (clipData == null) {
-                            photo_string.add(data.getData().toString());
-                            adapter.notifyDataSetChanged();
+                            String uniqueId = UUID.randomUUID().toString();
+                            photo_string.add(uniqueId);
+                            db.uploadPhoto(data.getData(),ItemViewActivity.this,uniqueId,1);
+                           // adapter.notifyDataSetChanged();
                         } else {
                             for (int i = 0; i < clipData.getItemCount(); i++) {
                                 Uri imageUri = clipData.getItemAt(i).getUri();
                                 try {
-                                    photo_string.add(imageUri.toString());
-
+                                   String uniqueId = UUID.randomUUID().toString();
+                                    photo_string.add(uniqueId);
+                                  // photo_string.add(imageUri.toString());
+                                  db.uploadPhoto(imageUri,ItemViewActivity.this,uniqueId,i+1);
                                 } catch (Exception e) {
                                     Log.e(TAG, "File select error", e);
                                 }
                             }
-                            adapter.notifyDataSetChanged();
 
                         }
                     }
+                    db.updatePhoto(item, photo_string);
                 }
             });
 
@@ -87,9 +100,9 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
         Intent ints = getIntent();
-        item = (Item) ints.getSerializableExtra("item");
-        tags = ints.getStringArrayListExtra("tags");
-        photo_string = item.getPhotos();
+        String documentId = ints.getStringExtra("documentId");
+        db = new DatabaseController();
+        db.getItem(documentId, this);
         Button backBton = findViewById(R.id.back_button);
         Button editBton = findViewById(R.id.edit_button);
         tagGroup = findViewById(R.id.tagGroup);
@@ -106,44 +119,40 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         galleryIntent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        cameraIntent = new Intent(DisplayActivity.this, CustomCameraActivity.class);
-
-        if(photo_string.size()==0){
-            int resourceId = R.drawable.plus;
-            Resources resources = getResources();
-            Uri uris = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
-                    "://" + resources.getResourcePackageName(resourceId)
-                    + '/' + resources.getResourceTypeName(resourceId)
-                    + '/' + resources.getResourceEntryName(resourceId));
-
-            photo_string.add(uris.toString());
-        }
-       adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this);
-       imageListView.setAdapter(adapter);
-       imageListView.setLayoutManager(new LinearLayoutManager(DisplayActivity.this, LinearLayoutManager.HORIZONTAL, false));
-       changeData();
+        cameraIntent = new Intent(ItemViewActivity.this, CustomCameraActivity.class);
 
 
-
-        backBton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra( "changed_item",item);
-                setResult(Activity.RESULT_OK,resultIntent);
-                finish();
-            }
+        backBton.setOnClickListener(view -> {
+            finish();
         });
-
-        editBton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new InputFragment(item,tags).show(getSupportFragmentManager(), "Edit");
-            }
-        });
+        editBton.setOnClickListener(view -> new InputFragment(db,item).show(getSupportFragmentManager(), "Edit"));
 
     }
 
+    /**
+     * This is called when it runs through load initialize items
+     * @param newItem Item that is loaded from db
+     */
+    @Override
+    public void onItemLoaded(Item newItem) {
+        item = newItem;
+        photo_string = item.getPhotos();
+        if(photo_string.size()==0){
+            photo_string.add("https://static.vecteezy.com/system/resources/previews/026/306/461/original/cross-sign-plus-add-addition-math-mathematics-additional-black-and-white-line-icon-symbol-artwork-clipart-illustration-vector.jpg");
+                   }
+
+        adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this,db);
+        imageListView.setAdapter(adapter);
+        imageListView.setLayoutManager(new LinearLayoutManager(ItemViewActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        changeData();
+
+    }
+
+
+    @Override
+    public void onFailure(Exception e) {
+        Toast.makeText(ItemViewActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+    }
     /**
      * Change Item's detail
      */
@@ -171,19 +180,17 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
         assert item != null;
         this.item = aitem;
         changeData();
-        Intent intes = new Intent(DisplayActivity.this, MainActivity.class);
+        Intent intes = new Intent(ItemViewActivity.this, MainActivity.class);
         intes.putExtra("new_item", item);
         setResult(Activity.RESULT_OK, intes);
     }
 
     /**
      * Handles if edit was pressed and changes the data
-     * @param item the item to be used
      */
     @Override
-    public void onEditPressed(Item item) {
+    public void onEditPressed() {
         changeData();
-
     }
 
     /**
@@ -202,16 +209,15 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
     @Override
     public void onItemClick(int position) {
         if(position ==0) {
-            new PickCameraDialog().show(getSupportFragmentManager(),"Photo");
-
+            new PickCameraDialog().show(getSupportFragmentManager(), "Photo");
         }
         else {
+            db.deletePhoto(photo_string.get(position));
             photo_string.remove(position);
+            db.updatePhoto(item,photo_string);
             adapter.notifyDataSetChanged();
         }
     }
-
-
     /**
      * Handles if gallery photo was pressed
      */
@@ -224,6 +230,28 @@ public class DisplayActivity extends AppCompatActivity implements InputFragment.
      * Handles if the camera was pressed
      */
     @Override
-    public void onCameraPressed() {pictureActivityResultLauncher.launch(cameraIntent);
+    public void onCameraPressed() {
+        pictureActivityResultLauncher.launch(cameraIntent);
     }
+
+    /**
+     * Handles when photo is successfully uploaded
+     */
+    @Override
+    public void onPhotoUploadComplete(int position) {
+        adapter.notifyItemChanged(position);
+
+    }
+
+    /**
+     *  handle when photo upload is failed
+     * @param e error  message
+     */
+
+    @Override
+    public void onPhotoUploadFailure(Exception e) {
+
+    }
+
+
 }

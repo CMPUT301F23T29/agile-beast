@@ -2,6 +2,7 @@ package com.example.team29project.Controller;
 
 import android.content.Context;
 import android.net.Uri;
+import android.net.UrlQuerySanitizer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.team29project.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 import java.util.ArrayList;
@@ -18,10 +22,11 @@ import java.util.ArrayList;
 /**
  * Helper class to hold an array of images
  */
-public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
+public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder> {
     private ArrayList<String> mData;
     private Context mContext ;
 
+    private DatabaseController db;
     private com.example.team29project.Controller.SelectListener itemClickListener;
 
 
@@ -31,12 +36,12 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
      * @param context the context to be used
      * @param itemClickListener the callback for when an image is clicked
      */
-    public MultiImageAdapter(ArrayList<String> list, Context context, com.example.team29project.Controller.SelectListener itemClickListener) {
+    public MultiImageAdapter(ArrayList<String> list, Context context, SelectListener itemClickListener,DatabaseController db) {
         mData = list ;
         mContext = context;
         this.itemClickListener = itemClickListener;
+        this.db = db;
     }
-
 
     /**
      * Helper class to hold an image view
@@ -78,20 +83,35 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
      */
     @Override
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
-            Uri image_uri = Uri.parse(mData.get(position));
+           // String imageUrl = mData.get(position);
+           Uri image_uri = Uri.parse(mData.get(position));
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     itemClickListener.onItemClick(holder.getAdapterPosition());
                 }
             });
-
+        if(position ==0){
             Glide.with(mContext)
                     .load(image_uri)
                     .into(holder.image);
+        }
+        else {
+
+            StorageReference dateRef = db.getImageRef().child("images/" + mData.get(position));
+            dateRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri downloadUrl) {
+                    Glide.with(mContext)
+                            .load(downloadUrl)
+                            .into(holder.image);
+
+                }
+            });
+        }
 
     }
+
 
 
     /**
