@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Controller.FilteredItemCallback;
 import com.example.team29project.Controller.LoadItemsCallback;
+import com.example.team29project.Controller.SortItemCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.ItemArrayAdapter;
 import com.example.team29project.R;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SortFragment.OnFragmentInteractionListener,
         FilterFragment.OnFragmentInteractionListener,
-        LoadItemsCallback, FilteredItemCallback
+        LoadItemsCallback, FilteredItemCallback, SortItemCallback
 
 {
 
@@ -269,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSortConfirmPressed(String sortBy, boolean isAsc) {
 
-        db.sort(sortBy,isAsc);
+        db.sort(sortBy,isAsc,this);
     }
 
     public void setFilterFragmentShown(boolean filterFragmentShown) {
@@ -299,16 +300,38 @@ public class MainActivity extends AppCompatActivity implements
         Toast.makeText(MainActivity.this, "Failed to load", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * When filter success, updates the itemAdapter then update the total sum
+     */
     @Override
     public void onFiltered() {
         itemAdapter.notifyDataSetChanged();
         updateSum();
     }
 
+    /**
+     * When it fails to filter the item, toast a message that it fails
+     */
+
     @Override
     public void onFilteredFailure() {
         Toast.makeText(this, "Failed to filter", Toast.LENGTH_SHORT).show();
 
+    }
+
+    /**
+     * When sort success, updates the itemAdapter
+     */
+
+    @Override
+    public void onSorted() {
+        itemAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onSortFailed() {
+        Toast.makeText(this, "Failed to filter", Toast.LENGTH_SHORT).show();
     }
 }
 

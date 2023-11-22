@@ -536,9 +536,8 @@ public class DatabaseController  {
      * Sort the list by sortBy
      * @param sortBy  string that is the standard of sorting
      * @param isAsc boolean value whether it is ascending or descending
-     */
-
-    public void sort(String sortBy, boolean isAsc) {
+     * @param callback callback for dealing after sorting
+     */public void sort(String sortBy, boolean isAsc, SortItemCallback callback) {
         // sorting the data by the sortBy field in ascending or descending order
         Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
         Query query; // New Query variable
@@ -567,6 +566,7 @@ public class DatabaseController  {
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
                     Log.e("Firebase", error.toString());
+                    callback.onSortFailed();
                 }
                 if (value != null) {
                     itemDataList.clear();
@@ -574,7 +574,7 @@ public class DatabaseController  {
                         Item item = createItemFromDoc(doc);
                         itemDataList.add(item);
                     }
-                    itemAdapter.notifyDataSetChanged();
+                    callback.onSorted();
                 }
             }
         });
