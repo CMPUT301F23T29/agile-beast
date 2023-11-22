@@ -476,7 +476,6 @@ public class DatabaseController  {
                     .whereGreaterThanOrEqualTo("date", startDate)
                     .whereLessThanOrEqualTo("date", endDate);
             }
-
         } else if (filterBy.equals("description")) {
             final ArrayList<String> words = new ArrayList<>(Arrays.asList(data.toLowerCase().split("\\s+")));
 
@@ -507,25 +506,23 @@ public class DatabaseController  {
                 }
             });
         } else {
-            query = db.collection("items");// print everything
+            query = db.collection("items");
         }
-
-        // Add a snapshot listener to the Firestore query
-        query.addSnapshotListener((value, error) -> {
-            if (error != null) {
-                Log.e("Firebase", error.toString());
-            }
-
-            if (value != null) {
-                itemDataList.clear();
-
-                for (QueryDocumentSnapshot doc: value) {
-                    Item item = createItemFromDoc(doc);
-                    itemDataList.add(item);
-
+        // Add a snapshot listener to the FireStore query
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e("Firebase", error.toString());
                 }
-
-
+                if (value != null) {
+                    itemDataList.clear();
+                    for (QueryDocumentSnapshot doc: value) {
+                        Item item = createItemFromDoc(doc);
+                        itemDataList.add(item);
+                    }
+                    itemAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -569,14 +566,11 @@ public class DatabaseController  {
                 }
                 if (value != null) {
                     itemDataList.clear();
-
                     for (QueryDocumentSnapshot doc: value) {
                         Item item = createItemFromDoc(doc);
                         itemDataList.add(item);
                     }
                     itemAdapter.notifyDataSetChanged();
-
-
                 }
             }
         });
