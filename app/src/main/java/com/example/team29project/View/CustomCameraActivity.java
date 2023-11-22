@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.team29project.Model.CustomCamera;
 import com.example.team29project.R;
 
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,6 +43,7 @@ public class CustomCameraActivity extends AppCompatActivity {
     private Button reTryButton;
 
     private ImageButton captureBtn,flipCameraBtn;
+
 
     // Asking for Permission to capture Camera
     private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), result -> {

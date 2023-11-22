@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,6 +21,10 @@ import androidx.fragment.app.DialogFragment;
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Model.Item;
 import com.example.team29project.R;
+import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +37,7 @@ import java.util.Calendar;
 public class InputFragment extends DialogFragment {
 
     private Item item;
+    private Button scanButton;
     private EditText itemName;
 
     private EditText itemValue;
@@ -122,6 +129,13 @@ public class InputFragment extends DialogFragment {
         itemModel =  view.findViewById(R.id.edit_item_model);
         itemDescription =  view.findViewById(R.id.edit_description);
         itemComment = view.findViewById(R.id.edit_comment);
+        scanButton = view.findViewById(R.id.scan_button);
+        GmsBarcodeScannerOptions options = new GmsBarcodeScannerOptions.Builder()
+                .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
+
+                .enableAutoZoom()
+                .build();
+        GmsBarcodeScanner scanner = GmsBarcodeScanning.getClient(getContext(),options);
         if(item !=null){
             writeData(item);
         }
@@ -141,6 +155,28 @@ public class InputFragment extends DialogFragment {
                 dat.show(getChildFragmentManager(), "DatePicker");
             }
             return true;
+        });
+
+        // scanning camera
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanner
+                        .startScan()
+                        .addOnSuccessListener(
+                                barcode -> {
+                                    String rawValue = barcode.getRawValue();
+                                    Toast.makeText(getActivity(), rawValue, Toast.LENGTH_SHORT).show();
+                                })
+                        .addOnCanceledListener(
+                                () -> {
+                                    // Task canceled
+                                })
+                        .addOnFailureListener(
+                                e -> {
+                                    // Task failed with an exception
+                                });
+            }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         // TODO set up filter chips of all tags (from firestore) and select ones already tagged by the item
