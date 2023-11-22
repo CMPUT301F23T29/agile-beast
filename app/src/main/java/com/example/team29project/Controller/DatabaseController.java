@@ -533,7 +533,7 @@ public class DatabaseController  {
      * @param isAsc boolean value whether it is ascending or descending
      */
 
-    public void sort(String sortBy, Boolean isAsc) {
+    public void sort(String sortBy, boolean isAsc) {
         // sorting the data by the sortBy field in ascending or descending order
         Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
         Query query; // New Query variable
