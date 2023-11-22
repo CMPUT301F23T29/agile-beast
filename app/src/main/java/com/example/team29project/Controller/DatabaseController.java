@@ -2,6 +2,7 @@ package com.example.team29project.Controller;
 
 import android.net.Uri;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.example.team29project.Model.Item;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -49,6 +50,8 @@ public class DatabaseController  {
     // Adapters
     private ItemArrayAdapter itemAdapter;
     private TagAdapter tagAdapter;
+
+
 
 
 
@@ -461,7 +464,7 @@ public class DatabaseController  {
      * @param data  String representations of data in firestore
      */
 
-    public void filter(String filterBy, String data) {
+    public void filter(String filterBy, String data, FilteredItemCallback callback) {
          // getting data from db of items
         Query query = db.collection("items");
 
@@ -514,6 +517,7 @@ public class DatabaseController  {
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
                     Log.e("Firebase", error.toString());
+                    callback.onFilteredFailure();
                 }
                 if (value != null) {
                     itemDataList.clear();
@@ -521,7 +525,8 @@ public class DatabaseController  {
                         Item item = createItemFromDoc(doc);
                         itemDataList.add(item);
                     }
-                    itemAdapter.notifyDataSetChanged();
+                    callback.onFiltered();
+                    //itemAdapter.notifyDataSetChanged();
                 }
             }
         });

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.FilteredItemCallback;
 import com.example.team29project.Controller.LoadItemsCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.ItemArrayAdapter;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SortFragment.OnFragmentInteractionListener,
         FilterFragment.OnFragmentInteractionListener,
-        LoadItemsCallback
+        LoadItemsCallback, FilteredItemCallback
 
 {
 
@@ -257,7 +258,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onFilterConfirmPressed(String filterBy, String data) {
-        db.filter(filterBy, data);
+
+        db.filter(filterBy, data, this);
     }
     /**
      * Sorts items based on some criteria
@@ -266,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onSortConfirmPressed(String sortBy, boolean isAsc) {
+
         db.sort(sortBy,isAsc);
     }
 
@@ -294,6 +297,18 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFailure(Exception e) {
         Toast.makeText(MainActivity.this, "Failed to load", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFiltered() {
+        itemAdapter.notifyDataSetChanged();
+        updateSum();
+    }
+
+    @Override
+    public void onFilteredFailure() {
+        Toast.makeText(this, "Failed to filter", Toast.LENGTH_SHORT).show();
+
     }
 }
 

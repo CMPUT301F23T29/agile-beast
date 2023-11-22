@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     android:background="@color/menu_page"
     android:orientation = "vertical"
+    android:id="@+id/fragment_main_menu"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainMenuFragment">
+    tools:context=".View.MainActivity">
 
 
     <TextView
