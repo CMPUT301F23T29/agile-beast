@@ -269,11 +269,11 @@ public class MainActivity extends AppCompatActivity implements
         db.sort(sortBy,isAsc);
     }
 
-    public void setFilterFragmentShown(boolean filterFragmentShown) {
+    public void setFilterFragmentShown(Boolean filterFragmentShown) {
         isFilterFragmentShown = filterFragmentShown;
     }
 
-    public void setSortFragmentShown(boolean sortFragmentShown) {
+    public void setSortFragmentShown(Boolean sortFragmentShown) {
         isSortFragmentShown = sortFragmentShown;
     }
 
