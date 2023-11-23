@@ -67,7 +67,7 @@ public class DatabaseController  {
      * Stores the items and tags in the database
      * images are saved on firebase Storage
      */
-    public DatabaseController() {
+    public DatabaseController(){
         this.db = FirebaseFirestore.getInstance();
         this.sb = FirebaseStorage.getInstance();
         this.imageRef = sb.getReference();
@@ -542,23 +542,10 @@ public class DatabaseController  {
         Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
         Query query; // New Query variable
         sortBy=sortBy.toLowerCase();
-        if (sortBy.equals("date")) {
-            query = db.collection("items").orderBy("date", direction);
-        } else if (sortBy.equals("value")) {
-            query = db.collection("items").orderBy("value", direction);
-        } else if (sortBy.equals("make")) {
-            query = db.collection("items").orderBy("make", direction);
-        } else if (sortBy.equals("model")) {
-            query = db.collection("items").orderBy("model", direction);
-        } else if (sortBy.equals("serialnumber")) {
-            query = db.collection("items").orderBy("serialnumber", direction);
-        } else if (sortBy.equals("description")) {
-            query = db.collection("items").orderBy("description", direction);
-        } else if (sortBy.equals("comment")) {
-            query = db.collection("items").orderBy("comment", direction);
-        } else {
+        if(sortBy.equals("default")){
             query = db.collection("items");
         }
+        query = db.collection("items").orderBy(sortBy, direction);
 
         // Add a snapshot listener to the FireStore query
        query.addSnapshotListener(new EventListener<QuerySnapshot>() {

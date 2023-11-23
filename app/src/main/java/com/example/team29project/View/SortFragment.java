@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.team29project.R;
-import com.example.team29project.View.MainActivity;
 
 
 /**
@@ -32,7 +31,7 @@ public class SortFragment extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        ((MainActivity) getActivity()).setSortFragmentShown(false);
+        ((MainPageActivity) getActivity()).setSortFragmentShown(false);
     }
 
     @Override
@@ -57,12 +56,10 @@ public class SortFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_sort, null);
-
         Spinner sortSpinner = view.findViewById(R.id.sort_spinner);
         RadioGroup sortOrder = view.findViewById(R.id.sort_radiogroup);
         Button confirm = view.findViewById(R.id.confirm_sort_button);
         Button cancel = view.findViewById(R.id.cancel_sort_button);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         // Set OnClickListener for confirm button
@@ -89,7 +86,6 @@ public class SortFragment extends DialogFragment {
      * An interface for sort dialog listeners
      */
     public interface OnFragmentInteractionListener {
-
         void onSortConfirmPressed(String sortBy, boolean isAsc);
     }
 }
