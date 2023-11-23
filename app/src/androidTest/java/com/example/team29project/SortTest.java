@@ -11,6 +11,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
+import com.example.team29project.View.MainActivity;
+import com.example.team29project.View.MainPageActivity;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
@@ -20,8 +23,8 @@ import org.junit.runner.RunWith;
 public class SortTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> scenario=
-            new ActivityTestRule<MainActivity>(MainActivity.class);
+    public ActivityTestRule<MainPageActivity> scenario=
+            new ActivityTestRule<MainPageActivity>(MainPageActivity.class);
 
     @Before
     public void init(){

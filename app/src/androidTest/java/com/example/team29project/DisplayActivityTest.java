@@ -15,14 +15,16 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import com.example.team29project.Model.Item;
+import com.example.team29project.View.MainActivity;
+import com.example.team29project.View.MainPageActivity;
 
 import org.junit.Test;
 import org.junit.Rule;
 
 public class DisplayActivityTest {
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario=
-            new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainPageActivity> scenario=
+            new ActivityScenarioRule<>(MainPageActivity.class);
 
     @Test public void checkItemDetailsDisplayed(){
         onView(withId(R.id.menu)).perform(click());
