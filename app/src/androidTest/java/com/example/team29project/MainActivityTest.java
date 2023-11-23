@@ -37,9 +37,4 @@ public class MainActivityTest {
         onView(withId(R.id.sort_by_button)).check(matches(isDisplayed()));
         onView(withId(R.id.filter_button)).check(matches(isDisplayed()));
     }
-
-    @Test
-    public void deleteTest(){
-
-    }
 }
