@@ -45,6 +45,7 @@ public class DatabaseController  {
 
     // Item attributes
     private final CollectionReference itemsRef;
+
     private final StorageReference imageRef;
     private ArrayList<Item> itemDataList;
     // Adapters
@@ -67,12 +68,12 @@ public class DatabaseController  {
      * Stores the items and tags in the database
      * images are saved on firebase Storage
      */
-    public DatabaseController(){
+    public DatabaseController(String userId){
         this.db = FirebaseFirestore.getInstance();
         this.sb = FirebaseStorage.getInstance();
         this.imageRef = sb.getReference();
-        this.itemsRef = db.collection("items");
-        this.tagsRef = db.collection("tags");
+        this.itemsRef = db.collection("Users").document(userId).collection("items");
+        this.tagsRef = db.collection("Users").document(userId).collection("tags");
         this.itemDataList = new ArrayList<>();
         this.tagDataList = new ArrayList<>();
         this.tagAdapter=null;
@@ -351,7 +352,7 @@ public class DatabaseController  {
      * @param callback  indicates where the callback
      */
     public void getItem(String documentId, ItemCallback callback){
-        DocumentReference docRef = db.collection("items").document(documentId);
+        DocumentReference docRef = itemsRef.document(documentId);
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -466,23 +467,23 @@ public class DatabaseController  {
 
     public void filter(String filterBy, String data, FilteredItemCallback callback) {
          // getting data from db of items
-        Query query = db.collection("items");
+        Query query = itemsRef;
 
         if(filterBy.equals("make")) {
-            query = db.collection("items").whereEqualTo("make", data);
+            query = itemsRef.whereEqualTo("make", data);
         } else if (filterBy.equals("date")) {
             String[] dates = data.split(",");
             if (dates.length == 2) {
                 String startDate = dates[0].trim();
                 String endDate = dates[1].trim();
-                query = db.collection("items")
+                query =itemsRef
                     .whereGreaterThanOrEqualTo("date", startDate)
                     .whereLessThanOrEqualTo("date", endDate);
             }
         } else if (filterBy.equals("description")) {
             final ArrayList<String> words = new ArrayList<>(Arrays.asList(data.toLowerCase().split("\\s+")));
 
-            query = db.collection("items");
+            query =itemsRef;
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -509,7 +510,7 @@ public class DatabaseController  {
                 }
             });
         } else {
-            query = db.collection("items");
+            query = itemsRef;
         }
         // Add a snapshot listener to the FireStore query
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -543,9 +544,9 @@ public class DatabaseController  {
         Query query; // New Query variable
         sortBy=sortBy.toLowerCase();
         if(sortBy.equals("default")){
-            query = db.collection("items");
+            query = itemsRef;
         }
-        query = db.collection("items").orderBy(sortBy, direction);
+        query = itemsRef.orderBy(sortBy, direction);
 
         // Add a snapshot listener to the FireStore query
        query.addSnapshotListener(new EventListener<QuerySnapshot>() {

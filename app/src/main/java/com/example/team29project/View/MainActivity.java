@@ -13,6 +13,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent login = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(login);
 
     }
 }

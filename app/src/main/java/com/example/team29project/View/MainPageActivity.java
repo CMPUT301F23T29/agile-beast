@@ -69,6 +69,8 @@ public class MainPageActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
+        Intent logInt = getIntent();
+        String userId = logInt.getStringExtra("userId");
         ImageButton menu = findViewById(R.id.menu);
         Button deleteButton = findViewById(R.id.delete_button);
         sumItem = findViewById(R.id.value_display);
@@ -78,8 +80,7 @@ public class MainPageActivity extends AppCompatActivity implements
         isSelect = false;
         // Init lists for tags and items,
         // as well as FireStore database
-        String userId ="user";
-        db = new DatabaseController();
+        db = new DatabaseController(userId);
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
         tagAdapter = new TagAdapter(this,db.getTags());
         itemsList.setAdapter(itemAdapter);
@@ -107,6 +108,7 @@ public class MainPageActivity extends AppCompatActivity implements
                         itemPosition = position;
                         Intent display = new Intent(MainPageActivity.this, ItemViewActivity.class);
                         display.putExtra("documentId", db.getItem(position).getDocId());
+                        display.putExtra("userId",userId);
 
                         startActivity(display);
                     }

@@ -101,7 +101,8 @@ public class ItemViewActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_display);
         Intent ints = getIntent();
         String documentId = ints.getStringExtra("documentId");
-        db = new DatabaseController();
+        String userId = ints.getStringExtra("userId");
+        db = new DatabaseController(userId);
         db.getItem(documentId, this);
         Button backBton = findViewById(R.id.back_button);
         Button editBton = findViewById(R.id.edit_button);

@@ -56,6 +56,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-code-scanner:16.1.0")
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
     implementation ("com.google.mlkit:text-recognition:16.0.0")
+    implementation ("org.mindrot:jbcrypt:0.4")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
 }

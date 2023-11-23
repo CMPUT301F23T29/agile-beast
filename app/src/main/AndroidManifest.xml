@@ -22,6 +22,9 @@
         android:theme="@style/Theme.Team29project"
         tools:targetApi="31">
         <activity
+            android:name=".View.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".View.MainActivity"
             android:exported="false">
             <intent-filter>
@@ -38,7 +41,7 @@
             android:exported="false" />
         <activity
             android:name=".View.MainPageActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
