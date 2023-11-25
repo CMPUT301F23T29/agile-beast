@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.example.team29project.Controller.SelectListener;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.MultiImageAdapter;
 import com.example.team29project.R;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -107,6 +109,7 @@ public class ItemViewActivity extends AppCompatActivity implements
         Button backBton = findViewById(R.id.back_button);
         Button editBton = findViewById(R.id.edit_button);
         tagGroup = findViewById(R.id.tagGroup);
+        tagGroup.setSelectionRequired(false);
         itemName = findViewById(R.id.item_name);
         itemValue = findViewById(R.id.item_value);
         itemDate = findViewById(R.id.item_date);
@@ -138,15 +141,14 @@ public class ItemViewActivity extends AppCompatActivity implements
     public void onItemLoaded(Item newItem) {
         item = newItem;
         photo_string = item.getPhotos();
+        // Default image of adding photos
         if(photo_string.size()==0){
             photo_string.add("https://static.vecteezy.com/system/resources/previews/026/306/461/original/cross-sign-plus-add-addition-math-mathematics-additional-black-and-white-line-icon-symbol-artwork-clipart-illustration-vector.jpg");
                    }
-
         adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this,db);
         imageListView.setAdapter(adapter);
         imageListView.setLayoutManager(new LinearLayoutManager(ItemViewActivity.this, LinearLayoutManager.HORIZONTAL, false));
         changeData();
-
     }
 
 
@@ -167,6 +169,16 @@ public class ItemViewActivity extends AppCompatActivity implements
         itemDescription.setText(item.getDescription());
         itemComment.setText(item.getComment());
         adapter.notifyDataSetChanged();
+        tags = item.getTags();
+        tagGroup.removeAllViews();
+        for(String tag: tags) {
+            Chip chip = new Chip(this);
+            chip.setText(tag);
+            chip.setId(tags.indexOf(tag));
+            chip.setCheckable(false);
+            chip.setClickable(false);
+            tagGroup.addView(chip);
+        }
         // update tags
 
 
@@ -174,16 +186,11 @@ public class ItemViewActivity extends AppCompatActivity implements
 
     /**
      * Handles if ok was pressed and changes the data
-     * @param aitem the item to be used
+     *
      */
     @Override
-    public void onOKPressed(Item aitem) {
-        assert item != null;
-        this.item = aitem;
-        changeData();
-        Intent intes = new Intent(ItemViewActivity.this, MainActivity.class);
-        intes.putExtra("new_item", item);
-        setResult(Activity.RESULT_OK, intes);
+    public void onOKPressed() {
+
     }
 
     /**
@@ -251,6 +258,7 @@ public class ItemViewActivity extends AppCompatActivity implements
 
     @Override
     public void onPhotoUploadFailure(Exception e) {
+        Toast.makeText(this, "Failed to upload Photos", Toast.LENGTH_SHORT).show();
 
     }
 

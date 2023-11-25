@@ -19,8 +19,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.TagAddedItemCallback;
 import com.example.team29project.Model.Item;
+import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
@@ -28,13 +32,14 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * Allow users to input/edit data for an inventory item
  * Validate and store the data collected
  * Interface with the Camera for photo capture
  */
-public class InputFragment extends DialogFragment {
+public class InputFragment extends DialogFragment implements TagAddedItemCallback {
 
     private Item item;
     private Button scanButton;
@@ -51,16 +56,20 @@ public class InputFragment extends DialogFragment {
     private int yearDate;
     private int monthDate;
     private int dayDate;
+
+    private ChipGroup tagChips;
     private ArrayList<String> tags;
+    private ArrayList<Tag> tempTags;
     DatabaseController db;
+
 
     /**
      * set current item to null and set tags
      */
     public InputFragment(DatabaseController db)  {
         this.item = null;
-        this.tags = tags;
         this.db = db;
+        this.tempTags= new ArrayList<>();
     }
 
     /**
@@ -70,15 +79,30 @@ public class InputFragment extends DialogFragment {
     public InputFragment(DatabaseController db, Item aItem) {
         this.item = aItem;
         this.db= db;
+        this.tags= aItem.getTags();
 
     }
     private OnFragmentsInteractionListener listener;
 
     /**
+     *
+     * When tag is applied into item
+     * @param tempTagList
+     */
+
+    @Override
+    public void onTagsApplied(ArrayList<Tag> tempTagList) {
+
+        this.tempTags= tempTagList;
+
+        drawTags(tagsToString());
+    }
+
+    /**
      * Interface for user interaction with fragments
      */
     public interface OnFragmentsInteractionListener {
-        void onOKPressed(Item item);
+        void onOKPressed();
         void onEditPressed();
         void onCancelPressed();
 
@@ -98,9 +122,6 @@ public class InputFragment extends DialogFragment {
         }
     }
 
-    /**
-     * Create key listener to dismiss dialog when back key is released
-     */
 
 
 
@@ -130,9 +151,9 @@ public class InputFragment extends DialogFragment {
         itemDescription =  view.findViewById(R.id.edit_description);
         itemComment = view.findViewById(R.id.edit_comment);
         scanButton = view.findViewById(R.id.scan_button);
+        tagChips = view.findViewById(R.id.tag_chip);
         GmsBarcodeScannerOptions options = new GmsBarcodeScannerOptions.Builder()
                 .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-
                 .enableAutoZoom()
                 .build();
         GmsBarcodeScanner scanner = GmsBarcodeScanning.getClient(getContext(),options);
@@ -155,6 +176,17 @@ public class InputFragment extends DialogFragment {
                 dat.show(getChildFragmentManager(), "DatePicker");
             }
             return true;
+        });
+
+
+        // When tag Chip is pressed
+        tagChips.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TagDialogue(db , InputFragment.this).show(getChildFragmentManager(),"Pick Tags");
+
+
+            }
         });
 
         // scanning camera
@@ -196,6 +228,7 @@ public class InputFragment extends DialogFragment {
                 String item_model = itemModel.getText().toString();
                 String item_description = itemDescription.getText().toString();
                 String item_comment = itemComment.getText().toString();
+                // update that the item is applied to this tag
                 // Check if it is empty except comment
                 if(item_name.isEmpty() || item_date.isEmpty() || item_value.isNaN()||item_make.isEmpty() || item_model.isEmpty() || item_description.isEmpty() ||item_comment.isEmpty()) {
                     throw new Exception();
@@ -208,9 +241,16 @@ public class InputFragment extends DialogFragment {
                 }
                 // If it is adding
                 if (item == null) {
-                    // TODO add tags selected to the item
-                    // do this by checking the selected id from the chip group
-                    db.addItem(new Item(item_name, item_date, item_value, item_make, item_model, item_description, item_comment, item_serN));
+                    String uniqueId = UUID.randomUUID().toString();
+                   item=  new Item(item_name, item_date, item_value, item_make, item_model, item_description, item_comment, item_serN);
+                    if(!this.tempTags.isEmpty()){
+                        item.setTags(tagsToString());
+                        for(Tag tag : this.tempTags) {
+                            tag.addItem(uniqueId);
+                            db.updateTag(tag);
+                        }
+                    }
+                    db.addItem(item,uniqueId);
                 }
                 // if it is editing
                 else {
@@ -222,7 +262,14 @@ public class InputFragment extends DialogFragment {
                     item.setSerialNumber(item_serN);
                     item.setMake(item_make);
                     item.setComment(item_comment);
+                    item.setTags(tagsToString());
                     db.updateItem(item.getDocId(),item);
+                    for(Tag tag : this.tempTags) {
+                        tag.addItem(item.getDocId());
+                        db.updateTag(tag);
+                        }
+
+
                     listener.onEditPressed();
                 }
             } catch(NumberFormatException e){
@@ -251,5 +298,33 @@ public class InputFragment extends DialogFragment {
         itemMake.setText(item.getMake());
         itemDescription.setText((item.getDescription()));
         itemComment.setText(item.getComment());
+        drawTags(item.getTags());
+
+
+    }
+    public ArrayList<String> tagsToString(){
+        ArrayList<String> temp = new ArrayList<>();
+        for(Tag tag : this.tempTags){
+            temp.add(tag.getName());
+        }
+        return temp;
+    }
+
+    /**
+     * This function draws tag datas into chipgroup
+     * @param tagString arrayList of String represents the tag
+     */
+    public void drawTags(ArrayList<String> tagString){
+        tagChips.removeAllViews();
+        for(String tag: tagString ){
+            Chip chip = new Chip(getContext());
+            chip.setText(tag);
+            chip.setId(tagString.indexOf(tag));
+            chip.setCheckable(false);
+            chip.setClickable(false);
+            tagChips.addView(chip);
+        }
+
+
     }
 }

@@ -1,8 +1,10 @@
 package com.example.team29project.View;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Controller.FilteredItemCallback;
 import com.example.team29project.Controller.LoadItemsCallback;
+import com.example.team29project.Controller.LoadTagsCallback;
 import com.example.team29project.Controller.SortItemCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.ItemArrayAdapter;
+import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
 import com.example.team29project.Controller.TagAdapter;
 
@@ -48,14 +52,12 @@ public class MainPageActivity extends AppCompatActivity implements
     private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
     private ListView itemsList;
-    private int itemPosition;
     private boolean isDelete;
-    private TagAdapter tagAdapter;
     private boolean isSelect;
     private TextView sumItem;
     private boolean isFilterFragmentShown = false;
     private boolean isSortFragmentShown = false;
-    private ArrayList<String> tags;
+    private ArrayList<Tag> tags;
     private ArrayList<Integer> selectedItems;
     private DatabaseController db;
 
@@ -82,9 +84,7 @@ public class MainPageActivity extends AppCompatActivity implements
         // as well as FireStore database
         db = new DatabaseController(userId);
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
-        tagAdapter = new TagAdapter(this,db.getTags());
         itemsList.setAdapter(itemAdapter);
-        db.setAdapter(itemAdapter, tagAdapter);
         db.loadInitialItems(this);
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             /**
@@ -100,12 +100,10 @@ public class MainPageActivity extends AppCompatActivity implements
                     if (isSelect) {
                         selectedItems.add(position);
                     } else if (isDelete) {
-
                         db.removeItem(position);
                         itemAdapter.notifyDataSetChanged();
                         isDelete = false;
                     } else {
-                        itemPosition = position;
                         Intent display = new Intent(MainPageActivity.this, ItemViewActivity.class);
                         display.putExtra("documentId", db.getItem(position).getDocId());
                         display.putExtra("userId",userId);
@@ -215,7 +213,7 @@ public class MainPageActivity extends AppCompatActivity implements
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //new TagDialogue(db.getTags(), tagAdapter).show(getSupportFragmentManager(), "Tags");
+                new TagDialogue(db).show(getSupportFragmentManager(), "Tags");
 
             }
         });
@@ -227,12 +225,11 @@ public class MainPageActivity extends AppCompatActivity implements
 
     /**
      * Adds an item to the database
-     * @param item the item to be used
+     *
      */
 
     @Override
-    public void onOKPressed(Item item) {
-        db.addItem(item);
+    public void onOKPressed() {
         itemAdapter.notifyDataSetChanged();
         updateSum();
     }
@@ -262,7 +259,6 @@ public class MainPageActivity extends AppCompatActivity implements
      */
     @Override
     public void onFilterConfirmPressed(String filterBy, String data) {
-
         db.filter(filterBy, data, this);
     }
     /**
@@ -336,5 +332,7 @@ public class MainPageActivity extends AppCompatActivity implements
     public void onSortFailed() {
         Toast.makeText(this, "Failed to filter", Toast.LENGTH_SHORT).show();
     }
+
+
 }
 

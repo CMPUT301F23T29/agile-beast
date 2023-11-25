@@ -3,8 +3,11 @@ package com.example.team29project.Controller;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.team29project.Model.Item;
+import com.example.team29project.Model.Tag;
+import com.example.team29project.View.MainPageActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.Nullable;
 
@@ -49,8 +52,6 @@ public class DatabaseController  {
     private final StorageReference imageRef;
     private ArrayList<Item> itemDataList;
     // Adapters
-    private ItemArrayAdapter itemAdapter;
-    private TagAdapter tagAdapter;
 
 
 
@@ -60,7 +61,7 @@ public class DatabaseController  {
 
     // Tag attributes not used for this checkpoint
     private final CollectionReference tagsRef;
-    private final ArrayList<String> tagDataList;
+    private final ArrayList<Tag> tagDataList;
 
     private static final String TAG = "DatabaseController";
 
@@ -76,8 +77,6 @@ public class DatabaseController  {
         this.tagsRef = db.collection("Users").document(userId).collection("tags");
         this.itemDataList = new ArrayList<>();
         this.tagDataList = new ArrayList<>();
-        this.tagAdapter=null;
-        this.itemAdapter = null;
     }
 
     /**
@@ -86,6 +85,31 @@ public class DatabaseController  {
      */
     public StorageReference getImageRef(){
         return this.imageRef;
+    }
+
+    /**
+     * It creates Tag object from DoC file from fireStore
+     * @param doc document file of each tag
+     * @return Tag object corresponding to document file
+     */
+
+    public Tag createTagFromDoc(QueryDocumentSnapshot doc){
+        String name = doc.getId();
+        Object itemsObject = doc.get("items");
+        // Initialize an ArrayList to store photos
+        ArrayList<String> items = new ArrayList<>();
+        if (itemsObject instanceof ArrayList<?>) {
+            // Convert 'photosObject' to ArrayList<String>
+            for (Object item : (ArrayList<?>) itemsObject) {
+                if (item instanceof String) {
+                    items.add((String) item);
+                }
+            }
+        }
+        Tag tag =new Tag(name);
+        tag.setItems(items);
+        return tag;
+
     }
 
     /**
@@ -122,17 +146,26 @@ public class DatabaseController  {
                 }
             }
         }
+        Object tagsObject = doc.get("tags");
+        //
+        ArrayList<String> tags = new ArrayList<>();
+        if (tagsObject instanceof ArrayList<?>) {
+            // Convert 'tagsObject' to ArrayList<String>
+            for (Object tag : (ArrayList<?>) tagsObject) {
+                if (tag instanceof String) {
+                    tags.add((String) tag);
+                }
+            }
+        }
        Item item= new Item(name, date, itemValue, make, model, description, comment, serialNumber);
         item.setPhotos(photos);
         item.setDocId(doc.getId());
+        item.setTags(tags);
         return item;
     }
 
     // setting ItemAdapter
-    public void setAdapter(ItemArrayAdapter itemAdapter, TagAdapter tagAdapter){
-        this.itemAdapter = itemAdapter;
-        this.tagAdapter = tagAdapter;
-    }
+
     // setting TagAdapter
 
     /**
@@ -182,7 +215,7 @@ public class DatabaseController  {
     /**
      * Loads the initial tags from firebase and adds them to the tag list. Notifies the display to show the initial tags.
      */
-    public void loadInitialTags() {
+    public void loadInitialTags(TagModifyCallback callback) {
         // This initialize the tags from data base not used for this checkpoints
         tagsRef.addSnapshotListener((value, error) -> {
             // If there's an error with the snapshot, log the error
@@ -191,15 +224,17 @@ public class DatabaseController  {
             }
 
             if (value != null) {
-                // Clear the 'itemDataList'
                 tagDataList.clear();
                 // Loop over each document in the snapshot
                 for (QueryDocumentSnapshot doc : value) {
                     // Retrieve various fields from the document
-                    String tag = doc.getId();
+                    Tag tag = createTagFromDoc(doc);
                     // Add a new 'Item' object to 'itemDataList' with these fields
                     tagDataList.add(tag);
                 }
+            }
+            if (callback != null) {
+                callback.onTagsLoaded();
             }
         });
     }
@@ -233,7 +268,7 @@ public class DatabaseController  {
      * Adds an item to the Firestore database
      * @param item the item being added
      */
-    public void addItem(Item item) {
+    public void addItem(Item item,String id) {
         // Ensure data list does not already contain item with same name
         assert (!itemDataList.contains(item));
         HashMap<String, Object> data = new HashMap<>();
@@ -246,11 +281,12 @@ public class DatabaseController  {
         data.put("description", item.getDescription());
         data.put("comment", item.getComment());
         data.put("photos", Arrays.asList(item.getPhotos().toArray()));
+        data.put("tags", Arrays.asList(item.getTags().toArray()));
         // Add the 'data' map to the Firestore database under a document named after the item's name.
-        itemsRef.add(data)
+        itemsRef.document(id)
+                .set(data)
                 .addOnSuccessListener(documentReference -> {
-                    String generatedDocumentId = documentReference.getId();
-                    Log.d("Firestore", "Item added successfully with ID: " + generatedDocumentId);
+                    Log.d("Firestore", "Item added successfully with ID: " + id);
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -266,19 +302,27 @@ public class DatabaseController  {
      * @param tag the tag being added
      */
 
-    public void addTag(String tag) {
+    public void addTag(Tag tag, TagModifyCallback callback) {
         assert (!tagDataList.contains(tag));
-        // Add or update the tag in the Firestore collection
-        tagsRef
-                .document(tag)
-                .set(tag)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "Tag written successfully!");
+        // Add or update the tag in the Firestore collection tags
+        HashMap<String, Object> data = new HashMap<>();
+        String name = tag.getName();
+        data.put("items", Arrays.asList(tag.getItems().toArray()));
+        tagsRef.document(tag.getName())
+                .set(data)
+                .addOnSuccessListener(documentReference -> {
+                    callback.onTagModified();
 
                 })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error writing tag", e);
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Firestore", "Error adding item", e);
+                    }
                 });
+
+
+
 
     }
 
@@ -317,7 +361,32 @@ public class DatabaseController  {
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document updated successfully!"))
                 .addOnFailureListener(e -> Log.e("Firestore", "Error updating document", e));
         updatePhoto(item,item.getPhotos());
+        updateTagItem(item);
 
+    }
+    public void updateTagItem(Item item){
+        Map<String, Object> fieldUpdate = new HashMap<>();
+        fieldUpdate.put("tags", FieldValue.delete());
+        itemsRef.document(item.getDocId()).update(fieldUpdate);
+        for(String tag: item.getTags()) {
+            itemsRef.document(item.getDocId()).update("tags", FieldValue.arrayUnion(tag));
+        }
+
+    }
+
+    /**
+     * update list of itemst that this tag applied
+     * @param tag
+     */
+    public void updateTag(Tag tag){
+        String tagName = tag.getName();
+        String ids = tag.getItems().get(0);
+        Map<String, Object> fieldUpdate = new HashMap<>();
+        fieldUpdate.put("items", FieldValue.delete());
+        tagsRef.document(tagName).update(fieldUpdate);
+        for(String item : tag.getItems()) {
+            tagsRef.document(tagName).update("items", FieldValue.arrayUnion(item));
+        }
     }
 
     /**
@@ -332,8 +401,8 @@ public class DatabaseController  {
      * Returns the tagDataList
      * @return the tagDataList containing the tags
      */
-    public ArrayList<String> getTags() {
-        return tagDataList;
+    public ArrayList<Tag> getTags() {
+        return this.tagDataList;
     }
 
     /**
@@ -342,7 +411,6 @@ public class DatabaseController  {
      * @return item at position i
      */
     public Item getItem(int i) {
-
         return itemDataList.get(i);
     }
 
@@ -384,9 +452,21 @@ public class DatabaseController  {
                                 }
                             }
                         }
+                        Object tagsObject = data.get("tags");
+                        // Initialize an ArrayList to store photos
+                        ArrayList<String> tags = new ArrayList<>();
+                        if (tagsObject instanceof ArrayList<?>) {
+                            // Convert 'photosObject' to ArrayList<String>
+                            for (Object tag : (ArrayList<?>) tagsObject) {
+                                if (tag instanceof String) {
+                                    tags.add((String) tag);
+                                }
+                            }
+                        }
                         Item item= new Item(name, date, itemValue, make, model, description, comment, serialNumber);
                         item.setPhotos(photos);
                         item.setDocId(documentId);
+                        item.setTags(tags);
                         // Initialize an ArrayList to store photo URLs
                         callback.onItemLoaded(item);
 
@@ -408,21 +488,31 @@ public class DatabaseController  {
      * @param i the position of tag to be deleted in the tagDataList
      * @return the tag that was deleted
      */
-    public String removeTag(int i) {
+    public void removeTag(int i, TagModifyCallback callback) {
         assert (i < this.tagDataList.size());
+        Tag toDeleteTag = this.tagDataList.get(i);
+        for(String id: toDeleteTag.getItems()){
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("tags", FieldValue.arrayRemove(toDeleteTag.getName()));
+            itemsRef.document(id).update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.e("Firestore", "Successfully deleted");
 
-        String toDeleteTag = this.tagDataList.get(i);
-        tagsRef.document(toDeleteTag)
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Failed to delete");
+                    });
+        }
+
+        tagsRef.document(toDeleteTag.getName())
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Log.d("Firestore", "Tag '" + toDeleteTag + "' deleted successfully");
+                        callback.onTagModified();
                     }
                 });
-
-
-        return toDeleteTag;
     }
 
     /**
@@ -430,9 +520,22 @@ public class DatabaseController  {
      * @param i the position of item to be deleted in the itemDataList
      * @return the item that was deleted
      */
-    public Item removeItem(int i) {
+    public void removeItem(int i) {
         assert (i < this.itemDataList.size());
         Item toDeleteItem = this.itemDataList.get(i);
+        for(String tag : toDeleteItem.getTags()){
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("items", FieldValue.arrayRemove(toDeleteItem.getDocId()));
+            tagsRef.document(tag).update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.e("Firestore", "Successfully deleted");
+
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Failed to delete");
+                    });
+
+        }
         ArrayList<String> photos =  toDeleteItem.getPhotos();
         for(String photo : photos){
             deletePhoto(photo);
@@ -445,7 +548,6 @@ public class DatabaseController  {
                         Log.d("Firestore", "Item '" + toDeleteItem.getName() + "' deleted successfully");
                     }
                 });
-        return toDeleteItem;
     }
 
     /**
