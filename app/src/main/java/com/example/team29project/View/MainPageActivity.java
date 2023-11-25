@@ -47,7 +47,7 @@ public class MainPageActivity extends AppCompatActivity implements
 
 {
 
-    private TextView addItem;
+    private TextView addItem, profile;
     private TextView editTag;
     private TextView selectBtn;
     private ItemArrayAdapter itemAdapter;
@@ -186,6 +186,8 @@ public class MainPageActivity extends AppCompatActivity implements
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
         addItem = popupView.findViewById(R.id.add_new_item);
         selectBtn = popupView.findViewById(R.id.select_item);
+        editTag = popupView.findViewById(R.id.edit_tag_item);
+        profile = popupView.findViewById(R.id.user_profile);
         selectBtn.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click event
@@ -209,7 +211,7 @@ public class MainPageActivity extends AppCompatActivity implements
                 popupWindow.dismiss();
             }
         });
-        editTag = popupView.findViewById(R.id.edit_tag_item);
+
         editTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,6 +219,18 @@ public class MainPageActivity extends AppCompatActivity implements
 
             }
         });
+
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO pop up fragment
+                String name, sum;
+                name = "name"; // placeholders
+                sum = "value"; // placeholders
+                new ProfileFragment(name, sum).show(getSupportFragmentManager(), null);
+            }
+        });
+
         popupView.setOnTouchListener((v, event) -> {
             popupWindow.dismiss();
             return true;
