@@ -7,37 +7,48 @@
     tools:context=".View.LoginActivity"
     android:background="@color/background">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif"
+        android:paddingBottom="20dp"
+        android:text="Welcome!"
+        android:textColor="@color/button_text"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.71000004" />
+
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="monospace"
-            android:paddingBottom="20dp"
-            android:text="Welcome!"
-            android:textColor="@color/button_text"
-            android:textSize="30sp"></TextView>
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="@color/white"
+        android:background="@drawable/button_style"
+        android:layout_marginHorizontal="60dp">
 
         <EditText
             android:id="@+id/usernameEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="60dp"
+            android:layout_marginHorizontal="15dp"
+            android:paddingTop="30dp"
             android:hint="Username" />
 
         <EditText
             android:id="@+id/passwordEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="60dp"
+            android:layout_marginHorizontal="15dp"
+            android:paddingTop="10dp"
             android:hint="Password" />
 
         <LinearLayout
@@ -52,8 +63,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="30dp"
-                android:textColor="@color/button_text"
-                android:text="Sign Up"/>
+                android:text="Sign Up"
+                android:textColor="@color/button_text" />
 
             <Button
                 android:id="@+id/login_button"
@@ -61,8 +72,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="30dp"
-                android:textColor="@color/button_text"
-                android:text="Log in" />
+                android:text="Log in"
+                android:textColor="@color/button_text"/>
 
         </LinearLayout>
 
