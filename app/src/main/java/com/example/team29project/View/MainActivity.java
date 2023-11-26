@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SortFragment.OnFragmentInteractionListener,
         FilterFragment.OnFragmentInteractionListener,
-        LoadItemsCallback
+        LoadItemsCallback, PickScanDialog.BarcodeOrSerialListener
 
 {
 
@@ -285,7 +285,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onItemsLoaded() {
         itemAdapter.notifyDataSetChanged();
         updateSum();
-
     }
 
     /**
@@ -294,6 +293,18 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFailure(Exception e) {
         Toast.makeText(MainActivity.this, "Failed to load", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBarcodePressed() {
+        //TODO move minjaes code
+    }
+
+    @Override
+    public void onSerialPressed() {
+        Intent intent = new Intent(MainActivity.this, SerialActivity.class);
+        startActivity(intent);
+
     }
 }
 
