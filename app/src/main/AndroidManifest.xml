@@ -21,7 +21,7 @@
         android:theme="@style/Theme.Team29project"
         tools:targetApi="31">
         <activity
-            android:name=".View.ImageViewActivity"
+            android:name=".View.ItemViewActivity"
             android:exported="false" />
 
         <activity
