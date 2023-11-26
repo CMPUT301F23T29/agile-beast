@@ -70,6 +70,7 @@ public class SerialActivity extends AppCompatActivity {
             public void onClick(View view) {
                 detectText();
             }
+            // testing
         });
 
         snapButton.setOnClickListener(new View.OnClickListener() {
