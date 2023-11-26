@@ -19,6 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.team29project.R;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
+
 public class SerialActivity extends AppCompatActivity {
 
     private ImageView captureImageView;
@@ -70,7 +75,6 @@ public class SerialActivity extends AppCompatActivity {
             public void onClick(View view) {
                 detectText();
             }
-            // testing
         });
 
         snapButton.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +90,23 @@ public class SerialActivity extends AppCompatActivity {
     }
 
     private void detectText() {
+        if (serialBitmap == null) {
+            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(this, "trying to detect", Toast.LENGTH_SHORT).show();
+        InputImage image = InputImage.fromBitmap(serialBitmap, 0);
+        TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+        recognizer.process(image)
+                .addOnSuccessListener(result -> {
+                    String resultText = result.getText();
+                    resultTextView.setText(resultText);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to recognize text", Toast.LENGTH_SHORT).show();
+                });
+
     }
 
     private void captureImage(){

@@ -9,8 +9,8 @@
     <!--image view to display our image-->
     <ImageView
         android:id="@+id/serial_image_view"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="305dp"
+        android:layout_height="317dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="29dp"
@@ -23,6 +23,7 @@
         android:layout_height="50dp"
         android:layout_below="@+id/serial_image_view"
         android:layout_marginTop="10dp"
+        android:gravity="center"
         android:textSize="15sp"
         android:textStyle="bold" />
 
