@@ -65,8 +65,6 @@ public class SerialActivity extends AppCompatActivity {
         detectButton = findViewById(R.id.detect_button);
         cancelButton = findViewById(R.id.done_serial_button);
 
-        Toast.makeText(this, "SerialActivity started", Toast.LENGTH_SHORT).show();
-
         if (ContextCompat.checkSelfPermission(SerialActivity.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             permissionActivityResultLauncher.launch(android.Manifest.permission.CAMERA);
         } else {
@@ -78,7 +76,7 @@ public class SerialActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent resultIntent = new Intent();
                 String resultText = resultTextView.getText().toString();
-                resultIntent.putExtra("resultText", resultText);
+                resultIntent.putExtra("result", resultText);
                 setResult(Activity.RESULT_OK, resultIntent);
                 finish();
             }

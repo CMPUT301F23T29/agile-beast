@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -222,6 +223,10 @@ public class InputFragment extends DialogFragment{
         itemMake.setText(item.getMake());
         itemDescription.setText((item.getDescription()));
         itemComment.setText(item.getComment());
+    }
+
+        public void updateTextView(String text) {
+        itemSerialNumber.setText(text);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.team29project.View;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,6 +16,10 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -56,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayList<String> tags;
     private ArrayList<Integer> selectedItems;
     private DatabaseController db;
+    private final int REQUEST_CODE = 1;
+
+    private InputFragment input;
 
 
     /**
@@ -202,7 +210,8 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 isSelect = false;
                 isDelete = false;
-                new InputFragment(db).show(getSupportFragmentManager(), "addItems");
+                input = new InputFragment(db);
+                input.show(getSupportFragmentManager(), "addItems");
                 popupWindow.dismiss();
             }
         });
@@ -300,11 +309,37 @@ public class MainActivity extends AppCompatActivity implements
         //TODO move minjaes code
     }
 
+    private final ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
+        new ActivityResultContracts.StartActivityForResult(),
+        new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        String resultString = data.getStringExtra("result");
+                        if (resultString != null) {
+                            input.updateTextView(resultString);
+                        } else {
+                            Toast.makeText(MainActivity.this, "No result received", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "No data received", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                    Toast.makeText(MainActivity.this, "Action cancelled", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Action failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    );
+
     @Override
     public void onSerialPressed() {
-        Intent intent = new Intent(MainActivity.this, SerialActivity.class);
-        startActivity(intent);
 
+        Intent intent = new Intent(MainActivity.this, SerialActivity.class);
+        mActivityResultLauncher.launch(intent);
     }
 }
 
