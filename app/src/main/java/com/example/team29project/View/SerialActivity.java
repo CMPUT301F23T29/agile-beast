@@ -1,6 +1,7 @@
 package com.example.team29project.View;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,7 +29,7 @@ public class SerialActivity extends AppCompatActivity {
 
     private ImageView captureImageView;
     private TextView resultTextView;
-    private Button snapButton, detectButton;
+    private Button snapButton, detectButton, cancelButton;
     private Bitmap serialBitmap;
 
 
@@ -53,6 +54,7 @@ public class SerialActivity extends AppCompatActivity {
             }
     );
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
@@ -61,6 +63,7 @@ public class SerialActivity extends AppCompatActivity {
         resultTextView = findViewById(R.id.serial_text_view);
         snapButton = findViewById(R.id.snap_button);
         detectButton = findViewById(R.id.detect_button);
+        cancelButton = findViewById(R.id.done_serial_button);
 
         Toast.makeText(this, "SerialActivity started", Toast.LENGTH_SHORT).show();
 
@@ -69,6 +72,17 @@ public class SerialActivity extends AppCompatActivity {
         } else {
             captureImage();
         }
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                String resultText = resultTextView.getText().toString();
+                resultIntent.putExtra("resultText", resultText);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
+            }
+        });
 
         detectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +101,8 @@ public class SerialActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     private void detectText() {
