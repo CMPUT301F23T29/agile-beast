@@ -53,7 +53,7 @@
         android:layout_marginStart="24sp"
         android:layout_marginBottom="10dp"
         android:fontFamily="monospace"
-        android:text="Edit Tag"
+        android:text="Tag"
         android:textColor="@color/white"
         android:textSize="26sp" />
 
@@ -64,7 +64,7 @@
         android:fontFamily="monospace"
         android:layout_marginStart="24sp"
         android:layout_marginBottom="10dp"
-        android:text="User Profile"
+        android:text="Profile"
         android:textColor="@color/white"
         android:textSize="26sp"
         android:layout_gravity="bottom"/>

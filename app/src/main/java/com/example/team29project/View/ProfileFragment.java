@@ -48,7 +48,7 @@ public class ProfileFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_profile, null);
         profile_username = view.findViewById(R.id.profile_username);
         profile_value = view.findViewById(R.id.profile_value);
-        profile_username.setText(username);
+        profile_username.setText("User Id: "+ username);
         String newsum = "Total Value: $";
         newsum = newsum + value;
         profile_value.setText(newsum);
