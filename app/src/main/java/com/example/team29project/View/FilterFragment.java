@@ -36,7 +36,7 @@ public class FilterFragment extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        ((MainActivity) getActivity()).setFilterFragmentShown(false);
+        ((MainPageActivity) getActivity()).setFilterFragmentShown(false);
     }
 
     /**

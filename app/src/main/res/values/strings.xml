@@ -33,7 +33,7 @@
         <item>Make</item>
         <item>Model</item>
         <item>Description</item>
-<!--        <item>Comment</item>-->
+        <!--        <item>Comment</item>-->
     </string-array>
     <string-array name="filter_items">
         <item>Default</item>
