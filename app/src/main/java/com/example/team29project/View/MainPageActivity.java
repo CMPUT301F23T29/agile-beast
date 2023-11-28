@@ -60,6 +60,7 @@ public class MainPageActivity extends AppCompatActivity implements
     private ArrayList<Tag> tags;
     private ArrayList<Integer> selectedItems;
     private DatabaseController db;
+    private String userId;
 
 
     /**
@@ -72,7 +73,7 @@ public class MainPageActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
         Intent logInt = getIntent();
-        String userId = logInt.getStringExtra("userId");
+        userId = logInt.getStringExtra("userId");
         ImageButton menu = findViewById(R.id.menu);
         Button deleteButton = findViewById(R.id.delete_button);
         sumItem = findViewById(R.id.value_display);
@@ -223,11 +224,12 @@ public class MainPageActivity extends AppCompatActivity implements
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO pop up fragment
-                String name, sum;
-                name = "name"; // placeholders
-                sum = "value"; // placeholders
-                new ProfileFragment(name, sum).show(getSupportFragmentManager(), null);
+                Double total =0.0;
+                for(Item item : db.getItems()){
+                    total = total +  item.getValue();
+                }
+                sumItem.setText(String.valueOf(total));
+                new ProfileFragment(userId, String.valueOf(total)).show(getSupportFragmentManager(), null);
             }
         });
 
