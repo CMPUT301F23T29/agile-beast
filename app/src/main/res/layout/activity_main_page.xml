@@ -20,6 +20,13 @@
         tools:layout_editor_absoluteX="-28dp"
         tools:layout_editor_absoluteY="176dp">
 
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="67dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/ellipsis"
+            tools:layout_editor_absoluteX="313dp"
+            tools:layout_editor_absoluteY="553dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -179,14 +186,18 @@
 
         <ImageButton
             android:id="@+id/menu"
-            android:layout_width="75dp"
-            android:layout_height="78dp"
+            android:layout_width="63dp"
+            android:layout_height="51dp"
             android:layout_margin="16dp"
+            android:background="@drawable/menu_button_style"
+            android:backgroundTint="@color/button_colour"
             android:contentDescription="Menu button"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_add" />
+            app:srcCompat="@drawable/ellipsis" />
 
         <!-- todo change the image button icon to the three ellipsis -->
 
