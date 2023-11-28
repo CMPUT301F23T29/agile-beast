@@ -9,7 +9,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,7 +30,7 @@ import java.util.Calendar;
  * Validate and store the data collected
  * Interface with the Camera for photo capture
  */
-public class InputFragment extends DialogFragment {
+public class InputFragment extends DialogFragment{
 
     private Item item;
     private EditText itemName;
@@ -45,6 +47,7 @@ public class InputFragment extends DialogFragment {
     private int monthDate;
     private int dayDate;
     private ArrayList<String> tags;
+    private Button scanButton;
     DatabaseController db;
 
     /**
@@ -95,9 +98,6 @@ public class InputFragment extends DialogFragment {
      * Create key listener to dismiss dialog when back key is released
      */
 
-
-
-
     /**
      * Create a dialog to edit the details of an item
      * @param savedInstanceState The last saved instance state of the Fragment,
@@ -122,9 +122,17 @@ public class InputFragment extends DialogFragment {
         itemModel =  view.findViewById(R.id.edit_item_model);
         itemDescription =  view.findViewById(R.id.edit_description);
         itemComment = view.findViewById(R.id.edit_comment);
-        if(item !=null){
+        scanButton = view.findViewById(R.id.scan_button);
+        if (item != null) {
             writeData(item);
         }
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PickScanDialog dialog = new PickScanDialog();
+                dialog.show(getChildFragmentManager(), "PickScanDialog");
+            }
+        });
 
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
             yearDate = year;
@@ -216,4 +224,9 @@ public class InputFragment extends DialogFragment {
         itemDescription.setText((item.getDescription()));
         itemComment.setText(item.getComment());
     }
+
+        public void updateTextView(String text) {
+        itemSerialNumber.setText(text);
+    }
+
 }
