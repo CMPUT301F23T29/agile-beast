@@ -25,6 +25,7 @@
     <string name="start_date_hint">From YYYY-MM-DD</string>
     <string name="make_hint">Enter a make</string>
     <string name="add_item">Add an item</string>
+    <string name="user_profile">User Profile</string>
     <string-array name="sort_items">
         <!--        <item>serialNumber</item>-->
         <item>Default</item>
@@ -33,7 +34,7 @@
         <item>Make</item>
         <item>Model</item>
         <item>Description</item>
-<!--        <item>Comment</item>-->
+        <!--        <item>Comment</item>-->
     </string-array>
     <string-array name="filter_items">
         <item>Default</item>

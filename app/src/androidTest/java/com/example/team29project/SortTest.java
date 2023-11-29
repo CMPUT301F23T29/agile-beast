@@ -1,26 +1,18 @@
 package com.example.team29project;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
-import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.swipeDown;
-import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotSelected;
-import static androidx.test.espresso.matcher.ViewMatchers.isSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-import androidx.test.espresso.ViewAssertion;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.team29project.View.MainActivity;
+import com.example.team29project.View.MainPageActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,8 +23,8 @@ import org.junit.runner.RunWith;
 public class SortTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> scenario=
-            new ActivityTestRule<MainActivity>(MainActivity.class);
+    public ActivityTestRule<MainPageActivity> scenario=
+            new ActivityTestRule<MainPageActivity>(MainPageActivity.class);
 
     @Before
     public void init(){

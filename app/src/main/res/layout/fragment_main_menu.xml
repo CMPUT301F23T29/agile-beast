@@ -5,56 +5,70 @@
     android:layout_width="750sp"
     android:layout_height="match_parent"
     android:background="@color/menu_page"
-    android:orientation = "vertical"
+    android:orientation="vertical"
+    android:id="@+id/fragment_main_menu"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainMenuFragment">
+    tools:context=".View.MainActivity">
 
 
     <TextView
         android:id="@+id/menu_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24sp"
+        android:layout_marginStart="24sp"
         android:layout_marginTop="20sp"
         android:layout_marginBottom="24dp"
         android:fontFamily="monospace"
         android:text="Main Menu"
         android:textColor="@color/menu_page_text"
-        android:textSize="32dp"
+        android:textSize="32sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/select_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24sp"
+        android:layout_marginStart="24sp"
         android:layout_marginBottom="10dp"
         android:fontFamily="monospace"
         android:text="Select"
         android:textColor="@color/white"
 
-        android:textSize="26dp" />
+        android:textSize="26sp" />
 
     <TextView
         android:id="@+id/add_new_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24sp"
+        android:layout_marginStart="24sp"
         android:layout_marginBottom="10dp"
         android:fontFamily="monospace"
         android:text="Add New"
         android:textColor="@color/white"
-        android:textSize="26dp" />
+        android:textSize="26sp" />
 
     <TextView
         android:id="@+id/edit_tag_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24sp"
+        android:layout_marginStart="24sp"
+        android:layout_marginBottom="10dp"
         android:fontFamily="monospace"
-        android:text="Edit Tag"
+        android:text="Tag"
         android:textColor="@color/white"
-        android:textSize="26dp" />
+        android:textSize="26sp" />
+
+    <TextView
+        android:id="@+id/user_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:layout_marginStart="24sp"
+        android:layout_marginBottom="10dp"
+        android:text="Profile"
+        android:textColor="@color/white"
+        android:textSize="26sp"
+        android:layout_gravity="bottom"/>
 
 
 </LinearLayout>
