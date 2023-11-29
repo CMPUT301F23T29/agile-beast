@@ -112,8 +112,8 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
                 else{
                      String tagTemp = inputText.getText().toString();
                      if (!tagTemp.isEmpty()) {
-                         String strtag =inputText.getText().toString();
-                         Tag tag = new Tag(strtag);
+                         String strTag =inputText.getText().toString();
+                         Tag tag = new Tag(strTag);
                          db.addTag(tag,TagDialogue.this);
                          inputText.setText("");
 
@@ -159,11 +159,7 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
                 callback.onTagsApplied(tempTags);
             }
         });
-
-
-
         return builder.create();
-
     }
 
     @Override

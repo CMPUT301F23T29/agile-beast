@@ -308,7 +308,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
 
     /**
-     * This function draws tag datas into chipgroup
+     * This function draws tag data into ChipGroup
      * @param tagString arrayList of String represents the tag
      */
     public void drawTags(ArrayList<String> tagString){

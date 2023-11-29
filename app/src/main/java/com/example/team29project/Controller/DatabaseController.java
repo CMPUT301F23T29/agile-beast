@@ -1,18 +1,11 @@
 package com.example.team29project.Controller;
-
 import android.net.Uri;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
-import com.example.team29project.View.MainPageActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.Nullable;
-
 import java.util.Arrays;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -31,9 +24,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import androidx.annotation.NonNull;
-
 import java.util.Map;
 
 
@@ -222,7 +213,6 @@ public class DatabaseController  {
             if (error != null) {
                 Log.e("Firebase", error.toString());
             }
-
             if (value != null) {
                 tagDataList.clear();
                 // Loop over each document in the snapshot
@@ -586,14 +576,11 @@ public class DatabaseController  {
             }
         } else if (filterBy.equals("description")) {
             final ArrayList<String> words = new ArrayList<>(Arrays.asList(data.toLowerCase().split("\\s+")));
-
-            query =itemsRef;
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         itemDataList.clear();
-
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String description = document.getString("description");
                             boolean containsAllWords = true;
@@ -616,7 +603,6 @@ public class DatabaseController  {
         } else {
             query = itemsRef;
         }
-        // Add a snapshot listener to the FireStore query
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -631,7 +617,6 @@ public class DatabaseController  {
                         itemDataList.add(item);
                     }
                     callback.onFiltered();
-                    //itemAdapter.notifyDataSetChanged();
                 }
             }
         });
