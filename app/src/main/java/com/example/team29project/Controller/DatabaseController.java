@@ -30,6 +30,7 @@ import com.google.firebase.storage.StorageReference;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import androidx.annotation.NonNull;
@@ -52,12 +53,6 @@ public class DatabaseController  {
     private final StorageReference imageRef;
     private ArrayList<Item> itemDataList;
     // Adapters
-
-
-
-
-
-
 
     // Tag attributes not used for this checkpoint
     private final CollectionReference tagsRef;
@@ -157,10 +152,12 @@ public class DatabaseController  {
                 }
             }
         }
-       Item item= new Item(name, date, itemValue, make, model, description, comment, serialNumber);
+        // Sort the tags alphabetically
+        Collections.sort(tags);
+        Item item = new Item(name, date, itemValue, make, model, description, comment, serialNumber);
         item.setPhotos(photos);
         item.setDocId(doc.getId());
-        item.setTags(tags);
+        item.setTags(tags); // Tags are now sorted alphabetically
         return item;
     }
 
@@ -271,6 +268,8 @@ public class DatabaseController  {
     public void addItem(Item item,String id) {
         // Ensure data list does not already contain item with same name
         assert (!itemDataList.contains(item));
+        ArrayList<String> sortedTags = new ArrayList<>(item.getTags());
+        Collections.sort(sortedTags);
         HashMap<String, Object> data = new HashMap<>();
         data.put("name", item.getName());
         data.put("date", item.getDate());
@@ -281,7 +280,7 @@ public class DatabaseController  {
         data.put("description", item.getDescription());
         data.put("comment", item.getComment());
         data.put("photos", Arrays.asList(item.getPhotos().toArray()));
-        data.put("tags", Arrays.asList(item.getTags().toArray()));
+        data.put("tags", sortedTags);
         // Add the 'data' map to the Firestore database under a document named after the item's name.
         itemsRef.document(id)
                 .set(data)
@@ -304,10 +303,15 @@ public class DatabaseController  {
 
     public void addTag(Tag tag, TagModifyCallback callback) {
         assert (!tagDataList.contains(tag));
-        // Add or update the tag in the Firestore collection tags
+
+        // Sort the items alphabetically before adding them to Firestore
+        ArrayList<String> sortedItems = new ArrayList<>(tag.getItems());
+        Collections.sort(sortedItems);
+
+        // Add or update the tag in the Firestore collection 'tags'
         HashMap<String, Object> data = new HashMap<>();
-        String name = tag.getName();
-        data.put("items", Arrays.asList(tag.getItems().toArray()));
+        data.put("items", sortedItems); // Use the sorted items
+
         tagsRef.document(tag.getName())
                 .set(data)
                 .addOnSuccessListener(documentReference -> {
@@ -320,10 +324,6 @@ public class DatabaseController  {
                         Log.e("Firestore", "Error adding item", e);
                     }
                 });
-
-
-
-
     }
 
     /**
@@ -364,15 +364,22 @@ public class DatabaseController  {
         updateTagItem(item);
 
     }
-    public void updateTagItem(Item item){
+    public void updateTagItem(Item item) {
         Map<String, Object> fieldUpdate = new HashMap<>();
         fieldUpdate.put("tags", FieldValue.delete());
+
+        // Sort the tags alphabetically before updating the document
+        ArrayList<String> sortedTags = new ArrayList<>(item.getTags());
+        Collections.sort(sortedTags);
+
         itemsRef.document(item.getDocId()).update(fieldUpdate);
-        for(String tag: item.getTags()) {
+
+        // Update the document with the sorted tags
+        for (String tag : sortedTags) {
             itemsRef.document(item.getDocId()).update("tags", FieldValue.arrayUnion(tag));
         }
-
     }
+
 
     /**
      * update list of itemst that this tag applied
@@ -463,6 +470,7 @@ public class DatabaseController  {
                                 }
                             }
                         }
+                        Collections.sort(tags);
                         Item item= new Item(name, date, itemValue, make, model, description, comment, serialNumber);
                         item.setPhotos(photos);
                         item.setDocId(documentId);
