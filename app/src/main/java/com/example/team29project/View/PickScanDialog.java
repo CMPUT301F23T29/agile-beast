@@ -1,15 +1,18 @@
 package com.example.team29project.View;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -32,11 +35,13 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 import java.io.FileNotFoundException;
 
 
+
 /**
  * A dialog to pick between the gallery or camera
  */
 public class PickScanDialog extends DialogFragment {
     private TextView barcodePicked, serialPicked;
+
 
     private OnScanListener callback;
 
@@ -79,11 +84,13 @@ public class PickScanDialog extends DialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
         try {
             callback = (OnScanListener) getParentFragment();
         } catch (ClassCastException e) {
             throw new ClassCastException(getParentFragment().toString() + " must implement OnScanListener");
         }
+
 
     }
 
@@ -100,6 +107,7 @@ public class PickScanDialog extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.barcode_or_serial, null);
         barcodePicked = view.findViewById(R.id.choose_barcode);
         serialPicked = view.findViewById(R.id.choose_serial);
+
         GmsBarcodeScannerOptions options = new GmsBarcodeScannerOptions.Builder()
                 .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
                 .enableAutoZoom()
@@ -124,6 +132,7 @@ public class PickScanDialog extends DialogFragment {
                                 e -> {
                                     Toast.makeText(getActivity(), "Failed to detect a barcode", Toast.LENGTH_SHORT).show();
                                 });
+
                 dismiss();
             }
         });
@@ -134,10 +143,14 @@ public class PickScanDialog extends DialogFragment {
              */
             @Override
             public void onClick(View v) {
+
                 Intent scan = new Intent(getActivity(),CustomCameraActivity.class);
                 scanSerialLauncher.launch(scan);
+
             }
         });
         return builder.create();
     }
+
 }
+

@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -60,6 +61,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
     private ChipGroup tagChips;
     private ArrayList<String> tags;
+
     private ArrayList<Tag> tempTags;
     DatabaseController db;
 
@@ -135,9 +137,6 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
     }
 
 
-
-
-
     /**
      * Create a dialog to edit the details of an item
      * @param savedInstanceState The last saved instance state of the Fragment,
@@ -163,10 +162,18 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         itemDescription =  view.findViewById(R.id.edit_description);
         itemComment = view.findViewById(R.id.edit_comment);
         scanButton = view.findViewById(R.id.scan_button);
+
         tagChips = view.findViewById(R.id.tag_chip);
         if(item !=null){
             writeData(item);
         }
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PickScanDialog dialog = new PickScanDialog();
+                dialog.show(getChildFragmentManager(), "PickScanDialog");
+            }
+        });
 
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
             yearDate = year;
@@ -318,4 +325,9 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
 
     }
+
+        public void updateTextView(String text) {
+        itemSerialNumber.setText(text);
+    }
+
 }
