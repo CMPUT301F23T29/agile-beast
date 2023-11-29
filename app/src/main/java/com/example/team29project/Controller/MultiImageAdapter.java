@@ -6,6 +6,7 @@ import android.net.UrlQuerySanitizer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,9 +50,11 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView image;
+        ImageView x_button;
         ViewHolder(View itemView) {
             super(itemView) ;
             image = itemView.findViewById(R.id.image);
+            x_button = itemView.findViewById(R.id.xbutton);
         }
 
     }
@@ -83,18 +86,33 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
      */
     @Override
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
-           // String imageUrl = mData.get(position);
-           Uri image_uri = Uri.parse(mData.get(position));
-            holder.image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        // String imageUrl = mData.get(position);
+        Uri image_uri = Uri.parse(mData.get(position));
+
+
+        holder.x_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemClickListener.onItemClick(holder.getAdapterPosition());
+            }
+        });
+
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.getAdapterPosition() == 0) {
                     itemClickListener.onItemClick(holder.getAdapterPosition());
                 }
-            });
+            }
+        });
+
         if(position ==0){
-            Glide.with(mContext)
-                    .load(image_uri)
-                    .into(holder.image);
+
+           Glide.with(mContext)
+                   .load(image_uri)
+                   .into(holder.image);
+            holder.x_button.setClickable(false);
+            holder.x_button.setAlpha(0.f);
         }
         else {
 

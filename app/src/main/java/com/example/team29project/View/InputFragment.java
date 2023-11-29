@@ -20,10 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.team29project.Controller.DatabaseController;
-<<<<<<< HEAD
-=======
 import com.example.team29project.Controller.OnScanListener;
->>>>>>> SampleProgram
 import com.example.team29project.Controller.TagAddedItemCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
@@ -65,10 +62,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
     private ChipGroup tagChips;
     private ArrayList<String> tags;
-<<<<<<< HEAD
-=======
 
->>>>>>> SampleProgram
     private ArrayList<Tag> tempTags;
     DatabaseController db;
 
@@ -108,8 +102,6 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         drawTags(tagsToString());
     }
 
-<<<<<<< HEAD
-=======
     @Override
     public void onScannedSerial(String scan) {
         itemSerialNumber.setText(scan);
@@ -121,7 +113,6 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
     }
 
->>>>>>> SampleProgram
     /**
      * Interface for user interaction with fragments
      */
@@ -146,12 +137,6 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         }
     }
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> SampleProgram
 
     /**
      * Create a dialog to edit the details of an item
@@ -178,17 +163,9 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         itemDescription =  view.findViewById(R.id.edit_description);
         itemComment = view.findViewById(R.id.edit_comment);
         scanButton = view.findViewById(R.id.scan_button);
-<<<<<<< HEAD
-        tagChips = view.findViewById(R.id.tag_chip);
-        GmsBarcodeScannerOptions options = new GmsBarcodeScannerOptions.Builder()
-                .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-                .enableAutoZoom()
-                .build();
-        GmsBarcodeScanner scanner = GmsBarcodeScanning.getClient(getContext(),options);
-=======
 
         tagChips = view.findViewById(R.id.tag_chip);
->>>>>>> SampleProgram
+
         if(item !=null){
             writeData(item);
         }
@@ -232,25 +209,9 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-<<<<<<< HEAD
-                scanner
-                        .startScan()
-                        .addOnSuccessListener(
-                                barcode -> {
-                                    String rawValue = barcode.getRawValue();
-                                    Toast.makeText(getActivity(), rawValue, Toast.LENGTH_SHORT).show();
-                                })
-                        .addOnCanceledListener(
-                                () -> {
-                                    // Task canceled
-                                })
-                        .addOnFailureListener(
-                                e -> {
-                                    // Task failed with an exception
-                                });
-=======
+
                 new PickScanDialog().show(getChildFragmentManager(),"scan");
->>>>>>> SampleProgram
+
             }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -310,13 +271,9 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
                     for(Tag tag : this.tempTags) {
                         tag.addItem(item.getDocId());
                         db.updateTag(tag);
-<<<<<<< HEAD
                         }
 
 
-=======
-                    }
->>>>>>> SampleProgram
                     listener.onEditPressed();
                 }
             } catch(NumberFormatException e){
@@ -348,7 +305,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         drawTags(item.getTags());
 
 
-<<<<<<< HEAD
+
     }
     public ArrayList<String> tagsToString(){
         ArrayList<String> temp = new ArrayList<>();
@@ -373,35 +330,34 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
             tagChips.addView(chip);
         }
 
+    }
 
-=======
->>>>>>> SampleProgram
-    }
-    public ArrayList<String> tagsToString(){
-        ArrayList<String> temp = new ArrayList<>();
-        for(Tag tag : this.tempTags){
-            temp.add(tag.getName());
-        }
-        return temp;
-    }
+//    public ArrayList<String> tagsToString(){
+  //      ArrayList<String> temp = new ArrayList<>();
+    //    for(Tag tag : this.tempTags){
+      //      temp.add(tag.getName());
+        //}
+        //return temp;
+    //}
 
     /**
      * This function draws tag datas into chipgroup
-     * @param tagString arrayList of String represents the tag
+     * @param //tagString arrayList of String represents the tag
      */
-    public void drawTags(ArrayList<String> tagString){
-        tagChips.removeAllViews();
-        for(String tag: tagString ){
-            Chip chip = new Chip(getContext());
-            chip.setText(tag);
-            chip.setId(tagString.indexOf(tag));
-            chip.setCheckable(false);
-            chip.setClickable(false);
-            tagChips.addView(chip);
-        }
+    //public void drawTags(ArrayList<String> tagString){
+      //  tagChips.removeAllViews();
+        //for(String tag: tagString ){
+          //  Chip chip = new Chip(getContext());
+            //chip.setText(tag);
+            //chip.setId(tagString.indexOf(tag));
+            //chip.setCheckable(false);
+            //chip.setClickable(false);
+            //tagChips.addView(chip);
+        //}
 
 
-    }
+    //}
+
 
         public void updateTextView(String text) {
         itemSerialNumber.setText(text);

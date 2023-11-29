@@ -219,7 +219,8 @@ public class ItemViewActivity extends AppCompatActivity implements
     public void onItemClick(int position) {
         if (position == 0) {
             new PickCameraDialog().show(getSupportFragmentManager(), "Photo");
-        } else {
+        }
+        else {
             db.deletePhoto(photo_string.get(position));
             photo_string.remove(position);
             db.updatePhoto(item, photo_string);
