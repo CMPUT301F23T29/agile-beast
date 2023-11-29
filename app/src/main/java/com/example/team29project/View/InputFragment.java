@@ -81,6 +81,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         this.item = aItem;
         this.db= db;
         this.tags= aItem.getTags();
+        this.tempTags= new ArrayList<>();
 
     }
     private OnFragmentsInteractionListener listener;
@@ -235,7 +236,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
                 // If it is adding
                 if (item == null) {
                     String uniqueId = UUID.randomUUID().toString();
-                   item=  new Item(item_name, item_date, item_value, item_make, item_model, item_description, item_comment, item_serN);
+                    item=  new Item(item_name, item_date, item_value, item_make, item_model, item_description, item_comment, item_serN);
                     if(!this.tempTags.isEmpty()){
                         item.setTags(tagsToString());
                         for(Tag tag : this.tempTags) {
@@ -255,7 +256,11 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
                     item.setSerialNumber(item_serN);
                     item.setMake(item_make);
                     item.setComment(item_comment);
+                    // add Delete Tag update
                     item.setTags(tagsToString());
+                    for(String tag: this.tags){
+                        db.removeTagfromItem(item,tag);
+                    }
                     db.updateItem(item.getDocId(),item);
                     for(Tag tag : this.tempTags) {
                         tag.addItem(item.getDocId());
@@ -300,6 +305,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         }
         return temp;
     }
+
 
     /**
      * This function draws tag datas into chipgroup

@@ -71,15 +71,15 @@ public class ItemViewActivity extends AppCompatActivity implements
                             String uniqueId = UUID.randomUUID().toString();
                             photo_string.add(uniqueId);
                             db.uploadPhoto(data.getData(),ItemViewActivity.this,uniqueId,1);
-                           // adapter.notifyDataSetChanged();
+                            // adapter.notifyDataSetChanged();
                         } else {
                             for (int i = 0; i < clipData.getItemCount(); i++) {
                                 Uri imageUri = clipData.getItemAt(i).getUri();
                                 try {
-                                   String uniqueId = UUID.randomUUID().toString();
+                                    String uniqueId = UUID.randomUUID().toString();
                                     photo_string.add(uniqueId);
-                                  // photo_string.add(imageUri.toString());
-                                  db.uploadPhoto(imageUri,ItemViewActivity.this,uniqueId,i+1);
+                                    // photo_string.add(imageUri.toString());
+                                    db.uploadPhoto(imageUri,ItemViewActivity.this,uniqueId,i+1);
                                 } catch (Exception e) {
                                     Log.e(TAG, "File select error", e);
                                 }
@@ -144,7 +144,7 @@ public class ItemViewActivity extends AppCompatActivity implements
         // Default image of adding photos
         if(photo_string.size()==0){
             photo_string.add("https://static.vecteezy.com/system/resources/previews/026/306/461/original/cross-sign-plus-add-addition-math-mathematics-additional-black-and-white-line-icon-symbol-artwork-clipart-illustration-vector.jpg");
-                   }
+        }
         adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this,db);
         imageListView.setAdapter(adapter);
         imageListView.setLayoutManager(new LinearLayoutManager(ItemViewActivity.this, LinearLayoutManager.HORIZONTAL, false));

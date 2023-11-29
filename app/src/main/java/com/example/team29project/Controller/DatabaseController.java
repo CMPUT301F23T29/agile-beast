@@ -524,17 +524,7 @@ public class DatabaseController  {
         assert (i < this.itemDataList.size());
         Item toDeleteItem = this.itemDataList.get(i);
         for(String tag : toDeleteItem.getTags()){
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("items", FieldValue.arrayRemove(toDeleteItem.getDocId()));
-            tagsRef.document(tag).update(updates)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.e("Firestore", "Successfully deleted");
-
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Failed to delete");
-                    });
-
+           removeTagfromItem(toDeleteItem,tag);
         }
         ArrayList<String> photos =  toDeleteItem.getPhotos();
         for(String photo : photos){
@@ -547,6 +537,18 @@ public class DatabaseController  {
                     public void onSuccess(Void unused) {
                         Log.d("Firestore", "Item '" + toDeleteItem.getName() + "' deleted successfully");
                     }
+                });
+    }
+    public void removeTagfromItem(Item item , String tag){
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("items", FieldValue.arrayRemove(item.getDocId()));
+        tagsRef.document(tag).update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Log.e("Firestore", "Successfully deleted");
+
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Failed to delete");
                 });
     }
 

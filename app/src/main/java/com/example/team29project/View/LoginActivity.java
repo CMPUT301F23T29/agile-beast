@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     } else {
 
-                                        Toast.makeText(LoginActivity.this, storedPassword, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, "Wrong password", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
                                     // Username not found
@@ -120,6 +120,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         }
+
+    /**
+     * this function encrypts a password for login
+      * @param plainTextPassword password of what user want to have
+     * @return return encrypted password
+     */
     private String hashPassword(String plainTextPassword) {
         // Define the strength of the hash (work factor)
 
