@@ -240,6 +240,13 @@ public class Item implements Serializable, Comparable {
         return this.docId;
     }
 
+    public ArrayList<String> getTags(){
+        return this.tags;
+    }
+    public void setTags(ArrayList<String> tags){
+        this.tags = tags;
+    }
+
 
     /**
      * Adds the item tag
