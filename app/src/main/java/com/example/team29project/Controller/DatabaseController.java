@@ -72,7 +72,7 @@ public class DatabaseController  {
 
     /**
      *  returns the reference of images from firebase storage
-     * @return
+     * @return StorageReference of images storage
      */
     public StorageReference getImageRef(){
         return this.imageRef;
@@ -255,7 +255,7 @@ public class DatabaseController  {
     }
 
     /**
-     * Adds an item to the Firestore database
+     * Adds an item to the FireStore database
      * @param item the item being added
      */
     public void addItem(Item item,String id) {
@@ -304,12 +304,7 @@ public class DatabaseController  {
                     callback.onTagModified();
 
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Firestore", "Error adding item", e);
-                    }
-                });
+                .addOnFailureListener(e -> Log.e("Firestore", "Error adding item", e));
 
 
 
@@ -490,7 +485,7 @@ public class DatabaseController  {
 
                     })
                     .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Failed to delete");
+                        Log.e("FireStore", "Failed to delete");
                     });
         }
 
