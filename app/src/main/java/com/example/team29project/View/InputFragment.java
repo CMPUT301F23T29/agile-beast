@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.team29project.Controller.DatabaseController;
+<<<<<<< HEAD
+=======
+import com.example.team29project.Controller.OnScanListener;
+>>>>>>> SampleProgram
 import com.example.team29project.Controller.TagAddedItemCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
@@ -39,7 +44,8 @@ import java.util.UUID;
  * Validate and store the data collected
  * Interface with the Camera for photo capture
  */
-public class InputFragment extends DialogFragment implements TagAddedItemCallback {
+public class InputFragment extends DialogFragment implements TagAddedItemCallback, OnScanListener {
+
 
     private Item item;
     private Button scanButton;
@@ -59,6 +65,10 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
     private ChipGroup tagChips;
     private ArrayList<String> tags;
+<<<<<<< HEAD
+=======
+
+>>>>>>> SampleProgram
     private ArrayList<Tag> tempTags;
     DatabaseController db;
 
@@ -98,6 +108,20 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         drawTags(tagsToString());
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public void onScannedSerial(String scan) {
+        itemSerialNumber.setText(scan);
+    }
+
+    @Override
+    public void onScannedBarcode(String scan) {
+        itemDescription.setText(scan);
+
+    }
+
+>>>>>>> SampleProgram
     /**
      * Interface for user interaction with fragments
      */
@@ -122,9 +146,12 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         }
     }
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> SampleProgram
 
     /**
      * Create a dialog to edit the details of an item
@@ -151,15 +178,27 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         itemDescription =  view.findViewById(R.id.edit_description);
         itemComment = view.findViewById(R.id.edit_comment);
         scanButton = view.findViewById(R.id.scan_button);
+<<<<<<< HEAD
         tagChips = view.findViewById(R.id.tag_chip);
         GmsBarcodeScannerOptions options = new GmsBarcodeScannerOptions.Builder()
                 .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
                 .enableAutoZoom()
                 .build();
         GmsBarcodeScanner scanner = GmsBarcodeScanning.getClient(getContext(),options);
+=======
+
+        tagChips = view.findViewById(R.id.tag_chip);
+>>>>>>> SampleProgram
         if(item !=null){
             writeData(item);
         }
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PickScanDialog dialog = new PickScanDialog();
+                dialog.show(getChildFragmentManager(), "PickScanDialog");
+            }
+        });
 
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
             yearDate = year;
@@ -193,6 +232,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+<<<<<<< HEAD
                 scanner
                         .startScan()
                         .addOnSuccessListener(
@@ -208,6 +248,9 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
                                 e -> {
                                     // Task failed with an exception
                                 });
+=======
+                new PickScanDialog().show(getChildFragmentManager(),"scan");
+>>>>>>> SampleProgram
             }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -267,9 +310,13 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
                     for(Tag tag : this.tempTags) {
                         tag.addItem(item.getDocId());
                         db.updateTag(tag);
+<<<<<<< HEAD
                         }
 
 
+=======
+                    }
+>>>>>>> SampleProgram
                     listener.onEditPressed();
                 }
             } catch(NumberFormatException e){
@@ -301,6 +348,34 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         drawTags(item.getTags());
 
 
+<<<<<<< HEAD
+    }
+    public ArrayList<String> tagsToString(){
+        ArrayList<String> temp = new ArrayList<>();
+        for(Tag tag : this.tempTags){
+            temp.add(tag.getName());
+        }
+        return temp;
+    }
+
+    /**
+     * This function draws tag datas into chipgroup
+     * @param tagString arrayList of String represents the tag
+     */
+    public void drawTags(ArrayList<String> tagString){
+        tagChips.removeAllViews();
+        for(String tag: tagString ){
+            Chip chip = new Chip(getContext());
+            chip.setText(tag);
+            chip.setId(tagString.indexOf(tag));
+            chip.setCheckable(false);
+            chip.setClickable(false);
+            tagChips.addView(chip);
+        }
+
+
+=======
+>>>>>>> SampleProgram
     }
     public ArrayList<String> tagsToString(){
         ArrayList<String> temp = new ArrayList<>();
@@ -327,4 +402,9 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
 
     }
+
+        public void updateTextView(String text) {
+        itemSerialNumber.setText(text);
+    }
+
 }
