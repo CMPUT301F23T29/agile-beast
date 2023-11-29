@@ -190,16 +190,12 @@ public class ItemViewActivity extends AppCompatActivity implements
      */
     @Override
     public void onOKPressed() {
-
+        changeData();
     }
 
     /**
      * Handles if edit was pressed and changes the data
      */
-    @Override
-    public void onEditPressed() {
-        changeData();
-    }
 
     /**
      * Handles if cancel was pressed
