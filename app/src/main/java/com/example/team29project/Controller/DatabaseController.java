@@ -2,11 +2,6 @@ package com.example.team29project.Controller;
 
 import android.net.Uri;
 import android.util.Log;
-
-
-import com.example.team29project.Model.Item;
-import com.example.team29project.View.MainActivity;
-=======
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +17,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -40,7 +34,6 @@ import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -125,7 +118,7 @@ public class DatabaseController  {
      * @return item Item object
      */
 
-    private Item createItemFromDoc(DocumentSnapshot doc) {
+    private Item createItemFromDoc(QueryDocumentSnapshot doc) {
         String name = doc.getString("name");
         String date = doc.getString("date");
         Object itemValueObject = doc.get("value");
@@ -576,120 +569,45 @@ public class DatabaseController  {
      * @param data  String representations of data in firestore
      */
 
+    public void filter(String filterBy, String data, FilteredItemCallback callback) {
+         // getting data from db of items
+        Query query = itemsRef;
 
-    public void filter(String filterBy, String data) {
-    // getting data from db of items
-    Query query = db.collection("items");
+        if(filterBy.equals("make")) {
+            query = itemsRef.whereEqualTo("make", data);
+        } else if (filterBy.equals("date")) {
+            String[] dates = data.split(",");
+            if (dates.length == 2) {
+                String startDate = dates[0].trim();
+                String endDate = dates[1].trim();
+                query =itemsRef
+                    .whereGreaterThanOrEqualTo("date", startDate)
+                    .whereLessThanOrEqualTo("date", endDate);
+            }
+        } else if (filterBy.equals("description")) {
 
-    if(filterBy.equals("make")) {
-        query = db.collection("items").whereEqualTo("make", data);
-        addSnapshotListener(query);
-    } else if (filterBy.equals("date")) {
-        String[] dates = data.split(",");
-        if (dates.length == 2) {
-            String startDate = dates[0].trim();
-            String endDate = dates[1].trim();
-            query = db.collection("items")
-                .whereGreaterThanOrEqualTo("date", startDate)
-                .whereLessThanOrEqualTo("date", endDate);
-            addSnapshotListener(query);
+        } else {
+            query = itemsRef;
         }
-    } else if (filterBy.equals("description")) {
-            // Fetch all documents from the Firestore collection
-            db.collection("items").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-
-   
-
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        List<String> matchingIds = new ArrayList<>();
-                        String[] keywords = data.split(" ");
-
-                        // Iterate over each document
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String description = document.getString("description");
-
-                            // Check if the description contains all keywords
-                            boolean matches = true;
-                            for (String keyword : keywords) {
-                                if (!description.contains(keyword)) {
-                                    matches = false;
-                                    break;
-                                }
-                            }
-                            // If the description matches, add the ID to the list
-                            if (matches) {
-                                matchingIds.add(document.getId());
-                            }
-                        }
-                        // Now you have a list of IDs for documents that match the search
-                        // You can fetch these documents individually
-                        // Now you have a list of IDs for documents that match the search
-                        // You can fetch these documents individually
-                        itemDataList.clear();
-
-                        for (String id : matchingIds) {
-                            db.collection("items").document(id)
-                                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                                        @Nullable FirebaseFirestoreException e) {
-                                        if (e != null) {
-                                            Log.w(TAG, "Listen failed.", e);
-                                            return;
-                                        }
-
-                                        if (snapshot != null && snapshot.exists()) {
-                                            // Convert the DocumentSnapshot to your model class
-                                            Item item = createItemFromDoc(snapshot);
-                                            // Add the item to your list
-                                            itemDataList.add(item);
-                                            // Notify the adapter that the data has changed
-                                            itemAdapter.notifyDataSetChanged();
-                                        } else {
-                                            Log.d(TAG, "Current data: null");
-                                        }
-                                    }
-                                });
-                        }
-                        // Notify the adapter that the data has changed
-                        itemAdapter.notifyDataSetChanged();
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
+        // Add a snapshot listener to the FireStore query
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e("Firebase", error.toString());
+                    callback.onFilteredFailure();
+                }
+                if (value != null) {
+                    itemDataList.clear();
+                    for (QueryDocumentSnapshot doc: value) {
+                        Item item = createItemFromDoc(doc);
+                        itemDataList.add(item);
                     }
+                    callback.onFiltered();
                 }
-            });
-
-
-        }else {
-        query = db.collection("items");
-        addSnapshotListener(query);
+            }
+        });
     }
-}
-
-private void addSnapshotListener(Query query) {
-    // Add a snapshot listener to the FireStore query
-    query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-        @Override
-        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-            if (error != null) {
-                Log.e("Firebase", error.toString());
-            }
-            if (value != null) {
-                itemDataList.clear();
-                for (QueryDocumentSnapshot doc: value) {
-                    Item item = createItemFromDoc(doc);
-                    itemDataList.add(item);
-
-     
-
-                }
-                itemAdapter.notifyDataSetChanged();
-            }
-        }
-    });
-}
 
     /**
      * Sort the list by sortBy
