@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.example.team29project.Controller.SelectListener;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.MultiImageAdapter;
 import com.example.team29project.R;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -39,7 +41,9 @@ import java.util.UUID;
 public class ItemViewActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SelectListener, PickCameraDialog.ImageOrGalleryListener,
-        ItemCallback, OnPhotoUploadCompleteListener {
+        ItemCallback, OnPhotoUploadCompleteListener
+
+{
 
     private TextView itemName, itemValue, itemDate, itemMake, itemModel, itemSerialno, itemDescription, itemComment;
     private Item item;
@@ -47,8 +51,8 @@ public class ItemViewActivity extends AppCompatActivity implements
 
     RecyclerView imageListView;
     MultiImageAdapter adapter;
-    Intent cameraIntent, galleryIntent;
-    ArrayList<String> photo_string;
+    Intent cameraIntent , galleryIntent;
+    ArrayList<String> photo_string ;
 
     ArrayList<String> tags;
     DatabaseController db;
@@ -66,7 +70,7 @@ public class ItemViewActivity extends AppCompatActivity implements
                         if (clipData == null) {
                             String uniqueId = UUID.randomUUID().toString();
                             photo_string.add(uniqueId);
-                            db.uploadPhoto(data.getData(), ItemViewActivity.this, uniqueId, 1);
+                            db.uploadPhoto(data.getData(),ItemViewActivity.this,uniqueId,1);
                             // adapter.notifyDataSetChanged();
                         } else {
                             for (int i = 0; i < clipData.getItemCount(); i++) {
@@ -75,7 +79,7 @@ public class ItemViewActivity extends AppCompatActivity implements
                                     String uniqueId = UUID.randomUUID().toString();
                                     photo_string.add(uniqueId);
                                     // photo_string.add(imageUri.toString());
-                                    db.uploadPhoto(imageUri, ItemViewActivity.this, uniqueId, i + 1);
+                                    db.uploadPhoto(imageUri,ItemViewActivity.this,uniqueId,i+1);
                                 } catch (Exception e) {
                                     Log.e(TAG, "File select error", e);
                                 }
@@ -90,9 +94,8 @@ public class ItemViewActivity extends AppCompatActivity implements
     /**
      * Initializes the item detail activity. If the activity is being re-initialized after previously being shut down,
      * this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
-     *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
-     *                           this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
+     * this contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +103,13 @@ public class ItemViewActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_display);
         Intent ints = getIntent();
         String documentId = ints.getStringExtra("documentId");
-        db = new DatabaseController();
+        String userId = ints.getStringExtra("userId");
+        db = new DatabaseController(userId);
         db.getItem(documentId, this);
         Button backBton = findViewById(R.id.back_button);
         Button editBton = findViewById(R.id.edit_button);
         tagGroup = findViewById(R.id.tagGroup);
+        tagGroup.setSelectionRequired(false);
         itemName = findViewById(R.id.item_name);
         itemValue = findViewById(R.id.item_value);
         itemDate = findViewById(R.id.item_date);
@@ -113,32 +118,34 @@ public class ItemViewActivity extends AppCompatActivity implements
         itemSerialno = findViewById(R.id.item_serialno);
         itemDescription = findViewById(R.id.item_description);
         itemComment = findViewById(R.id.item_comment);
-        imageListView = findViewById(R.id.photo_view);
+        imageListView= findViewById(R.id.photo_view);
         galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         galleryIntent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         cameraIntent = new Intent(ItemViewActivity.this, CustomCameraActivity.class);
+
+
         backBton.setOnClickListener(view -> {
             finish();
         });
-        editBton.setOnClickListener(view -> new InputFragment(db, item).show(getSupportFragmentManager(), "Edit"));
+        editBton.setOnClickListener(view -> new InputFragment(db,item).show(getSupportFragmentManager(), "Edit"));
 
     }
 
     /**
      * This is called when it runs through load initialize items
-     *
      * @param newItem Item that is loaded from db
      */
     @Override
     public void onItemLoaded(Item newItem) {
         item = newItem;
         photo_string = item.getPhotos();
-        if (photo_string.size() == 0) {
+        // Default image of adding photos
+        if(photo_string.size()==0){
             photo_string.add("https://static.vecteezy.com/system/resources/previews/026/306/461/original/cross-sign-plus-add-addition-math-mathematics-additional-black-and-white-line-icon-symbol-artwork-clipart-illustration-vector.jpg");
         }
-        adapter = new MultiImageAdapter(photo_string, getApplicationContext(), this, db);
+        adapter = new MultiImageAdapter(photo_string, getApplicationContext(),this,db);
         imageListView.setAdapter(adapter);
         imageListView.setLayoutManager(new LinearLayoutManager(ItemViewActivity.this, LinearLayoutManager.HORIZONTAL, false));
         changeData();
@@ -149,13 +156,12 @@ public class ItemViewActivity extends AppCompatActivity implements
     public void onFailure(Exception e) {
         Toast.makeText(ItemViewActivity.this, "Failed", Toast.LENGTH_SHORT).show();
     }
-
     /**
      * Change Item's detail
      */
     private void changeData() {
         itemName.setText(item.getName());
-        itemValue.setText(String.format("$ %.2f", item.getValue()));
+        itemValue.setText(String.format("$ %.2f",item.getValue()));
         itemDate.setText(item.getDate());
         itemMake.setText(item.getMake());
         itemModel.setText(item.getModel());
@@ -163,6 +169,16 @@ public class ItemViewActivity extends AppCompatActivity implements
         itemDescription.setText(item.getDescription());
         itemComment.setText(item.getComment());
         adapter.notifyDataSetChanged();
+        tags = item.getTags();
+        tagGroup.removeAllViews();
+        for(String tag: tags) {
+            Chip chip = new Chip(this);
+            chip.setText(tag);
+            chip.setId(tags.indexOf(tag));
+            chip.setCheckable(false);
+            chip.setClickable(false);
+            tagGroup.addView(chip);
+        }
         // update tags
 
 
@@ -171,16 +187,10 @@ public class ItemViewActivity extends AppCompatActivity implements
     /**
      * Handles if ok was pressed and changes the data
      *
-     * @param aitem the item to be used
      */
     @Override
-    public void onOKPressed(Item aitem) {
-        assert item != null;
-        this.item = aitem;
-        changeData();
-        Intent intes = new Intent(ItemViewActivity.this, MainActivity.class);
-        intes.putExtra("new_item", item);
-        setResult(Activity.RESULT_OK, intes);
+    public void onOKPressed() {
+
     }
 
     /**
@@ -195,28 +205,27 @@ public class ItemViewActivity extends AppCompatActivity implements
      * Handles if cancel was pressed
      */
     @Override
-    public void onCancelPressed() {
+    public void onCancelPressed(){
         adapter.notifyDataSetChanged();
     }
 
 
     /**
      * Handles if an item was pressed
-     *
      * @param position the position to be used
      */
     @Override
     public void onItemClick(int position) {
-        if (position == 0) {
+        if(position ==0) {
             new PickCameraDialog().show(getSupportFragmentManager(), "Photo");
-        } else {
+        }
+        else {
             db.deletePhoto(photo_string.get(position));
             photo_string.remove(position);
-            db.updatePhoto(item, photo_string);
+            db.updatePhoto(item,photo_string);
             adapter.notifyDataSetChanged();
         }
     }
-
     /**
      * Handles if gallery photo was pressed
      */
@@ -243,14 +252,15 @@ public class ItemViewActivity extends AppCompatActivity implements
     }
 
     /**
-     * handle when photo upload is failed
-     *
+     *  handle when photo upload is failed
      * @param e error  message
      */
 
     @Override
     public void onPhotoUploadFailure(Exception e) {
+        Toast.makeText(this, "Failed to upload Photos", Toast.LENGTH_SHORT).show();
 
     }
+
 
 }

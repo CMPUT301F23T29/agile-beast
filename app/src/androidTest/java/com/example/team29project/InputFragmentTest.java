@@ -20,6 +20,7 @@ import androidx.test.filters.LargeTest;
 
 
 import com.example.team29project.View.MainActivity;
+import com.example.team29project.View.MainPageActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,8 +29,8 @@ import org.junit.runner.RunWith;
 public class InputFragmentTest {
 
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario=
-            new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainPageActivity> scenario=
+            new ActivityScenarioRule<>(MainPageActivity.class);
     @Test
     public void addValidItemTest(){
         //Test case 1 (valid)

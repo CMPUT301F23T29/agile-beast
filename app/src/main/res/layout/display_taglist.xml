@@ -2,8 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
-    android:layout_height="500dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="50dp"
+    android:layout_marginVertical="100dp"
     android:layout_gravity="center"
     android:background="@color/background"
     android:orientation="vertical"
@@ -16,9 +18,7 @@
         android:dividerHeight="2dp"
         android:background="@drawable/border"
         android:fontFamily="monospace"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="30dp">
+        android:layout_margin="20dp">
     </ListView>
     <EditText
         android:layout_width="match_parent"
@@ -26,44 +26,37 @@
         android:id="@+id/input_tag"
         android:hint="Enter tag"
         android:fontFamily="monospace"
+        android:layout_marginHorizontal="20dp"
         android:visibility="invisible">
-
     </EditText>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        >
+        android:gravity="center"
+        android:layout_marginTop="10dp">
 
-    <Button
-        android:background="@drawable/button_style"
-        android:backgroundTint="@color/button_colour"
-        android:textColor="@color/button_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="5dp"
-        android:text="add"
-        android:id="@+id/add_tag"
-        >
-    </Button>
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:background="@drawable/button_style"
             android:backgroundTint="@color/button_colour"
             android:textColor="@color/button_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginBottom="5dp"
+            android:text="add"
+            android:id="@+id/add_tag"
+            android:layout_marginEnd="30dp">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/button_colour"
+            android:textColor="@color/button_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/delete_tag"
             android:text="@string/delete"
-
-            >
-
-        </Button>
+            android:layout_marginStart="30dp">
+        </androidx.appcompat.widget.AppCompatButton>
 
     </LinearLayout>
 
