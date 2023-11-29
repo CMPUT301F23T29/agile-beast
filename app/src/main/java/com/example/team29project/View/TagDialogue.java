@@ -140,7 +140,7 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
                         if(isPicking){
                             Tag temp = tagList.get(position);
                             if(tempTags.contains(temp)){
-                                tagList.remove(temp);
+                                tempTags.remove(temp);
                             }
                             else{
                                 tempTags.add(temp);
