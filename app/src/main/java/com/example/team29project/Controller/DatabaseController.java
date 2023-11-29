@@ -585,34 +585,7 @@ public class DatabaseController  {
                     .whereLessThanOrEqualTo("date", endDate);
             }
         } else if (filterBy.equals("description")) {
-            final ArrayList<String> words = new ArrayList<>(Arrays.asList(data.toLowerCase().split("\\s+")));
 
-            query =itemsRef;
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        itemDataList.clear();
-
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String description = document.getString("description");
-                            boolean containsAllWords = true;
-                            for (String word : words) {
-                                if (!description.toLowerCase().contains(word)) {
-                                    containsAllWords = false;
-                                    break;
-                                }
-                            }
-                            if (containsAllWords) {
-                                Item item = createItemFromDoc(document);
-                                itemDataList.add(item);
-                            }
-                        }
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
-                    }
-                }
-            });
         } else {
             query = itemsRef;
         }
@@ -631,7 +604,6 @@ public class DatabaseController  {
                         itemDataList.add(item);
                     }
                     callback.onFiltered();
-                    //itemAdapter.notifyDataSetChanged();
                 }
             }
         });
