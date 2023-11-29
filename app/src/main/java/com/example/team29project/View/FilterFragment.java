@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -20,18 +21,31 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.TagAdapter;
+import com.example.team29project.Controller.TagModifyCallback;
+import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 /**
  * A dialog to filter items on the main menu
  */
 
-public class FilterFragment extends DialogFragment {
+public class FilterFragment extends DialogFragment implements TagModifyCallback {
     private OnFragmentInteractionListener listener;
     private String selectedItem ="default";
+    private TagAdapter tagAdapter;
+    private ArrayList<Tag> tagList;
+    private DatabaseController db;
+
+    public FilterFragment(DatabaseController db) {
+        this.db = db;
+    }
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
@@ -65,13 +79,16 @@ public class FilterFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter, null);
+
+        tagAdapter = new TagAdapter(getContext(), db.getTags());
+        db.loadInitialTags(this);
 
         Calendar calendar = Calendar.getInstance();
         int currentYear = calendar.get(Calendar.YEAR);
         int currentMonth = calendar.get(Calendar.MONTH);
         int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter, null);
         Button confirm = view.findViewById(R.id.confirm_filter_button);
         Button cancel = view.findViewById(R.id.cancel_filter_button);
         EditText make = view.findViewById(R.id.filter_by_make_editview);
@@ -103,7 +120,8 @@ public class FilterFragment extends DialogFragment {
                         break;
                     case "tags":
                         tagSpinner.setVisibility(View.VISIBLE);
-                        //TODO update tagspinner values
+                        tagSpinner.setAdapter(tagAdapter);
+                        break;
                     default:
                         break;
                 }
@@ -172,6 +190,9 @@ public class FilterFragment extends DialogFragment {
                 case "description":
                     data = description.getText().toString();
                     break;
+                case "tags":
+                    data = tagSpinner.getSelectedItem().toString();
+                    break;
                 default:
                     filterBy="default";
                     data="";
@@ -188,6 +209,17 @@ public class FilterFragment extends DialogFragment {
         return builder
                 .setView(view)
                 .create();
+    }
+
+    @Override
+    public void onTagModified() {
+        tagAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onTagsLoaded() {
+        tagAdapter.notifyDataSetChanged();
+        this.tagList= db.getTags();
     }
 
     /**

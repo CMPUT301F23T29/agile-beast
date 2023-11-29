@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -88,7 +90,7 @@ public class DatabaseController  {
      * @return Tag object corresponding to document file
      */
 
-    public Tag createTagFromDoc(QueryDocumentSnapshot doc){
+    public Tag createTagFromDoc(DocumentSnapshot doc){
         String name = doc.getId();
         Object itemsObject = doc.get("items");
         // Initialize an ArrayList to store photos
@@ -113,7 +115,7 @@ public class DatabaseController  {
      * @return item Item object
      */
 
-    private Item createItemFromDoc(QueryDocumentSnapshot doc) {
+    private Item createItemFromDoc(DocumentSnapshot doc) {
         String name = doc.getString("name");
         String date = doc.getString("date");
         Object itemValueObject = doc.get("value");
@@ -621,6 +623,8 @@ public class DatabaseController  {
                     }
                 }
             });
+        }else if (filterBy.equals("tags")) {
+            query = itemsRef.whereArrayContains("tags",data);
         } else {
             query = itemsRef;
         }
