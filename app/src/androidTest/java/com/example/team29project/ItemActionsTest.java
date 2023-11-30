@@ -7,8 +7,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Model.Item;
 import com.example.team29project.View.DatePicker;
 import com.example.team29project.View.MainActivity;
 
@@ -17,7 +20,55 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 public class ItemActionsTest {
+    private ArrayList<Item> initialItems;
+
+    private DatabaseController getDb(ActivityScenarioRule<MainActivity> scenarioRule) {
+        final MainActivity[] activity = new MainActivity[1];
+        scenarioRule.getScenario().onActivity(new ActivityScenario.ActivityAction<MainActivity>() {
+            @Override
+            public void perform(MainActivity mainActivity) {
+                activity[0] = mainActivity;
+            }
+        });
+
+
+        MainActivity main = activity[0];
+        return main.getDb();
+    }
+
+    @Before
+    public void setUp() {
+        DatabaseController db = getDb(scenario);
+
+
+        initialItems.add(new Item(
+                "iPhone 12",
+                "02/11/2000",
+                900.00,
+                "Apple",
+                "12",
+                "A phone",
+                "Expensive phone",
+                "ASDSAD"
+        ));
+
+        initialItems.add(new Item(
+                "Samsung phone",
+                "02/11/2000",
+                900.00,
+                "Samsung",
+                "Galaxy",
+                "A phone",
+                "Expensive phone",
+                "ASDO121238"
+        ));
+
+        db.setItemDataList(initialItems);
+    }
+
     @Rule
     public ActivityScenarioRule<MainActivity> scenario=
             new ActivityScenarioRule<MainActivity>(MainActivity.class);
