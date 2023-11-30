@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".View.ProfileFragment"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="50dp"
+    android:paddingHorizontal="50dp"
+    android:paddingTop="20dp"
+    android:background="@drawable/button_style"
+    android:backgroundTint="@color/white">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-light"
+        android:paddingBottom="70dp"
+        android:text="@string/user_profile"
+        android:textColor="@color/button_colour"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/profile_username"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="30dp"
+        android:text="username"
+        android:textColor="@color/button_text"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/profile_value"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="20dp"
+        android:text="Value: "
+        android:textColor="@color/button_text"
+        android:textSize="25sp" />
+
+</LinearLayout>
