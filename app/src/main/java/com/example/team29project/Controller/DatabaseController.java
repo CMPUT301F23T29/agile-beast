@@ -574,8 +574,6 @@ public class DatabaseController  {
             }
         } else if (filterBy.equals("description")) {
 
-
-
             // Fetch all documents from the Firestore collection
             itemsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -634,30 +632,11 @@ public class DatabaseController  {
                     }
                 }
             });
-        }else if (filterBy.equals("tags")) {
+        }else if (filterBy.equals("tags")&&!data.equals("")) {
             query = itemsRef.whereArrayContains("tags",data);
         }else {
         query = itemsRef;
-//        addSnapshotListener(query);
-//    }
-//}
-//
-//private void addSnapshotListener(Query query) {
-//    // Add a snapshot listener to the FireStore query
-//    query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-//        @Override
-//        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-//            if (error != null) {
-//                Log.e("Firebase", error.toString());
-//            }
-//            if (value != null) {
-//                itemDataList.clear();
-//                for (QueryDocumentSnapshot doc: value) {
-//                    Item item = createItemFromDoc(doc);
-//                    itemDataList.add(item);
-//            return;
-//        } else {
-//            query = itemsRef;
+
         }
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
