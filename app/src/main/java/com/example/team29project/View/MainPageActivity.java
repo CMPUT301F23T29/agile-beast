@@ -80,6 +80,7 @@ public class MainPageActivity extends AppCompatActivity implements
         db = new DatabaseController(userId);
         itemAdapter = new ItemArrayAdapter(this, db.getItems());
         itemsList.setAdapter(itemAdapter);
+        itemAdapter.setSelectedItems(selectedItems);
         db.loadInitialItems(this);
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             /**
@@ -93,7 +94,13 @@ public class MainPageActivity extends AppCompatActivity implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
                     if (isSelect) {
-                        selectedItems.add(position);
+                        if(selectedItems.contains(position)){
+                            selectedItems.remove(Integer.valueOf(position));
+                        }
+                        else {
+                            selectedItems.add(position);
+                        }
+                        itemAdapter.notifyDataSetChanged();
                     } else if (isDelete) {
                         db.removeItem(position);
                         itemAdapter.notifyDataSetChanged();
@@ -110,31 +117,36 @@ public class MainPageActivity extends AppCompatActivity implements
 
             }
         });
+        // Delete Button
         deleteButton.setOnClickListener(v -> {
             if (isSelect) {
                 db.removeAllItems(selectedItems);
                 isSelect = false;
-                selectedItems.clear();
-                itemAdapter.notifyDataSetChanged();
+                clearIndication();
             } else {
+                Toast.makeText(this, "Pick the item to be deleted!", Toast.LENGTH_SHORT).show();
                 isDelete = true;
             }
         });
+        // Menu tab
         menu.setOnClickListener(view -> {
             isDelete = false;
             popupMenu(view);
         });
 
+        //Filter Button
         Button filterButton = findViewById(R.id.filter_button);
         filterButton.setOnClickListener(view -> {
             if (!isFilterFragmentShown) {
+                clearIndication();
                 isFilterFragmentShown = true;
                 new FilterFragment(db).show(getSupportFragmentManager(), "Filter");
             }
         });
-
+        // Sort Button
         Button sortButton = findViewById(R.id.sort_by_button);
         sortButton.setOnClickListener(view -> {
+            clearIndication();
             if (!isSortFragmentShown) {
                 isSortFragmentShown = true;
                 new SortFragment().show(getSupportFragmentManager(), "Sort");
@@ -155,6 +167,15 @@ public class MainPageActivity extends AppCompatActivity implements
         sumItem.setText(String.valueOf(total));
 
     }
+    /**
+     * Clears the Items Selected
+     */
+    public void clearIndication(){
+        if(!selectedItems.isEmpty()) {
+            selectedItems.clear();
+            itemAdapter.notifyDataSetChanged();
+        }
+    }
 
     /**
      * Creates the main menu popup and shows it
@@ -171,30 +192,30 @@ public class MainPageActivity extends AppCompatActivity implements
         selectBtn = popupView.findViewById(R.id.select_item);
         editTag = popupView.findViewById(R.id.edit_tag_item);
         profile = popupView.findViewById(R.id.user_profile);
-        selectBtn.setOnClickListener(new View.OnClickListener() {
-            /**
-             * Handles the click event
-             * @param v the popup menu view
-             */
-            @Override
-            public void onClick(View v) {
-                isSelect = true;
-                isDelete = false;
-                popupWindow.dismiss();
-                selectedItems = new ArrayList<>();
-            }
+        //Select Button
+        selectBtn.setOnClickListener(v -> {
+            Toast.makeText(MainPageActivity.this, "Select the Items to be deleted!", Toast.LENGTH_SHORT).show();
+            isSelect = true;
+            isDelete = false;
+            popupWindow.dismiss();
+            clearIndication();
         });
-
+        // Adding Item Button
         addItem.setOnClickListener(v -> {
+            clearIndication();
             isSelect = false;
             isDelete = false;
             new InputFragment(db).show(getSupportFragmentManager(), "addItems");
             popupWindow.dismiss();
         });
-
-        editTag.setOnClickListener(v -> new TagDialogue(db).show(getSupportFragmentManager(), "Tags"));
-
+        // Tag button
+        editTag.setOnClickListener(v ->{
+            clearIndication();
+            new TagDialogue(db).show(getSupportFragmentManager(), "Tags");}
+    );
+        // User profile button
         profile.setOnClickListener(view1 -> {
+            clearIndication();
             Double total =0.0;
             for(Item item : db.getItems()){
                 total = total +  item.getValue();

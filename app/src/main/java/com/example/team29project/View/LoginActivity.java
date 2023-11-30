@@ -28,12 +28,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         EditText usernameEdt = findViewById(R.id.usernameEdt);
         EditText passwordEdt = findViewById(R.id.passwordEdt);
+        usernameEdt.setText("");
+        passwordEdt.setText("");
         Button signupBtn = findViewById(R.id.sign_up_button);
         Button loginBtn = findViewById(R.id.login_button);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         //signing up
         signupBtn.setOnClickListener(v -> {
+            signupBtn.setEnabled(false);
+            loginBtn.setEnabled(false);
             String username = usernameEdt.getText().toString();
             String password = passwordEdt.getText().toString();
             String encryptPw = hashPassword(password);
@@ -57,20 +61,27 @@ public class LoginActivity extends AppCompatActivity {
                                             // Signup successful
                                             Toast.makeText(LoginActivity.this, "Signup successful", Toast.LENGTH_SHORT).show();
                                         })
-                                        .addOnFailureListener(e -> Toast.makeText(LoginActivity.this, "Signup failed. Please try again.", Toast.LENGTH_SHORT).show());
+                                        .addOnFailureListener(e ->{
+
+                                                Toast.makeText(LoginActivity.this, "Signup failed. Please try again.", Toast.LENGTH_SHORT).show();
+                                        });
                             }
                         });
         }
+            signupBtn.setEnabled(true);
+            loginBtn.setEnabled(true);
         });
 
 
         // Login
         loginBtn.setOnClickListener(v -> {
+            signupBtn.setEnabled(false);
+            loginBtn.setEnabled(false);
             String username = usernameEdt.getText().toString();
             String password = passwordEdt.getText().toString(); // Assuming you have an EditText for password
-            String encryptPw= hashPassword(password);
+            String encryptPw = hashPassword(password);
             username.replaceAll("\\s+", "");
-
+            if(!username.isEmpty()){
             db.collection("Users").document(username).get()
                     .addOnCompleteListener(task -> {
                         DocumentSnapshot document = task.getResult();
@@ -81,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
 
                                 Intent mainPage = new Intent(LoginActivity.this, MainPageActivity.class);
-                                mainPage.putExtra("userId" , username);
+                                mainPage.putExtra("userId", username);
                                 startActivity(mainPage);
 
                             } else {
@@ -91,8 +102,12 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // Username not found
                             Toast.makeText(LoginActivity.this, "Username not found", Toast.LENGTH_SHORT).show();
+                            ;
                         }
                     });
+        }
+            signupBtn.setEnabled(true);
+            loginBtn.setEnabled(true);
 
         });
         }

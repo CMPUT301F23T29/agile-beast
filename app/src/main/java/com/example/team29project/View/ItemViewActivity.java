@@ -18,10 +18,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Controller.ItemCallback;
+import com.example.team29project.Controller.OnDeletedImageCallback;
 import com.example.team29project.Controller.OnPhotoUploadCompleteListener;
 import com.example.team29project.Controller.SelectListener;
 import com.example.team29project.Model.Item;
@@ -40,11 +42,12 @@ import java.util.UUID;
 public class ItemViewActivity extends AppCompatActivity implements
         InputFragment.OnFragmentsInteractionListener,
         SelectListener, PickCameraDialog.ImageOrGalleryListener,
-        ItemCallback, OnPhotoUploadCompleteListener
+        ItemCallback, OnPhotoUploadCompleteListener, OnDeletedImageCallback
 
 {
 
     private TextView itemName, itemValue, itemDate, itemMake, itemModel, itemSerialno, itemDescription, itemComment;
+    private ImageButton infoButton;
     private Item item;
     ChipGroup tagGroup;
 
@@ -107,6 +110,7 @@ public class ItemViewActivity extends AppCompatActivity implements
         db.getItem(documentId, this);
         Button backBton = findViewById(R.id.back_button);
         Button editBton = findViewById(R.id.edit_button);
+        infoButton = findViewById(R.id.information_button);
         tagGroup = findViewById(R.id.tagGroup);
         tagGroup.setSelectionRequired(false);
         itemName = findViewById(R.id.item_name);
@@ -124,7 +128,7 @@ public class ItemViewActivity extends AppCompatActivity implements
         galleryIntent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         cameraIntent = new Intent(ItemViewActivity.this, CustomCameraActivity.class);
 
-
+        infoButton.setOnClickListener(view-> new InformationDialog(item).show(getSupportFragmentManager(),"InfoSearch"));
         backBton.setOnClickListener(view -> finish());
         editBton.setOnClickListener(view -> new InputFragment(db,item).show(getSupportFragmentManager(), "Edit"));
 
@@ -210,10 +214,7 @@ public class ItemViewActivity extends AppCompatActivity implements
             new PickCameraDialog().show(getSupportFragmentManager(), "Photo");
         }
         else {
-            db.deletePhoto(photo_string.get(position));
-            photo_string.remove(position);
-            db.updatePhoto(item,photo_string);
-            adapter.notifyDataSetChanged();
+            new ImageDisplayDialog(db,photo_string.get(position), position).show(getSupportFragmentManager(),"display image");
         }
     }
     /**
@@ -252,5 +253,17 @@ public class ItemViewActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * delete the photo from user's item
+     * @param photo unique Id of photo that needs to be deleted
+     * @param position position of photo from photoString
+     */
+    @Override
+    public void onImageDeleted(String photo ,int position) {
+        db.deletePhoto(photo_string.get(position));
+        photo_string.remove(position);
+        db.updatePhoto(item,photo_string);
+        adapter.notifyDataSetChanged();
 
+    }
 }

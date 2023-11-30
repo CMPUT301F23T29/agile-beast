@@ -45,6 +45,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         ViewHolder(View itemView) {
             super(itemView) ;
             image = itemView.findViewById(R.id.image);
+
         }
 
     }
@@ -75,7 +76,6 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
      */
     @Override
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
-           // String imageUrl = mData.get(position);
            Uri image_uri = Uri.parse(mData.get(position));
             holder.image.setOnClickListener(v -> itemClickListener.onItemClick(holder.getAdapterPosition()));
         if(position ==0){

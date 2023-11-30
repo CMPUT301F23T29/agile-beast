@@ -1,10 +1,12 @@
 package com.example.team29project.Controller;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.team29project.Model.Tag;
@@ -20,6 +22,8 @@ public class TagAdapter extends BaseAdapter {
     private LayoutInflater mLayoutInflater;
     private ArrayList<Tag> tagList;
 
+    private ArrayList<Tag> selectedTags;
+
     /**
      * Constructs an instance of a tag adapter
      * @param context context of this adapter
@@ -29,6 +33,10 @@ public class TagAdapter extends BaseAdapter {
         this.context = context;
         this.tagList = tagList;
         this.mLayoutInflater = LayoutInflater.from(context);
+        this.selectedTags = new ArrayList<>();
+    }
+    public void setSelectedTags(ArrayList<Tag> tags){
+        this.selectedTags = tags;
     }
 
     /**
@@ -67,7 +75,16 @@ public class TagAdapter extends BaseAdapter {
     public View getView(int position, View converView, ViewGroup parent) {
         View view = mLayoutInflater.inflate(R.layout.display_tag, null);
         TextView title =  view.findViewById(R.id.each_tag);
+        LinearLayout layout = view.findViewById(R.id.tag_layout);
+        Tag temptag =  tagList.get(position);
         title.setText(tagList.get(position).getName());
+        // When it is selecting Tags, it changes background
+        if(this.selectedTags.contains(temptag)){
+            layout.setBackgroundColor(Color.parseColor("#D3D3D3"));
+        }
+        else{
+            layout.setBackgroundResource(R.drawable.tag_background);
+        }
         return view;
     }
 

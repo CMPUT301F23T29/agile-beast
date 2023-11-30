@@ -86,6 +86,7 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
         EditText inputText = view.findViewById(R.id.input_tag);
         isDelete= false;
         ArrayList<Tag> tempTags = new ArrayList<>();
+        tagAdapter.setSelectedTags(tempTags);
         db.loadInitialTags(this);
         addTag.setOnClickListener(v -> {
             isDelete = false;
@@ -112,15 +113,14 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
                     isDelete = false;
                 }
                 else if(isPicking){
-                    if(isPicking){
                         Tag temp = tagList.get(position);
                         if(tempTags.contains(temp)){
                             tempTags.remove(temp);
                         }
-                        else{
+                        else {
                             tempTags.add(temp);
                         }
-                    }
+                        tagAdapter.notifyDataSetChanged();
                 }
             }
         });
