@@ -637,7 +637,7 @@ public class DatabaseController  {
         }else if (filterBy.equals("tags")) {
             query = itemsRef.whereArrayContains("tags",data);
         }else {
-        query = db.collection("items");
+        query = itemsRef;
 //        addSnapshotListener(query);
 //    }
 //}
@@ -688,10 +688,11 @@ public class DatabaseController  {
         Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
         Query query; // New Query variable
         sortBy=sortBy.toLowerCase();
+        query = itemsRef.orderBy(sortBy, direction);
         if(sortBy.equals("default")){
             query = itemsRef;
         }
-        query = itemsRef.orderBy(sortBy, direction);
+
 
         // Add a snapshot listener to the FireStore query
        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
