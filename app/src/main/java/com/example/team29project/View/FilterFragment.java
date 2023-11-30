@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -20,18 +21,31 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.TagAdapter;
+import com.example.team29project.Controller.TagModifyCallback;
+import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 /**
  * A dialog to filter items on the main menu
  */
 
-public class FilterFragment extends DialogFragment {
+public class FilterFragment extends DialogFragment implements TagModifyCallback {
     private OnFragmentInteractionListener listener;
     private String selectedItem ="default";
+    private TagAdapter tagAdapter;
+    private ArrayList<Tag> tagList;
+    private DatabaseController db;
+
+    public FilterFragment(DatabaseController db) {
+        this.db = db;
+    }
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
@@ -65,13 +79,16 @@ public class FilterFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter, null);
+
+        tagAdapter = new TagAdapter(getContext(), db.getTags());
+        db.loadInitialTags(this);
 
         Calendar calendar = Calendar.getInstance();
         int currentYear = calendar.get(Calendar.YEAR);
         int currentMonth = calendar.get(Calendar.MONTH);
         int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter, null);
         Button confirm = view.findViewById(R.id.confirm_filter_button);
         Button cancel = view.findViewById(R.id.cancel_filter_button);
         EditText make = view.findViewById(R.id.filter_by_make_editview);
@@ -79,35 +96,33 @@ public class FilterFragment extends DialogFragment {
         EditText endDate = view.findViewById(R.id.filter_by_end_date_editview);
         EditText description = view.findViewById(R.id.filter_by_description_editview);
         Spinner filterSpinner = view.findViewById(R.id.filter_spinner);
+        Spinner tagSpinner = view.findViewById(R.id.filter_by_tags);
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // Code to execute when an item is selected
                 selectedItem = parent.getItemAtPosition(position).toString().toLowerCase();
+                make.setVisibility(View.GONE);
+                startDate.setVisibility(View.GONE);
+                endDate.setVisibility(View.GONE);
+                description.setVisibility(View.GONE);
+                tagSpinner.setVisibility(View.GONE);
                 switch (selectedItem) {
                     case "make":
                         make.setVisibility(View.VISIBLE);
-                        startDate.setVisibility(View.GONE);
-                        endDate.setVisibility(View.GONE);
-                        description.setVisibility(View.GONE);
                         break;
                     case "date":
-                        make.setVisibility(View.GONE);
                         startDate.setVisibility(View.VISIBLE);
                         endDate.setVisibility(View.VISIBLE);
-                        description.setVisibility(View.GONE);
                         break;
                     case "description":
-                        make.setVisibility(View.GONE);
-                        startDate.setVisibility(View.GONE);
-                        endDate.setVisibility(View.GONE);
                         description.setVisibility(View.VISIBLE);
                         break;
+                    case "tags":
+                        tagSpinner.setVisibility(View.VISIBLE);
+                        tagSpinner.setAdapter(tagAdapter);
+                        break;
                     default:
-                        make.setVisibility(View.GONE);
-                        startDate.setVisibility(View.GONE);
-                        endDate.setVisibility(View.GONE);
-                        description.setVisibility(View.GONE);
                         break;
                 }
             }
@@ -175,6 +190,9 @@ public class FilterFragment extends DialogFragment {
                 case "description":
                     data = description.getText().toString();
                     break;
+                case "tags":
+                    data = tagSpinner.getSelectedItem().toString();
+                    break;
                 default:
                     filterBy="default";
                     data="";
@@ -191,6 +209,17 @@ public class FilterFragment extends DialogFragment {
         return builder
                 .setView(view)
                 .create();
+    }
+
+    @Override
+    public void onTagModified() {
+        tagAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onTagsLoaded() {
+        tagAdapter.notifyDataSetChanged();
+        this.tagList= db.getTags();
     }
 
     /**
