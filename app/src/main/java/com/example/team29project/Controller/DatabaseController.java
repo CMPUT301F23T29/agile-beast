@@ -293,26 +293,17 @@ public class DatabaseController  {
 
     public void addTag(Tag tag, TagModifyCallback callback) {
         assert (!tagDataList.contains(tag));
-
-        // Sort the items alphabetically before adding them to Firestore
-        ArrayList<String> sortedItems = new ArrayList<>(tag.getItems());
-        Collections.sort(sortedItems);
-
-        // Add or update the tag in the Firestore collection 'tags'
+        // Add or update the tag in the Firestore collection tags
         HashMap<String, Object> data = new HashMap<>();
-        data.put("items", sortedItems); // Use the sorted items
-
+        String name = tag.getName();
+        data.put("items", Arrays.asList(tag.getItems().toArray()));
         tagsRef.document(tag.getName())
                 .set(data)
                 .addOnSuccessListener(documentReference -> {
                     callback.onTagModified();
 
-
+                })
                 .addOnFailureListener(e -> Log.e("Firestore", "Error adding item", e));
-
-
-
-
     }
 
     /**
