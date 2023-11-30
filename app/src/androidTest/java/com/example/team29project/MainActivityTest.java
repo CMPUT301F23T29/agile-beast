@@ -42,7 +42,7 @@ public class MainActivityTest {
     @Test
     public void menuTest(){
         onView(withId(R.id.menu)).perform(click());
-        onView(withId(R.layout.fragment_main_menu)).check(matches(isDisplayed()));
+        onView(withId(R.id.fragment_main_menu)).check(matches(isDisplayed()));
         onView(withId(R.id.add_new_item)).perform(click());
         onView(withId(R.id.fragment_input)).check(matches(isDisplayed()));
         pressBack();

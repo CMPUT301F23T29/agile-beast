@@ -31,6 +31,9 @@ public class Tag {
     }
 
 
-
+    @Override
+    public String toString() {
+        return name;
+    }
 
 }

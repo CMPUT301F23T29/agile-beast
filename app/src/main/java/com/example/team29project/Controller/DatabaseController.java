@@ -1,22 +1,16 @@
 package com.example.team29project.Controller;
-
 import android.net.Uri;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
-import com.example.team29project.View.MainPageActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.Nullable;
-
 import java.util.Arrays;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,13 +21,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-
 import androidx.annotation.NonNull;
-
+import java.util.List;
 import java.util.Map;
 
 
@@ -52,12 +44,6 @@ public class DatabaseController  {
     private final StorageReference imageRef;
     private ArrayList<Item> itemDataList;
     // Adapters
-
-
-
-
-
-
 
     // Tag attributes not used for this checkpoint
     private final CollectionReference tagsRef;
@@ -81,7 +67,7 @@ public class DatabaseController  {
 
     /**
      *  returns the reference of images from firebase storage
-     * @return
+     * @return StorageReference of images storage
      */
     public StorageReference getImageRef(){
         return this.imageRef;
@@ -93,7 +79,7 @@ public class DatabaseController  {
      * @return Tag object corresponding to document file
      */
 
-    public Tag createTagFromDoc(QueryDocumentSnapshot doc){
+    public Tag createTagFromDoc(DocumentSnapshot doc){
         String name = doc.getId();
         Object itemsObject = doc.get("items");
         // Initialize an ArrayList to store photos
@@ -118,7 +104,7 @@ public class DatabaseController  {
      * @return item Item object
      */
 
-    private Item createItemFromDoc(QueryDocumentSnapshot doc) {
+    private Item createItemFromDoc(DocumentSnapshot doc) {
         String name = doc.getString("name");
         String date = doc.getString("date");
         Object itemValueObject = doc.get("value");
@@ -157,10 +143,12 @@ public class DatabaseController  {
                 }
             }
         }
-       Item item= new Item(name, date, itemValue, make, model, description, comment, serialNumber);
+        // Sort the tags alphabetically
+        Collections.sort(tags);
+        Item item = new Item(name, date, itemValue, make, model, description, comment, serialNumber);
         item.setPhotos(photos);
         item.setDocId(doc.getId());
-        item.setTags(tags);
+        item.setTags(tags); // Tags are now sorted alphabetically
         return item;
     }
 
@@ -222,7 +210,6 @@ public class DatabaseController  {
             if (error != null) {
                 Log.e("Firebase", error.toString());
             }
-
             if (value != null) {
                 tagDataList.clear();
                 // Loop over each document in the snapshot
@@ -265,12 +252,14 @@ public class DatabaseController  {
     }
 
     /**
-     * Adds an item to the Firestore database
+     * Adds an item to the FireStore database
      * @param item the item being added
      */
     public void addItem(Item item,String id) {
         // Ensure data list does not already contain item with same name
         assert (!itemDataList.contains(item));
+        ArrayList<String> sortedTags = new ArrayList<>(item.getTags());
+        Collections.sort(sortedTags);
         HashMap<String, Object> data = new HashMap<>();
         data.put("name", item.getName());
         data.put("date", item.getDate());
@@ -281,7 +270,7 @@ public class DatabaseController  {
         data.put("description", item.getDescription());
         data.put("comment", item.getComment());
         data.put("photos", Arrays.asList(item.getPhotos().toArray()));
-        data.put("tags", Arrays.asList(item.getTags().toArray()));
+        data.put("tags", sortedTags);
         // Add the 'data' map to the Firestore database under a document named after the item's name.
         itemsRef.document(id)
                 .set(data)
@@ -314,16 +303,7 @@ public class DatabaseController  {
                     callback.onTagModified();
 
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Firestore", "Error adding item", e);
-                    }
-                });
-
-
-
-
+                .addOnFailureListener(e -> Log.e("Firestore", "Error adding item", e));
     }
 
     /**
@@ -364,15 +344,22 @@ public class DatabaseController  {
         updateTagItem(item);
 
     }
-    public void updateTagItem(Item item){
+    public void updateTagItem(Item item) {
         Map<String, Object> fieldUpdate = new HashMap<>();
         fieldUpdate.put("tags", FieldValue.delete());
+
+        // Sort the tags alphabetically before updating the document
+        ArrayList<String> sortedTags = new ArrayList<>(item.getTags());
+        Collections.sort(sortedTags);
+
         itemsRef.document(item.getDocId()).update(fieldUpdate);
-        for(String tag: item.getTags()) {
+
+        // Update the document with the sorted tags
+        for (String tag : sortedTags) {
             itemsRef.document(item.getDocId()).update("tags", FieldValue.arrayUnion(tag));
         }
-
     }
+
 
     /**
      * update list of itemst that this tag applied
@@ -463,6 +450,7 @@ public class DatabaseController  {
                                 }
                             }
                         }
+                        Collections.sort(tags);
                         Item item= new Item(name, date, itemValue, make, model, description, comment, serialNumber);
                         item.setPhotos(photos);
                         item.setDocId(documentId);
@@ -500,7 +488,7 @@ public class DatabaseController  {
 
                     })
                     .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Failed to delete");
+                        Log.e("FireStore", "Failed to delete");
                     });
         }
 
@@ -524,17 +512,7 @@ public class DatabaseController  {
         assert (i < this.itemDataList.size());
         Item toDeleteItem = this.itemDataList.get(i);
         for(String tag : toDeleteItem.getTags()){
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("items", FieldValue.arrayRemove(toDeleteItem.getDocId()));
-            tagsRef.document(tag).update(updates)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.e("Firestore", "Successfully deleted");
-
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Failed to delete");
-                    });
-
+           removeTagfromItem(toDeleteItem,tag);
         }
         ArrayList<String> photos =  toDeleteItem.getPhotos();
         for(String photo : photos){
@@ -547,6 +525,18 @@ public class DatabaseController  {
                     public void onSuccess(Void unused) {
                         Log.d("Firestore", "Item '" + toDeleteItem.getName() + "' deleted successfully");
                     }
+                });
+    }
+    public void removeTagfromItem(Item item , String tag){
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("items", FieldValue.arrayRemove(item.getDocId()));
+        tagsRef.document(tag).update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Log.e("Firestore", "Successfully deleted");
+
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Failed to delete");
                 });
     }
 
@@ -583,38 +573,92 @@ public class DatabaseController  {
                     .whereLessThanOrEqualTo("date", endDate);
             }
         } else if (filterBy.equals("description")) {
-            final ArrayList<String> words = new ArrayList<>(Arrays.asList(data.toLowerCase().split("\\s+")));
 
-            query =itemsRef;
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+
+            // Fetch all documents from the Firestore collection
+            itemsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
-                        itemDataList.clear();
+                        List<String> matchingIds = new ArrayList<>();
+                        String[] keywords = data.split(" ");
+
+                        // Iterate over each document
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String description = document.getString("description");
-                            boolean containsAllWords = true;
-                            for (String word : words) {
-                                if (!description.toLowerCase().contains(word)) {
-                                    containsAllWords = false;
+
+                            // Check if the description contains all keywords
+                            boolean matches = true;
+                            for (String keyword : keywords) {
+                                if (!description.contains(keyword)) {
+                                    matches = false;
                                     break;
                                 }
                             }
-                            if (containsAllWords) {
-                                Item item = createItemFromDoc(document);
-                                itemDataList.add(item);
+                            // If the description matches, add the ID to the list
+                            if (matches) {
+                                matchingIds.add(document.getId());
                             }
+                        }
+                        itemDataList.clear();
+
+                        for (String id : matchingIds) {
+                            itemsRef.document(id)
+                                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                                            @Nullable FirebaseFirestoreException e) {
+                                            if (e != null) {
+                                                Log.w(TAG, "Listen failed.", e);
+                                                return;
+                                            }
+                                            if (snapshot != null && snapshot.exists()) {
+                                                // Convert the DocumentSnapshot to your model class
+                                                Item item = createItemFromDoc(snapshot);
+                                                // Add the item to your list
+                                                itemDataList.add(item);
+                                                callback.onFiltered();
+                                                // Notify the adapter that the data has changed
+                                            } else {
+                                                Log.d(TAG, "Current data: null");
+                                                callback.onFilteredFailure();
+                                            }
+                                        }
+                                    });
                         }
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
+                        callback.onFilteredFailure();
                     }
                 }
             });
-        } else {
-            query = itemsRef;
+        }else if (filterBy.equals("tags")) {
+            query = itemsRef.whereArrayContains("tags",data);
+        }else {
+        query = itemsRef;
+//        addSnapshotListener(query);
+//    }
+//}
+//
+//private void addSnapshotListener(Query query) {
+//    // Add a snapshot listener to the FireStore query
+//    query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+//        @Override
+//        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+//            if (error != null) {
+//                Log.e("Firebase", error.toString());
+//            }
+//            if (value != null) {
+//                itemDataList.clear();
+//                for (QueryDocumentSnapshot doc: value) {
+//                    Item item = createItemFromDoc(doc);
+//                    itemDataList.add(item);
+//            return;
+//        } else {
+//            query = itemsRef;
         }
-        // Add a snapshot listener to the FireStore query
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -629,7 +673,6 @@ public class DatabaseController  {
                         itemDataList.add(item);
                     }
                     callback.onFiltered();
-                    //itemAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -645,10 +688,11 @@ public class DatabaseController  {
         Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;
         Query query; // New Query variable
         sortBy=sortBy.toLowerCase();
+        query = itemsRef.orderBy(sortBy, direction);
         if(sortBy.equals("default")){
             query = itemsRef;
         }
-        query = itemsRef.orderBy(sortBy, direction);
+
 
         // Add a snapshot listener to the FireStore query
        query.addSnapshotListener(new EventListener<QuerySnapshot>() {

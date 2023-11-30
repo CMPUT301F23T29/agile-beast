@@ -43,42 +43,44 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = usernameEdt.getText().toString();
                 String password = passwordEdt.getText().toString();
-                String encryptPw= hashPassword(password);
-                db.collection("Users").document(username).get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    // Username is already taken
-                                    Toast.makeText(LoginActivity.this, "Username is already taken", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    // Username is available, proceed with signup
-                                    // You may want to add additional validation checks for the password, etc.
-                                    Map<String, Object> userData = new HashMap<>();
-                                    userData.put("password", encryptPw);
+                String encryptPw = hashPassword(password);
+                username.replaceAll("\\s+", "");
+                if(!username.isEmpty()){
+                    db.collection("Users").document(username).get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        // Username is already taken
+                                        Toast.makeText(LoginActivity.this, "Username is already taken", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Username is available, proceed with signup
+                                        // You may want to add additional validation checks for the password, etc.
+                                        Map<String, Object> userData = new HashMap<>();
+                                        userData.put("password", encryptPw);
 
-                                    // Add the new user to the "Users" collection
-                                    db.collection("Users").document(username)
-                                            .set(userData)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // Signup successful
-                                                    Toast.makeText(LoginActivity.this, "Signup successful", Toast.LENGTH_SHORT).show();
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
+                                        // Add the new user to the "Users" collection
+                                        db.collection("Users").document(username)
+                                                .set(userData)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        // Signup successful
+                                                        Toast.makeText(LoginActivity.this, "Signup successful", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
 
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(LoginActivity.this, "Signup failed. Please try again.", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(LoginActivity.this, "Signup failed. Please try again.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    }
                                 }
-                            }
-                        });
-
+                            });
+            }
             }
         });
 
@@ -90,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameEdt.getText().toString();
                 String password = passwordEdt.getText().toString(); // Assuming you have an EditText for password
                 String encryptPw= hashPassword(password);
+                username.replaceAll("\\s+", "");
 
                 db.collection("Users").document(username).get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -108,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     } else {
 
-                                        Toast.makeText(LoginActivity.this, storedPassword, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, "Wrong password", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
                                     // Username not found
@@ -120,9 +123,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         }
+
+    /**
+     * this function encrypts a password for login
+      * @param plainTextPassword password of what user want to have
+     * @return return encrypted password
+     */
     private String hashPassword(String plainTextPassword) {
         // Define the strength of the hash (work factor)
-
         return BCrypt.hashpw(plainTextPassword,  CUSTOM_STATIC_SALT);
     }
 }
