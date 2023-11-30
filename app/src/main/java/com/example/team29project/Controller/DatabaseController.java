@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,11 +21,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import androidx.annotation.NonNull;
+import java.util.List;
 import java.util.Map;
 
 
@@ -109,7 +109,7 @@ public class DatabaseController  {
      * @return item Item object
      */
 
-    private Item createItemFromDoc(QueryDocumentSnapshot doc) {
+    private Item createItemFromDoc(DocumentSnapshot doc) {
         String name = doc.getString("name");
         String date = doc.getString("date");
         Object itemValueObject = doc.get("value");
@@ -570,31 +570,68 @@ public class DatabaseController  {
                     .whereLessThanOrEqualTo("date", endDate);
             }
         } else if (filterBy.equals("description")) {
-            final ArrayList<String> words = new ArrayList<>(Arrays.asList(data.toLowerCase().split("\\s+")));
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+
+
+            // Fetch all documents from the Firestore collection
+            itemsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
-                        itemDataList.clear();
+                        List<String> matchingIds = new ArrayList<>();
+                        String[] keywords = data.split(" ");
+
+                        // Iterate over each document
+
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String description = document.getString("description");
-                            boolean containsAllWords = true;
-                            for (String word : words) {
-                                if (!description.toLowerCase().contains(word)) {
-                                    containsAllWords = false;
+
+                            // Check if the description contains all keywords
+                            boolean matches = true;
+                            for (String keyword : keywords) {
+                                if (!description.contains(keyword)) {
+                                    matches = false;
                                     break;
                                 }
                             }
-                            if (containsAllWords) {
-                                Item item = createItemFromDoc(document);
-                                itemDataList.add(item);
+                            // If the description matches, add the ID to the list
+                            if (matches) {
+                                matchingIds.add(document.getId());
                             }
+                        }
+                        itemDataList.clear();
+
+                        for (String id : matchingIds) {
+                            itemsRef.document(id)
+                                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                                            @Nullable FirebaseFirestoreException e) {
+                                            if (e != null) {
+                                                Log.w(TAG, "Listen failed.", e);
+                                                return;
+                                            }
+                                            if (snapshot != null && snapshot.exists()) {
+                                                // Convert the DocumentSnapshot to your model class
+                                                Item item = createItemFromDoc(snapshot);
+                                                // Add the item to your list
+                                                itemDataList.add(item);
+                                                callback.onFiltered();
+                                                // Notify the adapter that the data has changed
+                                            } else {
+                                                Log.d(TAG, "Current data: null");
+                                                callback.onFilteredFailure();
+                                            }
+                                        }
+                                    });
                         }
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
+                        callback.onFilteredFailure();
                     }
                 }
             });
+            return;
         } else {
             query = itemsRef;
         }
