@@ -254,11 +254,6 @@ public class MainPageActivity extends AppCompatActivity implements
      * Notifies iten adapter that its contents have changed
      *
      */
-    @Override
-    public void onEditPressed() {
-        itemAdapter.notifyDataSetChanged();
-        updateSum();
-    }
 
 
     /**

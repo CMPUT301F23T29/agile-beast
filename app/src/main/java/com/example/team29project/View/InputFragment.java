@@ -1,23 +1,18 @@
 package com.example.team29project.View;
-
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Controller.OnScanListener;
 import com.example.team29project.Controller.TagAddedItemCallback;
@@ -26,11 +21,6 @@ import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.mlkit.vision.barcode.common.Barcode;
-import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
-import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
-import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
@@ -116,7 +106,6 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
      */
     public interface OnFragmentsInteractionListener {
         void onOKPressed();
-        void onEditPressed();
         void onCancelPressed();
 
     }
@@ -205,8 +194,6 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
             }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        // TODO set up filter chips of all tags (from firestore) and select ones already tagged by the item
-        // TODO set add tag and scan button listeners
         builder.setView(view);
         // When cancel button pressed
         builder.setNegativeButton("Cancel", (dialog, which)->{
@@ -266,7 +253,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
                         tag.addItem(item.getDocId());
                         db.updateTag(tag);
                     }
-                    listener.onEditPressed();
+                    listener.onOKPressed();
                 }
             } catch(NumberFormatException e){
                 Toast.makeText(getContext()," Wrong format of charges check again!",Toast.LENGTH_SHORT).show();
@@ -308,7 +295,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
 
     /**
-     * This function draws tag datas into chipgroup
+     * This function draws tag data into ChipGroup
      * @param tagString arrayList of String represents the tag
      */
     public void drawTags(ArrayList<String> tagString){

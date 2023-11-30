@@ -1,18 +1,11 @@
 package com.example.team29project.Controller;
-
 import android.net.Uri;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
-import com.example.team29project.View.MainPageActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.Nullable;
-
 import java.util.Arrays;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -28,13 +21,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import androidx.annotation.NonNull;
-
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +72,7 @@ public class DatabaseController  {
 
     /**
      *  returns the reference of images from firebase storage
-     * @return
+     * @return StorageReference of images storage
      */
     public StorageReference getImageRef(){
         return this.imageRef;
@@ -224,7 +213,6 @@ public class DatabaseController  {
             if (error != null) {
                 Log.e("Firebase", error.toString());
             }
-
             if (value != null) {
                 tagDataList.clear();
                 // Loop over each document in the snapshot
@@ -267,7 +255,7 @@ public class DatabaseController  {
     }
 
     /**
-     * Adds an item to the Firestore database
+     * Adds an item to the FireStore database
      * @param item the item being added
      */
     public void addItem(Item item,String id) {
@@ -316,12 +304,7 @@ public class DatabaseController  {
                     callback.onTagModified();
 
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Firestore", "Error adding item", e);
-                    }
-                });
+                .addOnFailureListener(e -> Log.e("Firestore", "Error adding item", e));
 
 
 
@@ -502,7 +485,7 @@ public class DatabaseController  {
 
                     })
                     .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Failed to delete");
+                        Log.e("FireStore", "Failed to delete");
                     });
         }
 
@@ -587,6 +570,9 @@ public class DatabaseController  {
                     .whereLessThanOrEqualTo("date", endDate);
             }
         } else if (filterBy.equals("description")) {
+
+
+
             // Fetch all documents from the Firestore collection
             itemsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -596,6 +582,7 @@ public class DatabaseController  {
                         String[] keywords = data.split(" ");
 
                         // Iterate over each document
+
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String description = document.getString("description");
 
@@ -648,7 +635,6 @@ public class DatabaseController  {
         } else {
             query = itemsRef;
         }
-        // Add a snapshot listener to the FireStore query
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
