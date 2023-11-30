@@ -25,6 +25,7 @@
     <string name="start_date_hint">From YYYY-MM-DD</string>
     <string name="make_hint">Enter a make</string>
     <string name="add_item">Add an item</string>
+    <string name="user_profile">User Profile</string>
     <string-array name="sort_items">
         <!--        <item>serialNumber</item>-->
         <item>Default</item>

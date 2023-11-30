@@ -125,7 +125,7 @@ public class CustomCameraActivity extends AppCompatActivity {
                     capturedImage.setVisibility(View.VISIBLE);
                     capturedImage.setImageURI(imageUri);
                     okButton.setOnClickListener(v -> {
-                        Toast.makeText(CustomCameraActivity.this, "ImageSaved: ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CustomCameraActivity.this, "Successes ", Toast.LENGTH_SHORT).show();
                         Uri imageUri1 = outputFileResults.getSavedUri();
                         Intent resultIntent = new Intent();
                         resultIntent.setData(imageUri1);

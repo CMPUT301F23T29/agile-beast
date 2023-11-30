@@ -5,13 +5,17 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.OnScanListener;
 import com.example.team29project.Controller.TagAddedItemCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
@@ -39,7 +44,8 @@ import java.util.UUID;
  * Validate and store the data collected
  * Interface with the Camera for photo capture
  */
-public class InputFragment extends DialogFragment implements TagAddedItemCallback {
+public class InputFragment extends DialogFragment implements TagAddedItemCallback, OnScanListener {
+
 
     private Item item;
     private Button scanButton;
@@ -59,6 +65,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
     private ChipGroup tagChips;
     private ArrayList<String> tags;
+
     private ArrayList<Tag> tempTags;
     DatabaseController db;
 
@@ -83,7 +90,13 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
     }
     private OnFragmentsInteractionListener listener;
-
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_input, container);
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#D8E8EC")));
+        return view;
+    }
     /**
      *
      * When tag is applied into item
@@ -96,6 +109,17 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         this.tempTags= tempTagList;
 
         drawTags(tagsToString());
+    }
+
+    @Override
+    public void onScannedSerial(String scan) {
+        itemSerialNumber.setText(scan);
+    }
+
+    @Override
+    public void onScannedBarcode(String scan) {
+        itemDescription.setText(scan);
+
     }
 
     /**
@@ -123,9 +147,6 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
     }
 
 
-
-
-
     /**
      * Create a dialog to edit the details of an item
      * @param savedInstanceState The last saved instance state of the Fragment,
@@ -151,15 +172,19 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         itemDescription =  view.findViewById(R.id.edit_description);
         itemComment = view.findViewById(R.id.edit_comment);
         scanButton = view.findViewById(R.id.scan_button);
+
         tagChips = view.findViewById(R.id.tag_chip);
-        GmsBarcodeScannerOptions options = new GmsBarcodeScannerOptions.Builder()
-                .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-                .enableAutoZoom()
-                .build();
-        GmsBarcodeScanner scanner = GmsBarcodeScanning.getClient(getContext(),options);
+
         if(item !=null){
             writeData(item);
         }
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PickScanDialog dialog = new PickScanDialog();
+                dialog.show(getChildFragmentManager(), "PickScanDialog");
+            }
+        });
 
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
             yearDate = year;
@@ -193,21 +218,9 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scanner
-                        .startScan()
-                        .addOnSuccessListener(
-                                barcode -> {
-                                    String rawValue = barcode.getRawValue();
-                                    Toast.makeText(getActivity(), rawValue, Toast.LENGTH_SHORT).show();
-                                })
-                        .addOnCanceledListener(
-                                () -> {
-                                    // Task canceled
-                                })
-                        .addOnFailureListener(
-                                e -> {
-                                    // Task failed with an exception
-                                });
+
+                new PickScanDialog().show(getChildFragmentManager(),"scan");
+
             }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -301,6 +314,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         drawTags(item.getTags());
 
 
+
     }
     public ArrayList<String> tagsToString(){
         ArrayList<String> temp = new ArrayList<>();
@@ -322,9 +336,42 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
             chip.setId(tagString.indexOf(tag));
             chip.setCheckable(false);
             chip.setClickable(false);
+            chip.setChipBackgroundColorResource(R.color.background);
+            chip.setTextColor(getResources().getColor(R.color.button_text, null));
             tagChips.addView(chip);
         }
 
-
     }
+
+//    public ArrayList<String> tagsToString(){
+  //      ArrayList<String> temp = new ArrayList<>();
+    //    for(Tag tag : this.tempTags){
+      //      temp.add(tag.getName());
+        //}
+        //return temp;
+    //}
+
+    /**
+     * This function draws tag datas into chipgroup
+     * @param //tagString arrayList of String represents the tag
+     */
+    //public void drawTags(ArrayList<String> tagString){
+      //  tagChips.removeAllViews();
+        //for(String tag: tagString ){
+          //  Chip chip = new Chip(getContext());
+            //chip.setText(tag);
+            //chip.setId(tagString.indexOf(tag));
+            //chip.setCheckable(false);
+            //chip.setClickable(false);
+            //tagChips.addView(chip);
+        //}
+
+
+    //}
+
+
+        public void updateTextView(String text) {
+        itemSerialNumber.setText(text);
+    }
+
 }
