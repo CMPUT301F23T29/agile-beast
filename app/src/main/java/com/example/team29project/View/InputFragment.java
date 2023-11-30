@@ -327,6 +327,8 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
             chip.setId(tagString.indexOf(tag));
             chip.setCheckable(false);
             chip.setClickable(false);
+            chip.setChipBackgroundColorResource(R.color.background);
+            chip.setTextColor(getResources().getColor(R.color.button_text, null));
             tagChips.addView(chip);
         }
 

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -177,6 +179,8 @@ public class ItemViewActivity extends AppCompatActivity implements
             chip.setId(tags.indexOf(tag));
             chip.setCheckable(false);
             chip.setClickable(false);
+            chip.setChipBackgroundColorResource(R.color.background);
+            chip.setTextColor(getResources().getColor(R.color.button_text, null));
             tagGroup.addView(chip);
         }
         // update tags
