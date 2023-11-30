@@ -116,7 +116,7 @@ public class Item implements Serializable, Comparable {
 
     /**
      * Gets the description of the item
-     * @return descrption of the item
+     * @return description of the item
      */
     public String getDescription() {
         return description;
@@ -177,13 +177,6 @@ public class Item implements Serializable, Comparable {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
-
-   /* public void addTag (Tag tag){
-        this.tags.add(tag);
-    }*/
-   /* public ArrayList<Tag> getTags(){
-        return tags;
-    }*/
 
     /**
      * Gets the model of the item
@@ -249,28 +242,7 @@ public class Item implements Serializable, Comparable {
 
 
     /**
-     * Adds the item tag
-     * @param tag item tag
-     */
-    public void addTag(String tag) {
-        tags.add(tag);
-    }
-
-    /**
-     * Deletes the tag provided
-     * @param tag the tag to be used
-     */
-    public void deleteTag(String tag) {
-        for (int i = 0; i < tags.size(); i++) {
-            if (tags.get(i) == tag) {
-                tags.remove(i);
-            }
-        }
-    }
-
-
-    /**
-     * COmpares the item
+     * Compares the item
      * @param item item
      * @return item compared
      */

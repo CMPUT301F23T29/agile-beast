@@ -17,7 +17,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -126,9 +125,7 @@ public class ItemViewActivity extends AppCompatActivity implements
         cameraIntent = new Intent(ItemViewActivity.this, CustomCameraActivity.class);
 
 
-        backBton.setOnClickListener(view -> {
-            finish();
-        });
+        backBton.setOnClickListener(view -> finish());
         editBton.setOnClickListener(view -> new InputFragment(db,item).show(getSupportFragmentManager(), "Edit"));
 
     }
@@ -193,12 +190,9 @@ public class ItemViewActivity extends AppCompatActivity implements
         changeData();
     }
 
-    /**
-     * Handles if edit was pressed and changes the data
-     */
 
     /**
-     * Handles if cancel was pressed
+     * Handles when cancel was pressed
      */
     @Override
     public void onCancelPressed(){

@@ -4,7 +4,7 @@ package com.example.team29project.View;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.util.Log;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,18 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Controller.FilteredItemCallback;
 import com.example.team29project.Controller.LoadItemsCallback;
-import com.example.team29project.Controller.LoadTagsCallback;
 import com.example.team29project.Controller.SortItemCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Controller.ItemArrayAdapter;
-import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
-import com.example.team29project.Controller.TagAdapter;
 
 import java.util.ArrayList;
 
@@ -57,7 +52,6 @@ public class MainPageActivity extends AppCompatActivity implements
     private TextView sumItem;
     private boolean isFilterFragmentShown = false;
     private boolean isSortFragmentShown = false;
-    private ArrayList<Tag> tags;
     private ArrayList<Integer> selectedItems;
     private DatabaseController db;
     private String userId;
@@ -116,46 +110,34 @@ public class MainPageActivity extends AppCompatActivity implements
 
             }
         });
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isSelect) {
-                    db.removeAllItems(selectedItems);
-                    isSelect = false;
-                    selectedItems.clear();
-                    itemAdapter.notifyDataSetChanged();
-                } else {
-                    isDelete = true;
-                }
+        deleteButton.setOnClickListener(v -> {
+            if (isSelect) {
+                db.removeAllItems(selectedItems);
+                isSelect = false;
+                selectedItems.clear();
+                itemAdapter.notifyDataSetChanged();
+            } else {
+                isDelete = true;
             }
         });
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isDelete = false;
-                popupMenu(view);
-            }
+        menu.setOnClickListener(view -> {
+            isDelete = false;
+            popupMenu(view);
         });
 
         Button filterButton = findViewById(R.id.filter_button);
-        filterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isFilterFragmentShown) {
-                    isFilterFragmentShown = true;
-                    new FilterFragment(db).show(getSupportFragmentManager(), "Filter");
-                }
+        filterButton.setOnClickListener(view -> {
+            if (!isFilterFragmentShown) {
+                isFilterFragmentShown = true;
+                new FilterFragment(db).show(getSupportFragmentManager(), "Filter");
             }
         });
 
         Button sortButton = findViewById(R.id.sort_by_button);
-        sortButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isSortFragmentShown) {
-                    isSortFragmentShown = true;
-                    new SortFragment().show(getSupportFragmentManager(), "Sort");
-                }
+        sortButton.setOnClickListener(view -> {
+            if (!isSortFragmentShown) {
+                isSortFragmentShown = true;
+                new SortFragment().show(getSupportFragmentManager(), "Sort");
             }
         });
 
@@ -203,34 +185,22 @@ public class MainPageActivity extends AppCompatActivity implements
             }
         });
 
-        addItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isSelect = false;
-                isDelete = false;
-                new InputFragment(db).show(getSupportFragmentManager(), "addItems");
-                popupWindow.dismiss();
-            }
+        addItem.setOnClickListener(v -> {
+            isSelect = false;
+            isDelete = false;
+            new InputFragment(db).show(getSupportFragmentManager(), "addItems");
+            popupWindow.dismiss();
         });
 
-        editTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new TagDialogue(db).show(getSupportFragmentManager(), "Tags");
+        editTag.setOnClickListener(v -> new TagDialogue(db).show(getSupportFragmentManager(), "Tags"));
 
+        profile.setOnClickListener(view1 -> {
+            Double total =0.0;
+            for(Item item : db.getItems()){
+                total = total +  item.getValue();
             }
-        });
-
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Double total =0.0;
-                for(Item item : db.getItems()){
-                    total = total +  item.getValue();
-                }
-                sumItem.setText(String.valueOf(total));
-                new ProfileFragment(userId, String.valueOf(total)).show(getSupportFragmentManager(), null);
-            }
+            sumItem.setText(String.valueOf(total));
+            new ProfileFragment(userId, String.valueOf(total)).show(getSupportFragmentManager(), null);
         });
 
         popupView.setOnTouchListener((v, event) -> {
@@ -240,7 +210,7 @@ public class MainPageActivity extends AppCompatActivity implements
     }
 
     /**
-     * Adds an item to the database
+     * Callback function from pressing ok in InputFragment
      *
      */
 
@@ -249,12 +219,6 @@ public class MainPageActivity extends AppCompatActivity implements
         itemAdapter.notifyDataSetChanged();
         updateSum();
     }
-
-    /**
-     * Notifies iten adapter that its contents have changed
-     *
-     */
-
 
     /**
      * When cancel button pressed on InputFragment

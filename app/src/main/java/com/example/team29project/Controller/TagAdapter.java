@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.team29project.Model.Tag;
@@ -23,8 +22,8 @@ public class TagAdapter extends BaseAdapter {
 
     /**
      * Constructs an instance of a tag adapter
-     * @param context
-     * @param tagList
+     * @param context context of this adapter
+     * @param tagList list of Tag object
      */
     public TagAdapter(Context context, ArrayList<Tag> tagList) {
         this.context = context;
@@ -49,18 +48,12 @@ public class TagAdapter extends BaseAdapter {
     /**
      * Gets the item id
      * @param position position
-     * @return theposition
+     * @return the position
      */
     @Override
     public long getItemId(int position) {
         return position;
     }
-
-    /**
-     * Gets the tag at a provided position
-     * @param position the position of the item
-     * @return the tag at the given position
-     */
 
 
     /**

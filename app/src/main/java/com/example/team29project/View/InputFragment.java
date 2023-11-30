@@ -64,7 +64,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
     }
 
     /**
-     * Set item and teags
+     * Set item and tags
      * @param aItem an item to be used
      */
     public InputFragment(DatabaseController db, Item aItem) {
@@ -77,9 +77,8 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
     private OnFragmentsInteractionListener listener;
 
     /**
-     *
-     * When tag is applied into item
-     * @param tempTagList
+     * Callback function when tag is applied into item
+     * @param tempTagList ArrayList of tag that selected by user
      */
 
     @Override
@@ -177,28 +176,14 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
 
         // When tag Chip is pressed
-        tagChips.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new TagDialogue(db , InputFragment.this).show(getChildFragmentManager(),"Pick Tags");
-
-
-            }
-        });
+        tagChips.setOnClickListener(v -> new TagDialogue(db , InputFragment.this).show(getChildFragmentManager(),"Pick Tags"));
 
         // scanning camera
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new PickScanDialog().show(getChildFragmentManager(),"scan");
-            }
-        });
+        scanButton.setOnClickListener(v -> new PickScanDialog().show(getChildFragmentManager(),"scan"));
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setView(view);
         // When cancel button pressed
-        builder.setNegativeButton("Cancel", (dialog, which)->{
-            listener.onCancelPressed();
-        });
+        builder.setNegativeButton("Cancel", (dialog, which)-> listener.onCancelPressed());
         builder.setPositiveButton("OK", (dialog, which) -> {
             try {
                 String item_name = itemName.getText().toString();
