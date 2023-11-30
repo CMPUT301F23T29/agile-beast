@@ -52,6 +52,7 @@
             app:layout_constraintHorizontal_bias="0.96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -64,18 +65,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
-        <TextView
-            android:id="@+id/item_name"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="18dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="9dp"
-            android:background="@drawable/button_style"
-            android:backgroundTint="@color/white"
-            android:padding="10sp"
-            android:text="@string/item_name"
-            android:textSize="15sp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/item_name"
+                android:layout_width="335dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="18dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="9dp"
+                android:background="@drawable/button_style"
+                android:backgroundTint="@color/white"
+                android:padding="10sp"
+                android:text="@string/item_name"
+                android:textSize="15sp" />
+
+            <ImageButton
+                android:id="@+id/information_button"
+                android:layout_width="200dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="12dp"
+                android:layout_toRightOf="@id/item_name"
+                android:background="@null"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/information" />
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/item_value"
@@ -209,6 +230,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
