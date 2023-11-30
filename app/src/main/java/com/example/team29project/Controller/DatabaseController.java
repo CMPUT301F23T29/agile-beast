@@ -656,26 +656,26 @@ public class DatabaseController  {
             query = itemsRef.whereArrayContains("tags",data);
         }else {
         query = db.collection("items");
-        addSnapshotListener(query);
-    }
-}
-
-private void addSnapshotListener(Query query) {
-    // Add a snapshot listener to the FireStore query
-    query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-        @Override
-        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-            if (error != null) {
-                Log.e("Firebase", error.toString());
-            }
-            if (value != null) {
-                itemDataList.clear();
-                for (QueryDocumentSnapshot doc: value) {
-                    Item item = createItemFromDoc(doc);
-                    itemDataList.add(item);
-            return;
-        } else {
-            query = itemsRef;
+//        addSnapshotListener(query);
+//    }
+//}
+//
+//private void addSnapshotListener(Query query) {
+//    // Add a snapshot listener to the FireStore query
+//    query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+//        @Override
+//        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+//            if (error != null) {
+//                Log.e("Firebase", error.toString());
+//            }
+//            if (value != null) {
+//                itemDataList.clear();
+//                for (QueryDocumentSnapshot doc: value) {
+//                    Item item = createItemFromDoc(doc);
+//                    itemDataList.add(item);
+//            return;
+//        } else {
+//            query = itemsRef;
         }
         // Add a snapshot listener to the FireStore query
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
