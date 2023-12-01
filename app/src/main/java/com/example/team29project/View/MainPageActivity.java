@@ -255,6 +255,7 @@ public class MainPageActivity extends AppCompatActivity implements
      */
     @Override
     public void onFilterConfirmPressed(String filterBy, String data) {
+
         db.filter(filterBy, data, this);
     }
     /**

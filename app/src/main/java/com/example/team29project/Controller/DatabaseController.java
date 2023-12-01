@@ -533,13 +533,13 @@ public class DatabaseController  {
             }
         } else if (filterBy.equals("description")) {
 
-
-
-            // Fetch all documents from the FireStore collection
-            itemsRef.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    List<String> matchingIds = new ArrayList<>();
-                    String[] keywords = data.split(" ");
+            // Fetch all documents from the Firestore collection
+            itemsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        List<String> matchingIds = new ArrayList<>();
+                        String[] keywords = data.split(" ");
 
                     // Iterate over each document
 
@@ -587,10 +587,12 @@ public class DatabaseController  {
                     callback.onFilteredFailure();
                 }
             });
-        }else if (filterBy.equals("tags")) {
+        }else if (filterBy.equals("tags")&&!data.equals("")) {
             query = itemsRef.whereArrayContains("tags",data);
-        }
+        }else {
+        query = itemsRef;
 
+        }
         query.addSnapshotListener((value, error) -> {
             if (error != null) {
                 Log.e("Firebase", error.toString());

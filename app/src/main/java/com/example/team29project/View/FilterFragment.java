@@ -165,7 +165,11 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
                     data = description.getText().toString();
                     break;
                 case "tags":
-                    data = tagSpinner.getSelectedItem().toString();
+                    if (tagSpinner.getCount() > 0) {
+                        data = tagSpinner.getSelectedItem().toString();
+                    } else {
+                        data = "";
+                    }
                     break;
                 default:
                     filterBy="default";
