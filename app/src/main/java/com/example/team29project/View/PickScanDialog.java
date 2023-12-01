@@ -19,13 +19,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import com.example.team29project.Controller.OnScanListener;
 import com.example.team29project.R;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 import com.google.mlkit.vision.common.InputImage;
-import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
@@ -33,7 +31,7 @@ import java.io.FileNotFoundException;
 
 
 /**
- * A dialog to pick between the gallery or camera
+ * A dialog to pick scan option. One for Barcode and
  */
 public class PickScanDialog extends DialogFragment {
     private TextView barcodePicked, serialPicked;
@@ -53,14 +51,7 @@ public class PickScanDialog extends DialogFragment {
 
                         InputImage image = InputImage.fromBitmap(bitmap, 0);
                         TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
-                        recognizer.process(image).addOnSuccessListener(new OnSuccessListener<Text>() {
-                            @Override
-                            public void onSuccess(Text text) {
-                                callback.onScannedSerial(text.getText());
-                            }
-                        }).addOnFailureListener(e -> {
-                            Toast.makeText(getActivity(), "Failed to recognize text", Toast.LENGTH_SHORT).show();
-                        });
+                        recognizer.process(image).addOnSuccessListener(text -> callback.onScannedSerial(text.getText())).addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to recognize text", Toast.LENGTH_SHORT).show());
 
                     } catch (FileNotFoundException e) {
                         Toast.makeText(getActivity(), "failed", Toast.LENGTH_SHORT).show();
@@ -82,7 +73,8 @@ public class PickScanDialog extends DialogFragment {
         try {
             callback = (OnScanListener) getParentFragment();
         } catch (ClassCastException e) {
-            throw new ClassCastException(getParentFragment().toString() + " must implement OnScanListener");
+            assert getParentFragment() != null;
+            throw new ClassCastException(getParentFragment()+ " must implement OnScanListener");
         }
 
     }
@@ -110,22 +102,17 @@ public class PickScanDialog extends DialogFragment {
         builder.setTitle("Pick what you want to scan");
 
         // Scan Barcode
-        barcodePicked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scanner
-                        .startScan()
-                        .addOnSuccessListener(
-                                barcode -> {
-                                    String rawValue = barcode.getRawValue();
-                                    callback.onScannedBarcode(rawValue);
-                                })
-                        .addOnFailureListener(
-                                e -> {
-                                    Toast.makeText(getActivity(), "Failed to detect a barcode", Toast.LENGTH_SHORT).show();
-                                });
-                dismiss();
-            }
+        barcodePicked.setOnClickListener(v -> {
+            scanner
+                    .startScan()
+                    .addOnSuccessListener(
+                            barcode -> {
+                                String rawValue = barcode.getRawValue();
+                                callback.onScannedBarcode(rawValue);
+                            })
+                    .addOnFailureListener(
+                            e -> Toast.makeText(getActivity(), "Failed to detect a barcode", Toast.LENGTH_SHORT).show());
+            dismiss();
         });
         serialPicked.setOnClickListener(new View.OnClickListener() {
             /**

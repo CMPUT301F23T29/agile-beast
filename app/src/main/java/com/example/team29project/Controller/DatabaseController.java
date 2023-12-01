@@ -3,28 +3,19 @@ import android.net.Uri;
 import android.util.Log;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
-import com.google.android.gms.tasks.OnCompleteListener;
-import androidx.annotation.Nullable;
 import java.util.Arrays;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import androidx.annotation.NonNull;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +36,6 @@ public class DatabaseController  {
     private ArrayList<Item> itemDataList;
     // Adapters
 
-    // Tag attributes not used for this checkpoint
     private final CollectionReference tagsRef;
     private final ArrayList<Tag> tagDataList;
 
@@ -100,7 +90,7 @@ public class DatabaseController  {
 
     /**
      * Get a snapshot from QueryDocument then get Item object from it
-     * @param doc QueryDoucmentSnapShot
+     * @param doc QueryDocumentSnapShot
      * @return item Item object
      */
 
@@ -271,43 +261,32 @@ public class DatabaseController  {
         data.put("comment", item.getComment());
         data.put("photos", Arrays.asList(item.getPhotos().toArray()));
         data.put("tags", sortedTags);
-        // Add the 'data' map to the Firestore database under a document named after the item's name.
+        // Add the 'data' map to the FireStore database under a document named after the item's name.
         itemsRef.document(id)
                 .set(data)
-                .addOnSuccessListener(documentReference -> {
-                    Log.d("Firestore", "Item added successfully with ID: " + id);
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Firestore", "Error adding item", e);
-                    }
-                });
+                .addOnSuccessListener(documentReference -> Log.d("FireStore", "Item added successfully with ID: " + id))
+                .addOnFailureListener(e -> Log.e("FireStore", "Error adding item", e));
     }
 
 
     /**
-     * Adds a tag to the Firestore database
+     * Adds a tag to the FireStore database
      * @param tag the tag being added
      */
 
     public void addTag(Tag tag, TagModifyCallback callback) {
         assert (!tagDataList.contains(tag));
-        // Add or update the tag in the Firestore collection tags
+        // Add or update the tag in the FireStore collection tags
         HashMap<String, Object> data = new HashMap<>();
-        String name = tag.getName();
         data.put("items", Arrays.asList(tag.getItems().toArray()));
         tagsRef.document(tag.getName())
                 .set(data)
-                .addOnSuccessListener(documentReference -> {
-                    callback.onTagModified();
-
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "Error adding item", e));
+                .addOnSuccessListener(documentReference -> callback.onTagModified())
+                .addOnFailureListener(e -> Log.e("FireStore", "Error adding item", e));
     }
 
     /**
-     *  Update the photos in item on firestore (edit/tag)
+     *  Update the photos in item on FireStore (edit/tag)
      * @param item item where the photos belong
      * @param photos list of strings indicating photo
      */
@@ -338,8 +317,8 @@ public class DatabaseController  {
         data.put("description", item.getDescription());
         data.put("comment", item.getComment());
         docRef.update(data)
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document updated successfully!"))
-                .addOnFailureListener(e -> Log.e("Firestore", "Error updating document", e));
+                .addOnSuccessListener(aVoid -> Log.d("FireStore", "Document updated successfully!"))
+                .addOnFailureListener(e -> Log.e("FireStore", "Error updating document", e));
         updatePhoto(item,item.getPhotos());
         updateTagItem(item);
 
@@ -362,12 +341,11 @@ public class DatabaseController  {
 
 
     /**
-     * update list of itemst that this tag applied
-     * @param tag
+     * update list of items that this tag applied
+     * @param tag Tag object needed to be updated
      */
     public void updateTag(Tag tag){
         String tagName = tag.getName();
-        String ids = tag.getItems().get(0);
         Map<String, Object> fieldUpdate = new HashMap<>();
         fieldUpdate.put("items", FieldValue.delete());
         tagsRef.document(tagName).update(fieldUpdate);
@@ -413,6 +391,7 @@ public class DatabaseController  {
                     if (documentSnapshot.exists()) {
                         // Document found, access data using documentSnapshot.getData()
                         Map<String, Object> data = documentSnapshot.getData();
+                        assert data != null;
                         String name = (String)data.get("name");
                         String date =  (String)data.get("date");
                         double itemValue = 0.0;
@@ -461,20 +440,19 @@ public class DatabaseController  {
                         // Use the data as needed
                     } else {
                         // Document does not exist
-                        Log.d("Firestore", "No such document");
+                        Log.d("FireStore", "No such document");
                     }
                 })
                 .addOnFailureListener(e -> {
                     // Handle errors
-                    Log.e("Firestore", "Error getting document", e);
+                    Log.e("FireStore", "Error getting document", e);
                     callback.onFailure(e);
                 });
     }
 
     /**
-     * Removes a tag from the Firestore database
+     * Removes a tag from the FireStore database
      * @param i the position of tag to be deleted in the tagDataList
-     * @return the tag that was deleted
      */
     public void removeTag(int i, TagModifyCallback callback) {
         assert (i < this.tagDataList.size());
@@ -483,30 +461,21 @@ public class DatabaseController  {
             Map<String, Object> updates = new HashMap<>();
             updates.put("tags", FieldValue.arrayRemove(toDeleteTag.getName()));
             itemsRef.document(id).update(updates)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.e("Firestore", "Successfully deleted");
-
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("FireStore", "Failed to delete");
-                    });
+                    .addOnSuccessListener(aVoid -> Log.e("FireStore", "Successfully deleted"))
+                    .addOnFailureListener(e -> Log.e("FireStore", "Failed to delete"));
         }
 
         tagsRef.document(toDeleteTag.getName())
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Firestore", "Tag '" + toDeleteTag + "' deleted successfully");
-                        callback.onTagModified();
-                    }
+                .addOnSuccessListener(unused -> {
+                    Log.d("FireStore", "Tag '" + toDeleteTag + "' deleted successfully");
+                    callback.onTagModified();
                 });
     }
 
     /**
-     * Removes an item from the Firestore database
+     * Removes an item from the FireStore database
      * @param i the position of item to be deleted in the itemDataList
-     * @return the item that was deleted
      */
     public void removeItem(int i) {
         assert (i < this.itemDataList.size());
@@ -520,24 +489,14 @@ public class DatabaseController  {
         }
         itemsRef.document(toDeleteItem.getDocId())
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Firestore", "Item '" + toDeleteItem.getName() + "' deleted successfully");
-                    }
-                });
+                .addOnSuccessListener(unused -> Log.d("FireStore", "Item '" + toDeleteItem.getName() + "' deleted successfully"));
     }
     public void removeTagfromItem(Item item , String tag){
         Map<String, Object> updates = new HashMap<>();
         updates.put("items", FieldValue.arrayRemove(item.getDocId()));
         tagsRef.document(tag).update(updates)
-                .addOnSuccessListener(aVoid -> {
-                    Log.e("Firestore", "Successfully deleted");
-
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Failed to delete");
-                });
+                .addOnSuccessListener(aVoid -> Log.e("FireStore", "Successfully deleted"))
+                .addOnFailureListener(e -> Log.e("FireStore", "Failed to delete"));
     }
 
     /**
@@ -552,9 +511,9 @@ public class DatabaseController  {
     }
 
     /**
-     * Filter the items based on fillter- by parameters
+     * Filter the items based on filter- by parameters
      * @param filterBy  the filter that is trying to be implied
-     * @param data  String representations of data in firestore
+     * @param data  String representations of data in fireStore
      */
 
     public void filter(String filterBy, String data, FilteredItemCallback callback) {
@@ -582,54 +541,50 @@ public class DatabaseController  {
                         List<String> matchingIds = new ArrayList<>();
                         String[] keywords = data.split(" ");
 
-                        // Iterate over each document
+                    // Iterate over each document
 
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String description = document.getString("description");
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String description = document.getString("description");
 
-                            // Check if the description contains all keywords
-                            boolean matches = true;
-                            for (String keyword : keywords) {
-                                if (!description.contains(keyword)) {
-                                    matches = false;
-                                    break;
-                                }
-                            }
-                            // If the description matches, add the ID to the list
-                            if (matches) {
-                                matchingIds.add(document.getId());
+                        // Check if the description contains all keywords
+                        boolean matches = true;
+                        for (String keyword : keywords) {
+                            assert description != null;
+                            if (!description.contains(keyword)) {
+                                matches = false;
+                                break;
                             }
                         }
-                        itemDataList.clear();
-
-                        for (String id : matchingIds) {
-                            itemsRef.document(id)
-                                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                                            @Nullable FirebaseFirestoreException e) {
-                                            if (e != null) {
-                                                Log.w(TAG, "Listen failed.", e);
-                                                return;
-                                            }
-                                            if (snapshot != null && snapshot.exists()) {
-                                                // Convert the DocumentSnapshot to your model class
-                                                Item item = createItemFromDoc(snapshot);
-                                                // Add the item to your list
-                                                itemDataList.add(item);
-                                                callback.onFiltered();
-                                                // Notify the adapter that the data has changed
-                                            } else {
-                                                Log.d(TAG, "Current data: null");
-                                                callback.onFilteredFailure();
-                                            }
-                                        }
-                                    });
+                        // If the description matches, add the ID to the list
+                        if (matches) {
+                            matchingIds.add(document.getId());
                         }
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
-                        callback.onFilteredFailure();
                     }
+                    itemDataList.clear();
+
+                    for (String id : matchingIds) {
+                        itemsRef.document(id)
+                                .addSnapshotListener((snapshot, e) -> {
+                                    if (e != null) {
+                                        Log.w(TAG, "Listen failed.", e);
+                                        return;
+                                    }
+                                    if (snapshot != null && snapshot.exists()) {
+                                        // Convert the DocumentSnapshot to your model class
+                                        Item item = createItemFromDoc(snapshot);
+                                        // Add the item to your list
+                                        itemDataList.add(item);
+                                        callback.onFiltered();
+                                        // Notify the adapter that the data has changed
+                                    } else {
+                                        Log.d(TAG, "Current data: null");
+                                        callback.onFilteredFailure();
+                                    }
+                                });
+                    }
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    callback.onFilteredFailure();
                 }
             });
         }else if (filterBy.equals("tags")&&!data.equals("")) {
@@ -638,21 +593,18 @@ public class DatabaseController  {
         query = itemsRef;
 
         }
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firebase", error.toString());
-                    callback.onFilteredFailure();
+        query.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.e("Firebase", error.toString());
+                callback.onFilteredFailure();
+            }
+            if (value != null) {
+                itemDataList.clear();
+                for (QueryDocumentSnapshot doc: value) {
+                    Item item = createItemFromDoc(doc);
+                    itemDataList.add(item);
                 }
-                if (value != null) {
-                    itemDataList.clear();
-                    for (QueryDocumentSnapshot doc: value) {
-                        Item item = createItemFromDoc(doc);
-                        itemDataList.add(item);
-                    }
-                    callback.onFiltered();
-                }
+                callback.onFiltered();
             }
         });
     }
@@ -674,22 +626,19 @@ public class DatabaseController  {
 
 
         // Add a snapshot listener to the FireStore query
-       query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firebase", error.toString());
-                    callback.onSortFailed();
-                }
-                if (value != null) {
-                    itemDataList.clear();
-                    for (QueryDocumentSnapshot doc: value) {
-                        Item item = createItemFromDoc(doc);
-                        itemDataList.add(item);
-                    }
-                    callback.onSorted();
-                }
-            }
-        });
+       query.addSnapshotListener((value, error) -> {
+           if (error != null) {
+               Log.e("Firebase", error.toString());
+               callback.onSortFailed();
+           }
+           if (value != null) {
+               itemDataList.clear();
+               for (QueryDocumentSnapshot doc: value) {
+                   Item item = createItemFromDoc(doc);
+                   itemDataList.add(item);
+               }
+               callback.onSorted();
+           }
+       });
     }
 }

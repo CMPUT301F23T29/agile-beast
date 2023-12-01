@@ -10,26 +10,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
-
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Controller.TagAdapter;
 import com.example.team29project.Controller.TagModifyCallback;
-import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 
 /**
@@ -40,8 +31,7 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
     private OnFragmentInteractionListener listener;
     private String selectedItem ="default";
     private TagAdapter tagAdapter;
-    private ArrayList<Tag> tagList;
-    private DatabaseController db;
+    private final DatabaseController db;
 
     public FilterFragment(DatabaseController db) {
         this.db = db;
@@ -83,12 +73,6 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
 
         tagAdapter = new TagAdapter(getContext(), db.getTags());
         db.loadInitialTags(this);
-
-        Calendar calendar = Calendar.getInstance();
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH);
-        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-
         Button confirm = view.findViewById(R.id.confirm_filter_button);
         Button cancel = view.findViewById(R.id.cancel_filter_button);
         EditText make = view.findViewById(R.id.filter_by_make_editview);
@@ -141,12 +125,7 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
             }
         });
 
-        DatePickerDialog.OnDateSetListener startDatePicker = (view1, year, month, dayOfMonth) -> {
-            int yearDate = year;
-            int monthDate = month;
-            int dayDate = dayOfMonth;
-            startDate.setText(String.format("%d-%02d-%02d", yearDate,monthDate,dayDate));
-        };
+        DatePickerDialog.OnDateSetListener startDatePicker = (view1, year, month, dayOfMonth) -> startDate.setText(String.format("%d-%02d-%02d", year, month, dayOfMonth));
 
         startDate.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -157,12 +136,7 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
             return true;
         });
 
-        DatePickerDialog.OnDateSetListener EndDatePicker = (view1, year, month, dayOfMonth) -> {
-            int yearDate = year;
-            int monthDate = month;
-            int dayDate = dayOfMonth;
-            endDate.setText(String.format("%d-%02d-%02d", yearDate,monthDate,dayDate));
-        };
+        DatePickerDialog.OnDateSetListener EndDatePicker = (view1, year, month, dayOfMonth) -> endDate.setText(String.format("%d-%02d-%02d", year, month, dayOfMonth));
 
         endDate.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -178,7 +152,7 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
         // Set OnClickListener for confirm button
         confirm.setOnClickListener(v -> {
             String filterBy = selectedItem; // Get the selected filter
-            String data="";
+            String data;
             //TODO: data validation
             switch (filterBy) {
                 case "make":
@@ -223,7 +197,6 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
     @Override
     public void onTagsLoaded() {
         tagAdapter.notifyDataSetChanged();
-        this.tagList= db.getTags();
     }
 
     /**

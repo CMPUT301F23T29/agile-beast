@@ -7,6 +7,9 @@ import android.os.Bundle;
 
 import com.example.team29project.R;
 
+/**
+ * MainActivity where it automatically starts loginActivity
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -15,6 +18,5 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent login = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(login);
-
     }
 }
