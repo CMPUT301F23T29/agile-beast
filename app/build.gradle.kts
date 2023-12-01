@@ -53,7 +53,6 @@ dependencies {
     implementation("androidx.camera:camera-core:1.2.1")
     implementation("androidx.camera:camera-lifecycle:1.2.1")
     implementation("androidx.camera:camera-view:1.2.1")
-    implementation("com.google.mlkit:barcode-scanning:17.2.0")
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
     implementation ("com.google.mlkit:text-recognition:16.0.0")
     implementation ("org.mindrot:jbcrypt:0.4")
