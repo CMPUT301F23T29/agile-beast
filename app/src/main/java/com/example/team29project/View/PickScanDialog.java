@@ -1,6 +1,4 @@
 package com.example.team29project.View;
-import static android.app.Activity.RESULT_OK;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -23,8 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import com.example.team29project.Controller.OnScanListener;
 import com.example.team29project.R;
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
-import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
@@ -42,6 +37,9 @@ public class PickScanDialog extends DialogFragment {
     private TextView barcodePicked, serialPicked;
 
     private OnScanListener callback;
+
+
+    // Result Launcher of  barcodeScanner
 
     private final ActivityResultLauncher<Intent> barcodeScannerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -135,8 +133,8 @@ public class PickScanDialog extends DialogFragment {
 
         // Scan Barcode
         barcodePicked.setOnClickListener(v -> {
+            //Initiate Scanner object from zxing library
             IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
-           // intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.CODE_128);
             intentIntegrator.setPrompt("Scan a Barcode");
             intentIntegrator.setOrientationLocked(false);
             // Start the barcode scanning process
@@ -145,6 +143,7 @@ public class PickScanDialog extends DialogFragment {
 
         });
 
+        //Scan for serialNumber
         serialPicked.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click event
