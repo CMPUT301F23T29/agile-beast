@@ -43,7 +43,7 @@
             android:name=".View.MainPageActivity"
             android:exported="false" />
 
-        <meta-data
+       <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
         <meta-data
