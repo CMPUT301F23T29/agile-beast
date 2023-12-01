@@ -1,9 +1,15 @@
 package com.example.team29project.Controller;
 import android.net.Uri;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
 import java.util.Arrays;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -11,6 +17,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
@@ -517,22 +524,21 @@ public class DatabaseController  {
      */
 
     public void filter(String filterBy, String data, FilteredItemCallback callback) {
-         // getting data from db of items
+        // getting data from db of items
         Query query = itemsRef;
 
-        if(filterBy.equals("make")) {
+        if (filterBy.equals("make")) {
             query = itemsRef.whereEqualTo("make", data);
         } else if (filterBy.equals("date")) {
             String[] dates = data.split(",");
             if (dates.length == 2) {
                 String startDate = dates[0].trim();
                 String endDate = dates[1].trim();
-                query =itemsRef
-                    .whereGreaterThanOrEqualTo("date", startDate)
-                    .whereLessThanOrEqualTo("date", endDate);
+                query = itemsRef
+                        .whereGreaterThanOrEqualTo("date", startDate)
+                        .whereLessThanOrEqualTo("date", endDate);
             }
         } else if (filterBy.equals("description")) {
-
             // Fetch all documents from the Firestore collection
             itemsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -541,58 +547,56 @@ public class DatabaseController  {
                         List<String> matchingIds = new ArrayList<>();
                         String[] keywords = data.split(" ");
 
-                    // Iterate over each document
+                        // Iterate over each document
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String description = document.getString("description");
 
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        String description = document.getString("description");
-
-                        // Check if the description contains all keywords
-                        boolean matches = true;
-                        for (String keyword : keywords) {
-                            assert description != null;
-                            if (!description.contains(keyword)) {
-                                matches = false;
-                                break;
+                            // Check if the description contains all keywords
+                            boolean matches = true;
+                            for (String keyword : keywords) {
+                                assert description != null;
+                                if (!description.contains(keyword)) {
+                                    matches = false;
+                                    break;
+                                }
+                            }
+                            // If the description matches, add the ID to the list
+                            if (matches) {
+                                matchingIds.add(document.getId());
                             }
                         }
-                        // If the description matches, add the ID to the list
-                        if (matches) {
-                            matchingIds.add(document.getId());
-                        }
-                    }
-                    itemDataList.clear();
+                        itemDataList.clear();
 
-                    for (String id : matchingIds) {
-                        itemsRef.document(id)
-                                .addSnapshotListener((snapshot, e) -> {
-                                    if (e != null) {
-                                        Log.w(TAG, "Listen failed.", e);
-                                        return;
-                                    }
-                                    if (snapshot != null && snapshot.exists()) {
-                                        // Convert the DocumentSnapshot to your model class
-                                        Item item = createItemFromDoc(snapshot);
-                                        // Add the item to your list
-                                        itemDataList.add(item);
-                                        callback.onFiltered();
-                                        // Notify the adapter that the data has changed
-                                    } else {
-                                        Log.d(TAG, "Current data: null");
-                                        callback.onFilteredFailure();
-                                    }
-                                });
+                        for (String id : matchingIds) {
+                            itemsRef.document(id)
+                                    .addSnapshotListener((snapshot, e) -> {
+                                        if (e != null) {
+                                            Log.w(TAG, "Listen failed.", e);
+                                            return;
+                                        }
+                                        if (snapshot != null && snapshot.exists()) {
+                                            // Convert the DocumentSnapshot to your model class
+                                            Item item = createItemFromDoc(snapshot);
+                                            // Add the item to your list
+                                            itemDataList.add(item);
+                                            callback.onFiltered();
+                                            // Notify the adapter that the data has changed
+                                        } else {
+                                            Log.d(TAG, "Current data: null");
+                                            callback.onFilteredFailure();
+                                        }
+                                    });
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                        callback.onFilteredFailure();
                     }
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                    callback.onFilteredFailure();
                 }
             });
-        }else if (filterBy.equals("tags")&&!data.equals("")) {
-            query = itemsRef.whereArrayContains("tags",data);
-        }else {
-        query = itemsRef;
-
+        } else if (filterBy.equals("tags") && !data.equals("")) {
+            query = itemsRef.whereArrayContains("tags", data);
         }
+
         query.addSnapshotListener((value, error) -> {
             if (error != null) {
                 Log.e("Firebase", error.toString());
@@ -600,7 +604,7 @@ public class DatabaseController  {
             }
             if (value != null) {
                 itemDataList.clear();
-                for (QueryDocumentSnapshot doc: value) {
+                for (QueryDocumentSnapshot doc : value) {
                     Item item = createItemFromDoc(doc);
                     itemDataList.add(item);
                 }
@@ -608,6 +612,7 @@ public class DatabaseController  {
             }
         });
     }
+
 
     /**
      * Sort the list by sortBy
@@ -623,7 +628,6 @@ public class DatabaseController  {
         if(sortBy.equals("default")){
             query = itemsRef;
         }
-
 
         // Add a snapshot listener to the FireStore query
        query.addSnapshotListener((value, error) -> {
