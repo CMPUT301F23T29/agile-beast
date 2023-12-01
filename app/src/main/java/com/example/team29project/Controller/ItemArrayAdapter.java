@@ -1,10 +1,12 @@
 package com.example.team29project.Controller;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,9 @@ public class ItemArrayAdapter extends ArrayAdapter<Item> {
     private final Context context;
     private ArrayList<Item> items;
 
+    private boolean isPicking =false;
+    private ArrayList<Integer> selectedItems;
+
     /**
      * Constructs a new ItemArrayAdapter with the given context and list of items.
      *
@@ -32,8 +37,9 @@ public class ItemArrayAdapter extends ArrayAdapter<Item> {
         super(context, 0, items);
         this.items = items;
         this.context = context;
+        this.isPicking = false;
+        this.selectedItems = new ArrayList<>();
     }
-    
     /**
      * Returns the view for the item at the given position.
      *
@@ -50,16 +56,27 @@ public class ItemArrayAdapter extends ArrayAdapter<Item> {
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.item_layout_default,null);
         }
-
         Item item = items.get(position);
+        LinearLayout layout = view.findViewById(R.id.item_background);
         TextView name = view.findViewById(R.id.item_name);
         TextView date = view.findViewById(R.id.item_date);
         TextView value = view.findViewById(R.id.item_value);
-
         name.setText(item.getName());
         date.setText(item.getDate());
         value.setText( item.getValue().toString());
+        if (selectedItems.contains(Integer.valueOf(position))){
+            // If the item is selected, change the background color to light grey
+            layout.setBackgroundColor(Color.parseColor("#D3D3D3"));
+        } else {
+            // If not selected, use the default background
+            layout.setBackgroundResource(R.drawable.item_layout_background);
+        }
 
         return view;
+    }
+
+    public void setSelectedItems(ArrayList<Integer> selectedItems) {
+        this.selectedItems = selectedItems;
+        notifyDataSetChanged();
     }
 }

@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:orientation="horizontal"
+    android:id="@+id/tag_layout"
+    android:background="@drawable/tag_background"
     >
 
     <TextView

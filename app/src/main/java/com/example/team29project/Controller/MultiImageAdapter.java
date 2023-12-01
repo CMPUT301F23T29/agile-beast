@@ -2,21 +2,14 @@ package com.example.team29project.Controller;
 
 import android.content.Context;
 import android.net.Uri;
-import android.net.UrlQuerySanitizer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.team29project.R;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-
 import java.util.ArrayList;
 
 /**
@@ -26,7 +19,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     private ArrayList<String> mData;
     private Context mContext ;
 
-    private DatabaseController db;
+    private final DatabaseController db;
     private com.example.team29project.Controller.SelectListener itemClickListener;
 
 
@@ -52,6 +45,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         ViewHolder(View itemView) {
             super(itemView) ;
             image = itemView.findViewById(R.id.image);
+
         }
 
     }
@@ -69,9 +63,8 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         Context context = parent.getContext() ;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) ;
         View view = inflater.inflate(R.layout.multi_image, parent, false) ;
-        MultiImageAdapter.ViewHolder viewHolder = new MultiImageAdapter.ViewHolder(view) ;
 
-        return viewHolder ;
+        return new ViewHolder(view);
     }
 
 
@@ -83,14 +76,8 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
      */
     @Override
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
-           // String imageUrl = mData.get(position);
            Uri image_uri = Uri.parse(mData.get(position));
-            holder.image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemClickListener.onItemClick(holder.getAdapterPosition());
-                }
-            });
+            holder.image.setOnClickListener(v -> itemClickListener.onItemClick(holder.getAdapterPosition()));
         if(position ==0){
             Glide.with(mContext)
                     .load(image_uri)
@@ -99,15 +86,9 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         else {
 
             StorageReference dateRef = db.getImageRef().child("images/" + mData.get(position));
-            dateRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri downloadUrl) {
-                    Glide.with(mContext)
-                            .load(downloadUrl)
-                            .into(holder.image);
-
-                }
-            });
+            dateRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> Glide.with(mContext)
+                    .load(downloadUrl)
+                    .into(holder.image));
         }
 
     }

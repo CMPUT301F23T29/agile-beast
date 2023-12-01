@@ -60,13 +60,10 @@ public class PickCameraDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setView(view);
         builder.setTitle("Pick Option");
-        cameraPicked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onCameraPressed();
-                dismiss();
+        cameraPicked.setOnClickListener(v -> {
+            listener.onCameraPressed();
+            dismiss();
 
-            }
         });
         galleryPicked.setOnClickListener(new View.OnClickListener() {
             /**

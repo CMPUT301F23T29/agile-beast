@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".View.MainPageActivity">
+    tools:context=".View.MainPageActivity"
+    android:background="@color/white">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,9 +39,9 @@
             android:id="@+id/filter_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_weight="1"
             android:background="@drawable/button_style"
             android:backgroundTint="@color/button_colour"
             android:fontFamily="monospace"
@@ -59,9 +59,9 @@
             android:id="@+id/sort_by_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
-            android:layout_weight="1"
             android:background="@drawable/button_style"
             android:backgroundTint="@color/button_colour"
             android:fontFamily="monospace"
@@ -77,9 +77,9 @@
             android:id="@+id/delete_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
-            android:layout_weight="1"
             android:background="@drawable/button_style"
             android:backgroundTint="@color/button_colour"
             android:fontFamily="monospace"
@@ -194,7 +194,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ellipsis" />
 
-        <!-- todo change the image button icon to the three ellipsis -->
 
         <TextView
             android:id="@+id/value_label"
@@ -214,6 +213,7 @@
         android:id="@+id/items"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/footer_layout"
         app:layout_constraintEnd_toEndOf="parent"

@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.team29project.R;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 /**
  * Helper class to allow a user to select a date using a popup dialog
@@ -29,8 +30,6 @@ public class DatePicker extends DialogFragment {
     /**
      * Creates a date picker dialog
      * @param savedInstanceState The last saved instance state of the Fragment, or null if this is a freshly created Fragment.
-     *
-     *
      * @return the DatePicker dialog
      */
     @Override
@@ -51,15 +50,14 @@ public class DatePicker extends DialogFragment {
         monthPicker.setMaxValue(12);
         yearPicker.setMinValue(1900);
         monthPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-            int selectedMonth = newVal;
             int selectedYear = yearPicker.getValue();
-            int maxDays = getMaxDaysInMonth(selectedMonth, selectedYear);
+            int maxDays = getMaxDaysInMonth(newVal, selectedYear);
             dayPicker.setMaxValue(maxDays);
         });
         // Bundle of date data that will be sent to CustomDialogue class when it pressed ok
         okButton.setOnClickListener(view -> {
             listener.onDateSet(null, yearPicker.getValue(), monthPicker.getValue(), dayPicker.getValue());
-            DatePicker.this.getDialog().cancel();
+            Objects.requireNonNull(DatePicker.this.getDialog()).cancel();
         });
         // Set the default value to current year, month, and day
        // Set the default value to current year, month, and day
