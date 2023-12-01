@@ -103,17 +103,23 @@ public class PickScanDialog extends DialogFragment {
 
         // Scan Barcode
         barcodePicked.setOnClickListener(v -> {
-            scanner
-                    .startScan()
-                    .addOnSuccessListener(
-                            barcode -> {
-                                String rawValue = barcode.getRawValue();
-                                callback.onScannedBarcode(rawValue);
-                            })
-                    .addOnFailureListener(
-                            e -> Toast.makeText(getActivity(), "Failed to detect a barcode", Toast.LENGTH_SHORT).show());
-            dismiss();
+            if(getContext()!= null) {
+                scanner
+                        .startScan()
+                        .addOnSuccessListener(
+                                barcode -> {
+                                    String rawValue = barcode.getRawValue();
+                                    callback.onScannedBarcode(rawValue);
+                                })
+                        .addOnFailureListener(
+                                e -> Toast.makeText(getActivity(), "Failed to detect a barcode", Toast.LENGTH_SHORT).show());
+                dismiss();
+            }
+            else{
+                Toast.makeText(getActivity(), "Failed to open barcode reader try again", Toast.LENGTH_SHORT).show();
+            }
         });
+
         serialPicked.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click event
