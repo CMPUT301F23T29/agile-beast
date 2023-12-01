@@ -587,13 +587,15 @@ public class DatabaseController  {
                                         }
                                     });
                         }
+
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
                         callback.onFilteredFailure();
                     }
                 }
             });
-        } else if (filterBy.equals("tags") && !data.equals("")) {
+            return;
+        } else if (filterBy.equals("tags")) {
             query = itemsRef.whereArrayContains("tags", data);
         }
 

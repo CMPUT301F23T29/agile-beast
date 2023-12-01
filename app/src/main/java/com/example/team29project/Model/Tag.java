@@ -39,7 +39,8 @@ public class Tag {
         this.items.add(itemId);
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return name;
+    }
 }
