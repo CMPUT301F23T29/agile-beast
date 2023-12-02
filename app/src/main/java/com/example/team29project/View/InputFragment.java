@@ -1,12 +1,16 @@
 package com.example.team29project.View;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -23,6 +27,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -75,6 +80,14 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
     }
     private OnFragmentsInteractionListener listener;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_input, container);
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#D8E8EC")));
+        return view;
+    }
 
     /**
      * Callback function when tag is applied into item
@@ -285,12 +298,15 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
      */
     public void drawTags(ArrayList<String> tagString){
         tagChips.removeAllViews();
+        LayoutInflater inflater = (LayoutInflater) requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for(String tag: tagString ){
-            Chip chip = new Chip(getContext());
+            Chip chip = (Chip) inflater.inflate(R.layout.tag_style, null);
             chip.setText(tag);
             chip.setId(tagString.indexOf(tag));
             chip.setCheckable(false);
             chip.setClickable(false);
+            chip.setChipBackgroundColorResource(R.color.background);
+            chip.setTextColor(getResources().getColor(R.color.button_text, null));
             tagChips.addView(chip);
         }
 
