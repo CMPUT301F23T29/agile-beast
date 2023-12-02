@@ -178,6 +178,8 @@ public class ItemViewActivity extends AppCompatActivity implements
             chip.setId(tags.indexOf(tag));
             chip.setCheckable(false);
             chip.setClickable(false);
+            chip.setChipBackgroundColorResource(R.color.background);
+            chip.setTextColor(getResources().getColor(R.color.button_text, null));
             tagGroup.addView(chip);
         }
         // update tags
