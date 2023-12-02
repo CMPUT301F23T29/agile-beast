@@ -100,7 +100,6 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
                      Tag tag = new Tag(strTag);
                      db.addTag(tag,TagDialogue.this);
                      inputText.setText("");
-
                  }
                  inputText.setVisibility(View.INVISIBLE);
             }
