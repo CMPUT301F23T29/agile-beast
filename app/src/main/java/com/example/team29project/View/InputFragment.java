@@ -1,4 +1,5 @@
 package com.example.team29project.View;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -26,6 +27,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -296,8 +298,9 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
      */
     public void drawTags(ArrayList<String> tagString){
         tagChips.removeAllViews();
+        LayoutInflater inflater = (LayoutInflater) requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for(String tag: tagString ){
-            Chip chip = new Chip(getContext());
+            Chip chip = (Chip) inflater.inflate(R.layout.tag_style, null);
             chip.setText(tag);
             chip.setId(tagString.indexOf(tag));
             chip.setCheckable(false);

@@ -12,11 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Xml;
+import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -31,6 +35,8 @@ import com.example.team29project.Controller.MultiImageAdapter;
 import com.example.team29project.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -170,19 +176,19 @@ public class ItemViewActivity extends AppCompatActivity implements
         itemDescription.setText(item.getDescription());
         itemComment.setText(item.getComment());
         adapter.notifyDataSetChanged();
+
+        // update tags
         tags = item.getTags();
         tagGroup.removeAllViews();
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for(String tag: tags) {
-            Chip chip = new Chip(this);
+            Chip chip = (Chip) inflater.inflate(R.layout.tag_style, null);
             chip.setText(tag);
             chip.setId(tags.indexOf(tag));
             chip.setCheckable(false);
             chip.setClickable(false);
-            chip.setChipBackgroundColorResource(R.color.background);
-            chip.setTextColor(getResources().getColor(R.color.button_text, null));
             tagGroup.addView(chip);
         }
-        // update tags
 
 
     }
