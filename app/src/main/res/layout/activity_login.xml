@@ -41,6 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:paddingTop="30dp"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
+            android:inputType="text"
             android:hint="Username" />
 
         <EditText
@@ -48,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
             android:inputType="textPassword"
             android:paddingTop="10dp"
             android:hint="Password" />
