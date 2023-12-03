@@ -155,6 +155,10 @@ public class MainPageActivity extends AppCompatActivity implements
 
     }
 
+    public DatabaseController getDb() {
+        return db;
+    }
+
     /**
      * Update the summary of value of item
      */
@@ -330,6 +334,8 @@ public class MainPageActivity extends AppCompatActivity implements
         Toast.makeText(this, "Failed to filter", Toast.LENGTH_SHORT).show();
     }
 
-
+    public ArrayList<Integer> getSelectedItems() {
+        return selectedItems;
+    }
 }
 
