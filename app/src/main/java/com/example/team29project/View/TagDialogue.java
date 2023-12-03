@@ -52,6 +52,12 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
         this.db = db;
 
     }
+
+    /**
+     * Construct a new TagDialogue when it is called from InputFramgent
+     * @param db
+     * @param callback
+     */
     public TagDialogue(DatabaseController db, TagAddedItemCallback callback){
         this.isPicking=true;
         this.db = db;
@@ -60,8 +66,7 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
 
     }
     /**
-     * Attaches the dialog fragment to its context, ensuring that it implements OnFragmentInteractionListener.
-     *
+     * Attaches the dialog fragment to its context,
      * @param context The context to attach to.
      */
     @Override
@@ -146,11 +151,18 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
         return builder.create();
     }
 
+    /**
+     * when tags are modifies, update the tagAdapter
+     */
     @Override
     public void onTagModified() {
         tagAdapter.notifyDataSetChanged();
     }
 
+
+    /**
+     * When tags are loaded, set the tagList and update the tagAdapter
+     */
     @Override
     public void onTagsLoaded() {
         tagAdapter.notifyDataSetChanged();

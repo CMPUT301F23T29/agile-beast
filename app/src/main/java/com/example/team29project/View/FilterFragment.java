@@ -63,7 +63,6 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
      * Initializes the filter activity
      * @param savedInstanceState The last saved instance state of the Fragment,
      * or null if this is a freshly created Fragment.
-     *
      * @return the dialog
      */
     @NonNull
@@ -153,7 +152,6 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
         confirm.setOnClickListener(v -> {
             String filterBy = selectedItem; // Get the selected filter
             String data;
-            //TODO: data validation
             switch (filterBy) {
                 case "make":
                     data = make.getText().toString();
@@ -189,11 +187,17 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
                 .create();
     }
 
+    /**
+     * When tag is modified on database
+     */
     @Override
     public void onTagModified() {
         tagAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * WHen tag is loaded successfully
+     */
     @Override
     public void onTagsLoaded() {
         tagAdapter.notifyDataSetChanged();

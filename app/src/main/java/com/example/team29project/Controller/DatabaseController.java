@@ -27,11 +27,13 @@ import java.util.List;
 import java.util.Map;
 
 
-public class DatabaseController  {
+
 
 /**
- * Represents the database
+ * This class controllers actions regarding to database.
  */
+
+public class DatabaseController  {
 
     private final FirebaseFirestore db;
     private final FirebaseStorage sb;
@@ -49,8 +51,8 @@ public class DatabaseController  {
     private static final String TAG = "DatabaseController";
 
     /**
-     * Stores the items and tags in the database
-     * images are saved on firebase Storage
+     * Based on the given unique ID, It initializes the database controller
+     * @param userId The unique user ID indicates the user
      */
     public DatabaseController(String userId){
         this.db = FirebaseFirestore.getInstance();
@@ -154,7 +156,7 @@ public class DatabaseController  {
     // setting TagAdapter
 
     /**
-     *
+     * This uploads the images into firebase storage
      * @param filePath Uri of the images
      * @param listener listener that initiated when it successfully upload the image
      * @param uniqueId  unique id of photo
@@ -176,8 +178,8 @@ public class DatabaseController  {
     }
 
     /**
-     *  delete the photo with uniqueID
-     * @param uniqueId id of the photos in firebase storage
+     *  It deletes the image stored in Firebase Storage
+     * @param uniqueId id of the photos in Firebase Storage
      */
 
     public void deletePhoto(String uniqueId) {
@@ -196,9 +198,9 @@ public class DatabaseController  {
     }
 
 
-
     /**
-     * Loads the initial tags from firebase and adds them to the tag list. Notifies the display to show the initial tags.
+     * Load tags from FireStore database into the application
+     * @param callback TagModifyCallback instances that is called when it finishes load the tag
      */
     public void loadInitialTags(TagModifyCallback callback) {
         // This initialize the tags from data base not used for this checkpoints
@@ -224,7 +226,8 @@ public class DatabaseController  {
     }
 
     /**
-     * Loads the initial items from firebase and adds them to the item list. Notifies the display to show the initial items.
+     * Loads Items from FireStore  into application
+     * @param callback LoadItemsCallback instances deal when Items are loaded
      */
     public void loadInitialItems(LoadItemsCallback callback) {
         itemsRef.addSnapshotListener((value, error) -> {
@@ -249,8 +252,9 @@ public class DatabaseController  {
     }
 
     /**
-     * Adds an item to the FireStore database
-     * @param item the item being added
+     * Adds an new item to the FireStore database
+     * @param item Item object that is being added
+     * @param id String represents the unique document ID of the item in database
      */
     public void addItem(Item item,String id) {
         // Ensure data list does not already contain item with same name
@@ -277,8 +281,9 @@ public class DatabaseController  {
 
 
     /**
-     * Adds a tag to the FireStore database
-     * @param tag the tag being added
+     * Adds a Tag object to the FireStore database
+     * @param tag the Tag object that is being added
+     * @param callback the TagModifyCallback instances when it finishes add tag
      */
 
     public void addTag(Tag tag, TagModifyCallback callback) {
@@ -308,7 +313,7 @@ public class DatabaseController  {
 
 
     /**
-     *
+     * This function updates the item's info in database
      * @param documentId unique string ID that represents the item
      * @param item item that has updated info
      */
@@ -330,6 +335,11 @@ public class DatabaseController  {
         updateTagItem(item);
 
     }
+
+    /**
+     * This method updates the info on arrayList of tags(string) in to item's field on fireStore
+     * @param item Item object that contains the tagList to be updated
+     */
     public void updateTagItem(Item item) {
         Map<String, Object> fieldUpdate = new HashMap<>();
         fieldUpdate.put("tags", FieldValue.delete());
@@ -363,7 +373,7 @@ public class DatabaseController  {
 
     /**
      * Returns the itemDataList
-     * @return the itemDataList containing the items
+     * @return the ArrayList containing the items
      */
     public ArrayList<Item> getItems() {
         return itemDataList;
@@ -371,7 +381,7 @@ public class DatabaseController  {
 
     /**
      * Returns the tagDataList
-     * @return the tagDataList containing the tags
+     * @return the ArrayList containing the tags
      */
     public ArrayList<Tag> getTags() {
         return this.tagDataList;
@@ -388,8 +398,8 @@ public class DatabaseController  {
 
     /**
      *
-     * @param documentId unique Id of each items
-     * @param callback  indicates where the callback
+     * @param documentId String of unique Id of each items
+     * @param callback  ItemCallback instances that deals after getItem successes
      */
     public void getItem(String documentId, ItemCallback callback){
         DocumentReference docRef = itemsRef.document(documentId);
@@ -460,6 +470,7 @@ public class DatabaseController  {
     /**
      * Removes a tag from the FireStore database
      * @param i the position of tag to be deleted in the tagDataList
+     * @param callback TagModifyCallback instances deals after finishes removeTag
      */
     public void removeTag(int i, TagModifyCallback callback) {
         assert (i < this.tagDataList.size());
@@ -498,6 +509,12 @@ public class DatabaseController  {
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("FireStore", "Item '" + toDeleteItem.getName() + "' deleted successfully"));
     }
+
+    /**
+     * This remove a specific spring representation of tag in Item object
+     * @param item Item object that needs to have updated tags
+     * @param tag spring representation of tag(name) need to be deleted from item
+     */
     public void removeTagfromItem(Item item , String tag){
         Map<String, Object> updates = new HashMap<>();
         updates.put("items", FieldValue.arrayRemove(item.getDocId()));
@@ -507,9 +524,8 @@ public class DatabaseController  {
     }
 
     /**
-     * Removed all items from the list
-     * @param items the items in the ArrayList
-     *
+     * Removed all items from the  list
+     * @param items ArrayList that contains the positions that need to be deleted
      */
     public void removeAllItems(ArrayList<Integer> items) {
         for(int pos: items){
@@ -521,6 +537,7 @@ public class DatabaseController  {
      * Filter the items based on filter- by parameters
      * @param filterBy  the filter that is trying to be implied
      * @param data  String representations of data in fireStore
+     * @param callback FilteredItemCallback instance deals after it is done filtering
      */
 
     public void filter(String filterBy, String data, FilteredItemCallback callback) {
@@ -620,7 +637,7 @@ public class DatabaseController  {
      * Sort the list by sortBy
      * @param sortBy  string that is the standard of sorting
      * @param isAsc boolean value whether it is ascending or descending
-     * @param callback callback for dealing after sorting
+     * @param callback SortItemCallback instances for dealing after sorting
      */public void sort(String sortBy, boolean isAsc, SortItemCallback callback) {
         // sorting the data by the sortBy field in ascending or descending order
         Query.Direction direction = isAsc ? Query.Direction.ASCENDING : Query.Direction.DESCENDING;

@@ -13,7 +13,6 @@ import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
 
 import java.util.ArrayList;
-// Not used for halfway Checkpoint
 /**
  * Represents an adapter for displaying tags in a list view.
  */

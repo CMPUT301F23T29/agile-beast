@@ -1,7 +1,7 @@
 package com.example.team29project.Controller;
 
 /**
- * Callback interface of filterItem
+ * Callback interface after filtering
  */
 
 public interface FilteredItemCallback {
