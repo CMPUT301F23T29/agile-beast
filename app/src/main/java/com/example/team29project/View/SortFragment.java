@@ -34,6 +34,11 @@ public class SortFragment extends DialogFragment {
         ((MainPageActivity) getActivity()).setSortFragmentShown(false);
     }
 
+    /**
+     * Attach the context
+     * @param context context of tis dialogue
+     */
+
     @Override
     public void onAttach(@NonNull Context context) {
 

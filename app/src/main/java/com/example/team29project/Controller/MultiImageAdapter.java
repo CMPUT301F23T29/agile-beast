@@ -28,6 +28,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
      * @param list the list of images
      * @param context the context to be used
      * @param itemClickListener the callback for when an image is clicked
+     * @param db DatabaseController object to retrieve images from database
      */
     public MultiImageAdapter(ArrayList<String> list, Context context, SelectListener itemClickListener,DatabaseController db) {
         mData = list ;

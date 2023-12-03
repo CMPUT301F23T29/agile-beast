@@ -18,7 +18,9 @@ import androidx.fragment.app.DialogFragment;
 import com.example.team29project.Model.Item;
 import com.example.team29project.R;
 
-
+/**
+ * Dialog fragment display options to search infromation from
+ */
 public class InformationDialog extends DialogFragment {
     Item item;
 
@@ -60,7 +62,7 @@ public class InformationDialog extends DialogFragment {
         String name = item.getName();
         String make = item.getMake();
         String model = item.getModel();
-
+        // Create a link format
         String link = make+" " + name+ " " + model;
         Intent intent = new Intent(Intent.ACTION_VIEW);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
