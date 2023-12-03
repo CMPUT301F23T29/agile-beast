@@ -66,9 +66,38 @@ public class ItemUnitTest {
         assertEquals(item.getPhotos(),photos);
     }
 
+    @Test
+    public void testItemDocId() throws Exception{
+        Item item = new Item("name","date",1.1,"make","model","description","comment");
+        item.setDocId("ididididid");
+        String id = "ididididid";
+        assertEquals(item.getDocId(), id);
+    }
 
+    @Test
+    public void testItemTags() throws Exception{
+        Item item = new Item("name","date",1.1,"make","model","description","comment");
+        ArrayList<String> tags = new ArrayList<>();
+        tags.add("tag1");
+        tags.add("tag2");
+        tags.add("tag3");
 
+        ArrayList<String> tags2 = new ArrayList<>();
+        tags2.add("tag1");
+        tags2.add("tag2");
+        tags2.add("tag3");
 
+        item.setTags(tags);
+        assertEquals(item.getTags(), tags2);
+    }
 
+    @Test
+    public void testItemCompare() throws Exception{
+        Item item = new Item("name","2021-01-01",1.1,"make","model","description","comment");
+        Item item2 = new Item("name","2022-02-02",1.2,"make2","model2","description2","comment2");
+        assertEquals(item.compareTo(item2), 0);
+        item2.setName("name2");
+        assertEquals(item.compareTo(item2), 1);
+    }
 
 }
