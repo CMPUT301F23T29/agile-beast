@@ -11,20 +11,28 @@
     android:orientation="vertical"
     tools:context=".View.InputFragment"
     android:id="@+id/fragment_input"
-    android:background="@color/background"
-    android:layout_margin="40dp">
+    android:layout_margin="70dp"
+    android:background="@color/background">
+
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="289dp"
+        android:id="@+id/edit_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="2dp"
-        android:background="@drawable/border_black"
+        android:layout_gravity="left"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
         android:gravity="center"
         android:text="@string/add_item"
         android:textColor="@color/button_text"
-        android:textSize="24dp" />
+        android:textSize="20sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="18dp"
+        android:layout_marginVertical="9dp"
+        android:background="@android:color/darker_gray" />
 
     <EditText
         android:id="@+id/edit_item_name"
@@ -138,7 +146,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/scan_button"
-        android:layout_width="184dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_marginHorizontal="20dp"
@@ -151,7 +159,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="10dp"/>
 
 
 </LinearLayout>

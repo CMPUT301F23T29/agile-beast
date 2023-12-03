@@ -3,14 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginHorizontal="50dp"
-    android:layout_marginVertical="100dp"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="70dp"
     android:layout_gravity="center"
     android:background="@color/background"
     android:orientation="vertical"
-    android:id="@+id/display_tag"
-    >
+    android:id="@+id/display_tag">
     <ListView
         android:id="@+id/tag_listview"
         android:layout_width="match_parent"
@@ -59,10 +57,5 @@
         </androidx.appcompat.widget.AppCompatButton>
 
     </LinearLayout>
-
-
-
-
-
 
 </LinearLayout>
