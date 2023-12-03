@@ -13,6 +13,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
 
 import android.content.Intent;
+import android.os.SystemClock;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.rule.ActivityTestRule;
@@ -45,7 +46,7 @@ public class ItemActionsTest {
     private void deleteItems(String... itemName) {
         for (String name: itemName) {
             onView(withId(R.id.delete_button)).perform(click());
-            onView(withText("_Sample")).perform(click());
+            onView(withText(name)).perform(click());
         }
     }
 
@@ -85,7 +86,7 @@ public class ItemActionsTest {
     }
 
     @Test
-    public void filterItemsTest() {
+    public void filterItemsByMakeTest() {
         // Set up test by adding items
         addItemThroughUI("_item0", "201", "_Apple", "iPhone 12", "123", "descrip", "comment");
         addItemThroughUI("_item1", "201", "_Android", "Samsung", "123", "descrip", "comment");
@@ -93,7 +94,7 @@ public class ItemActionsTest {
 
         onView(withId(R.id.filter_button)).perform(click());
         onView(withId(R.id.filter_spinner)).perform(click());
-        onView(withText(containsString("Make"))).inRoot(isPlatformPopup()).check(matches(isDisplayed()));
+        onView(withText(containsString("Make"))).inRoot(isPlatformPopup()).perform(click());
         onView(withId(R.id.filter_by_make_editview)).perform(typeText("_Apple"));
         onView(withId(R.id.confirm_filter_button)).perform(click());
 
@@ -103,8 +104,5 @@ public class ItemActionsTest {
 
         // Reset filter
         resetFilter();
-
-        deleteItems("_item0", "_item1", "_item2");
-
     }
 }
