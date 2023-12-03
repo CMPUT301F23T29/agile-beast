@@ -266,7 +266,7 @@ public class Item implements Serializable, Comparable {
      */
     @Override
     public int compareTo(Object item) {
-        return ((Item) item).name.compareTo(this.name);
+        return ((Item) item).getName().compareTo(this.name);
     }
 }
 
