@@ -3,26 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:orientation="horizontal"
+    android:id="@+id/tag_layout"
+    android:background="@drawable/tag_background"
     >
 
     <TextView
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginTop="3dp"
         android:layout_marginLeft="20dp"
         android:background="@drawable/box"
-        android:fontFamily="monospace"
-        android:text=""
-        android:textSize="40dp"></TextView>
+        android:layout_gravity="center_vertical"
+        ></TextView>
 
     <TextView
         android:id="@+id/each_tag"
-        android:layout_width="273dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="35dp"
-        android:layout_marginTop="-20dp"
+        android:layout_marginTop="0dp"
         android:fontFamily="monospace"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:text="Sample Text"
-        android:textSize="20dp"></TextView>
+        android:textSize="25dp"></TextView>
 
 </LinearLayout>

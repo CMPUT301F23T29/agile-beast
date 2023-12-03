@@ -2,6 +2,10 @@ package com.example.team29project.Model;
 
 import java.util.ArrayList;
 
+/**
+ * Tag object contains the name of tag and list of items applied
+ */
+
 public class Tag {
     private String name;
     private ArrayList<String> items;
@@ -26,11 +30,17 @@ public class Tag {
         this.items = items;
     }
 
+    /**
+     * Add Item which applied this tag
+     * @param itemId
+     */
+
     public void addItem(String itemId){
         this.items.add(itemId);
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return name;
+    }
 }

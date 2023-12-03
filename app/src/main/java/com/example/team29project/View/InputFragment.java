@@ -4,20 +4,19 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Controller.OnScanListener;
 import com.example.team29project.Controller.TagAddedItemCallback;
@@ -26,13 +25,9 @@ import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.mlkit.vision.barcode.common.Barcode;
-import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
-import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
-import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
-
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -74,7 +69,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
     }
 
     /**
-     * Set item and teags
+     * Set item and tags
      * @param aItem an item to be used
      */
     public InputFragment(DatabaseController db, Item aItem) {
@@ -86,10 +81,17 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
     }
     private OnFragmentsInteractionListener listener;
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_input, container);
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#D8E8EC")));
+        return view;
+    }
+
     /**
-     *
-     * When tag is applied into item
-     * @param tempTagList
+     * Callback function when tag is applied into item
+     * @param tempTagList ArrayList of tag that selected by user
      */
 
     @Override
@@ -116,7 +118,6 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
      */
     public interface OnFragmentsInteractionListener {
         void onOKPressed();
-        void onEditPressed();
         void onCancelPressed();
 
     }
@@ -188,30 +189,14 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
 
         // When tag Chip is pressed
-        tagChips.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new TagDialogue(db , InputFragment.this).show(getChildFragmentManager(),"Pick Tags");
-
-
-            }
-        });
+        tagChips.setOnClickListener(v -> new TagDialogue(db , InputFragment.this).show(getChildFragmentManager(),"Pick Tags"));
 
         // scanning camera
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new PickScanDialog().show(getChildFragmentManager(),"scan");
-            }
-        });
+        scanButton.setOnClickListener(v -> new PickScanDialog().show(getChildFragmentManager(),"scan"));
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        // TODO set up filter chips of all tags (from firestore) and select ones already tagged by the item
-        // TODO set add tag and scan button listeners
         builder.setView(view);
         // When cancel button pressed
-        builder.setNegativeButton("Cancel", (dialog, which)->{
-            listener.onCancelPressed();
-        });
+        builder.setNegativeButton("Cancel", (dialog, which)-> listener.onCancelPressed());
         builder.setPositiveButton("OK", (dialog, which) -> {
             try {
                 String item_name = itemName.getText().toString();
@@ -266,7 +251,7 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
                         tag.addItem(item.getDocId());
                         db.updateTag(tag);
                     }
-                    listener.onEditPressed();
+                    listener.onOKPressed();
                 }
             } catch(NumberFormatException e){
                 Toast.makeText(getContext()," Wrong format of charges check again!",Toast.LENGTH_SHORT).show();
@@ -308,17 +293,20 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
 
 
     /**
-     * This function draws tag datas into chipgroup
+     * This function draws tag data into ChipGroup
      * @param tagString arrayList of String represents the tag
      */
     public void drawTags(ArrayList<String> tagString){
         tagChips.removeAllViews();
+        LayoutInflater inflater = (LayoutInflater) requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for(String tag: tagString ){
-            Chip chip = new Chip(getContext());
+            Chip chip = (Chip) inflater.inflate(R.layout.tag_style, null);
             chip.setText(tag);
             chip.setId(tagString.indexOf(tag));
             chip.setCheckable(false);
             chip.setClickable(false);
+            chip.setChipBackgroundColorResource(R.color.background);
+            chip.setTextColor(getResources().getColor(R.color.button_text, null));
             tagChips.addView(chip);
         }
 
