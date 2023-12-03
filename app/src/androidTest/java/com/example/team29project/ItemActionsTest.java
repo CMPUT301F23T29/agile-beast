@@ -6,33 +6,21 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.content.Intent;
 
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.rule.ActivityTestRule;
 
-import com.example.team29project.Controller.DatabaseController;
-import com.example.team29project.Model.Item;
-import com.example.team29project.View.DatePicker;
-import com.example.team29project.View.MainActivity;
 import com.example.team29project.View.MainPageActivity;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 public class ItemActionsTest {
-    private ArrayList<Item> initialItems;
-    private DatabaseController db;
 
     @Rule
     public ActivityTestRule<MainPageActivity> mainPageActivityActivityTestRule =
@@ -44,8 +32,6 @@ public class ItemActionsTest {
         intent.putExtra("userId", "a");
 
         mainPageActivityActivityTestRule.launchActivity(intent);
-
-        MainPageActivity activity = mainPageActivityActivityTestRule.getActivity();
     }
 
     @Test
