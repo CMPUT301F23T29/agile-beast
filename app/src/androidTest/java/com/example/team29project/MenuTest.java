@@ -3,6 +3,7 @@ package com.example.team29project;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -19,9 +20,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
+import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Model.Tag;
 import com.example.team29project.View.ItemViewActivity;
 import com.example.team29project.View.MainActivity;
 import com.example.team29project.View.MainPageActivity;
+import com.example.team29project.View.TagDialogue;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -35,6 +39,8 @@ import java.util.ArrayList;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class MenuTest {
+    private MainPageActivity activity;
+    private DatabaseController db;
     @Rule
     public ActivityTestRule<MainPageActivity> mainPageActivityActivityTestRule =
             new ActivityTestRule<>(MainPageActivity.class, false, false);
@@ -45,6 +51,9 @@ public class MenuTest {
         intent.putExtra("userId", "a");
 
         mainPageActivityActivityTestRule.launchActivity(intent);
+
+        MainPageActivity activity = mainPageActivityActivityTestRule.getActivity();
+        db = activity.getDb();
     }
 
     @Test
@@ -70,8 +79,22 @@ public class MenuTest {
     }
 
     @Test
+    public void tagButtonAddTagTest() {
+        String newTagName = "__NEWTAG";
+        onView(withId(R.id.menu)).perform(click());
+        onView(withId(R.id.edit_tag_item)).perform(click());
+        onView(withId(R.id.add_tag)).perform(click());
+        onView(withId(R.id.input_tag)).perform(typeText(newTagName));
+        onView(withId(R.id.add_tag)).perform(click());
+
+
+        onView(withText(newTagName)).check(matches(isDisplayed()));
+
+        // TODO: no clean up function
+    }
+
+    @Test
     public void selectItemButtonTest() throws NoSuchFieldException, IllegalAccessException {
-        MainPageActivity activity = mainPageActivityActivityTestRule.getActivity();
         ArrayList<Integer> selectedItems = activity.getSelectedItems();
 
         // Selected items should initially be empty
