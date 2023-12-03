@@ -21,6 +21,19 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class ItemActionsTest {
+    private void addItemThroughUI(String name, String value, String make, String model, String serialNum, String desc, String comment) {
+        // Write the item's attributes
+        onView(withId(R.id.edit_item_name)).perform(typeText(name));
+        onView(withId(R.id.edit_item_value)).perform(typeText(value));
+        onView(withId(R.id.edit_item_date)).perform(click());
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.edit_item_make)).perform(typeText(make));
+        onView(withId(R.id.edit_item_model)).perform(typeText(model));
+        onView(withId(R.id.edit_serialno)).perform(typeText(serialNum));
+        onView(withId(R.id.edit_description)).perform(typeText(desc));
+        onView(withId(R.id.edit_comment)).perform(typeText(comment));
+        onView(withText("OK")).perform(click());
+    }
 
     @Rule
     public ActivityTestRule<MainPageActivity> mainPageActivityActivityTestRule =
@@ -42,27 +55,24 @@ public class ItemActionsTest {
         onView(withId(R.id.add_new_item)).perform(click());
 
         // Write the item's attributes
-        onView(withId(R.id.edit_item_name)).perform(typeText("Sample"));
-        onView(withId(R.id.edit_item_value)).perform(typeText("201"));
-        onView(withId(R.id.edit_item_date)).perform(click());
-        onView(withText("OK")).perform(click());
-        onView(withId(R.id.edit_item_make)).perform(typeText("Apple"));
-        onView(withId(R.id.edit_item_model)).perform(typeText("iPhone 12"));
-        onView(withId(R.id.edit_serialno)).perform(typeText("1245423"));
-        onView(withId(R.id.edit_description)).perform(typeText("A descrip"));
-        onView(withId(R.id.edit_comment)).perform(typeText("Comments"));
-        onView(withText("OK")).perform(click());
+        addItemThroughUI("_Sample", "201", "Apple", "iPhone 12", "123", "descrip", "comment");
 
-        onView(withText("Sample")).check(matches(isDisplayed()));
+        onView(withText("_Sample")).check(matches(isDisplayed()));
     }
     @Test
     public void deleteSingleItemTest(){
         // NOTE: Requires item from addSingleItemTest to exist
-        onView(withText("Sample")).check(matches(isDisplayed()));
+        onView(withText("_Sample")).check(matches(isDisplayed()));
 
         onView(withId(R.id.delete_button)).perform(click());
-        onView(withText("Sample")).perform(click());
+        onView(withText("_Sample")).perform(click());
 
-        onView(withText("Sample")).check(doesNotExist());
+        onView(withText("_Sample")).check(doesNotExist());
+    }
+
+    @Test
+    public void filterItemsTest() {
+        // Set up test by adding items
+
     }
 }
