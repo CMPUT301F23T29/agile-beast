@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -81,6 +82,18 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
     }
     private OnFragmentsInteractionListener listener;
 
+    /**
+     * creates the view with a set background colour
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -166,8 +179,13 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         itemComment = view.findViewById(R.id.edit_comment);
         scanButton = view.findViewById(R.id.scan_button);
         tagChips = view.findViewById(R.id.tag_chip);
+        TextView title = view.findViewById(R.id.edit_title);
         if(item !=null){
             writeData(item);
+            title.setText(getResources().getText(R.string.edit_item));
+        }
+        else {
+            title.setText(getResources().getText(R.string.add_item));
         }
 
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {

@@ -24,8 +24,15 @@
     <string name="end_date_hint">To YYYY-MM-DD</string>
     <string name="start_date_hint">From YYYY-MM-DD</string>
     <string name="make_hint">Enter a make</string>
-    <string name="add_item">Add an item</string>
+    <string name="add_item">Add</string>
+    <string name="edit_item">Edit</string>
     <string name="user_profile">User Profile</string>
+    <string name="serial">Serial</string>
+    <string name="barcode">Barcode</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="amazon">Amazon</string>
+    <string name="google">Google</string>
     <string-array name="sort_items">
         <!--        <item>serialNumber</item>-->
         <item>Default</item>
