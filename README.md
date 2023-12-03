@@ -17,7 +17,7 @@
 
 
 ## About The Project
-An Android app to add and store items(modify). This project is part of the University of Alberta CMPUT 301 course built by students of Team 32 for the Winter 2023 term.
+An Android app to add and store items(modify). This project is part of the University of Alberta CMPUT 301 course built by students of Team 29 for the Fall 2023 term.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Documentation
