@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="400dp"
-    android:layout_height="400dp"
-    android:orientation="vertical">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/background"
+    android:layout_gravity="center">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Camera"
-        android:textSize="30dp"
+        android:text="@string/camera"
         android:id="@+id/choose_camera"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="50dp"
-        ></TextView>
+        android:textSize="30sp"
+        android:textColor="@color/button_text"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="20dp"
+        android:gravity="center"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gallery"
-        android:textSize="30dp"
+        android:text="@string/gallery"
         android:id="@+id/choose_gallery"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginBottom="40dp"
-        ></TextView>
-
-
-
-
+        android:textSize="30sp"
+        android:textColor="@color/button_text"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="20dp"
+        android:gravity="center" />
 
 </LinearLayout>

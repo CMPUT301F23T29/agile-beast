@@ -21,6 +21,11 @@ public class ProfileFragment extends DialogFragment {
     private final String username;
     private String value;
 
+    /**
+     * @param name String of userID
+     * @param sum Total value of current Items
+     */
+
     public ProfileFragment(String name, String sum) {
         // Required empty public constructor
         username = name;

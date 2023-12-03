@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -81,6 +82,18 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
     }
     private OnFragmentsInteractionListener listener;
 
+    /**
+     * creates the view with a set background colour
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -102,11 +115,19 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         drawTags(tagsToString());
     }
 
+    /**
+     * Setting the serial number into result of scanned text
+     * @param scan
+     */
     @Override
     public void onScannedSerial(String scan) {
         itemSerialNumber.setText(scan);
     }
 
+    /**
+     * Setting the description into result of scanned barcode
+     * @param scan
+     */
     @Override
     public void onScannedBarcode(String scan) {
         itemDescription.setText(scan);
@@ -117,9 +138,15 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
      * Interface for user interaction with fragments
      */
     public interface OnFragmentsInteractionListener {
+        /**
+         * When Ok is pressed from this fragment
+         */
         void onOKPressed();
-        void onCancelPressed();
 
+        /**
+         *  When Cancel is pressed from this fragment
+         */
+        void onCancelPressed();
     }
 
     /**
@@ -166,8 +193,13 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         itemComment = view.findViewById(R.id.edit_comment);
         scanButton = view.findViewById(R.id.scan_button);
         tagChips = view.findViewById(R.id.tag_chip);
+        TextView title = view.findViewById(R.id.edit_title);
         if(item !=null){
             writeData(item);
+            title.setText(getResources().getText(R.string.edit_item));
+        }
+        else {
+            title.setText(getResources().getText(R.string.add_item));
         }
 
         DatePickerDialog.OnDateSetListener r = (view1, year, month, dayOfMonth) -> {
@@ -274,15 +306,18 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         itemValue.setText(String.format("%.2f",item.getValue()));
         itemName.setText(item.getName());
         itemDate.setText(item.getDate());
-        itemModel.setText(item.getDate());
+        itemModel.setText(item.getModel());
         itemSerialNumber.setText(item.getSerialNumber());
         itemMake.setText(item.getMake());
         itemDescription.setText((item.getDescription()));
         itemComment.setText(item.getComment());
         drawTags(item.getTags());
-
-
     }
+
+    /**
+     * It transform from Tag objects into list of string representation of this tag
+     * @return
+     */
     public ArrayList<String> tagsToString(){
         ArrayList<String> temp = new ArrayList<>();
         for(Tag tag : this.tempTags){

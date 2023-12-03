@@ -19,7 +19,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
-import com.example.team29project.Model.CustomCamera;
+import com.example.team29project.Controller.CustomCamera;
 import com.example.team29project.R;
 import java.io.File;
 

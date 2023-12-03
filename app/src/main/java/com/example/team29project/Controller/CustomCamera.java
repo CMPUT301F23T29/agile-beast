@@ -1,4 +1,4 @@
-package com.example.team29project.Model;
+package com.example.team29project.Controller;
 
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;

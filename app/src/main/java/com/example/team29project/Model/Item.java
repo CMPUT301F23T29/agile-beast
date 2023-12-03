@@ -226,16 +226,34 @@ public class Item implements Serializable, Comparable {
         this.value = value;
     }
 
+    /**
+     * Set uniquesDocument reference of the item in db
+     * @param id String of uniques document Id of this Item object
+     */
     public void setDocId(String id){
         this.docId =id;
     }
+
+    /**
+     * Return the String object
+     * @return String unique Id of this Item object
+     */
     public  String getDocId(){
         return this.docId;
     }
 
+    /**
+     * Returns the ArrayList of String representation of Tag object that is applied on to this Item object
+     * @return
+     */
     public ArrayList<String> getTags(){
         return this.tags;
     }
+
+    /**
+     * Set the ArrayList of String representation of  Tag object that is applied on to this Item object
+     * @param tags
+     */
     public void setTags(ArrayList<String> tags){
         this.tags = tags;
     }
