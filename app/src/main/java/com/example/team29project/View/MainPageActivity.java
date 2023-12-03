@@ -330,6 +330,8 @@ public class MainPageActivity extends AppCompatActivity implements
         Toast.makeText(this, "Failed to filter", Toast.LENGTH_SHORT).show();
     }
 
-
+    public ArrayList<Integer> getSelectedItems() {
+        return selectedItems;
+    }
 }
 
