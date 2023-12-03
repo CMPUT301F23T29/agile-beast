@@ -9,18 +9,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
-
 import com.example.team29project.Controller.DatabaseController;
 import com.example.team29project.Controller.TagAddedItemCallback;
 import com.example.team29project.Controller.TagModifyCallback;
@@ -28,7 +22,6 @@ import com.example.team29project.Model.Tag;
 import com.example.team29project.R;
 import com.example.team29project.Controller.TagAdapter;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -39,12 +32,12 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
     private ArrayList<Tag> tagList;
     private Button addTag;
     private Button deleteTag;
-    private DatabaseController db;
+    private final DatabaseController db;
     private TagAdapter tagAdapter;
 
     private TagAddedItemCallback callback;
 
-    private boolean isPicking;
+    private final boolean isPicking;
 
 
     private boolean isDelete;
@@ -59,6 +52,12 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
         this.db = db;
 
     }
+
+    /**
+     * Construct a new TagDialogue when it is called from InputFramgent
+     * @param db
+     * @param callback
+     */
     public TagDialogue(DatabaseController db, TagAddedItemCallback callback){
         this.isPicking=true;
         this.db = db;
@@ -66,17 +65,8 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
         this.tagList= new ArrayList<>();
 
     }
-
-
-
     /**
-     * Interface for handling interactions in the TagDialogue.
-     */
-
-
-    /**
-     * Attaches the dialog fragment to its context, ensuring that it implements OnFragmentInteractionListener.
-     *
+     * Attaches the dialog fragment to its context,
      * @param context The context to attach to.
      */
     @Override
@@ -91,7 +81,7 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#D8E8EC")));
         return view;
     }
-
+    
     /**
      * Represents a dialog fragment for adding tags. The dialog includes a field for entering a tag name and a list view for 
      * displaying existing tags.
@@ -112,52 +102,40 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
         EditText inputText = view.findViewById(R.id.input_tag);
         isDelete= false;
         ArrayList<Tag> tempTags = new ArrayList<>();
+        tagAdapter.setSelectedTags(tempTags);
         db.loadInitialTags(this);
-        addTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isDelete = false;
-                if (inputText.getVisibility()==View.INVISIBLE) {
-                    inputText.setVisibility(View.VISIBLE);
-                }
-                else{
-                     String tagTemp = inputText.getText().toString();
-                     if (!tagTemp.isEmpty()) {
-                         String strtag =inputText.getText().toString();
-                         Tag tag = new Tag(strtag);
-                         db.addTag(tag,TagDialogue.this);
-                         inputText.setText("");
-
-                     }
-                     inputText.setVisibility(View.INVISIBLE);
-                }
+        addTag.setOnClickListener(v -> {
+            isDelete = false;
+            if (inputText.getVisibility()==View.INVISIBLE) {
+                inputText.setVisibility(View.VISIBLE);
+            }
+            else{
+                 String tagTemp = inputText.getText().toString();
+                 if (!tagTemp.isEmpty()) {
+                     String strTag =inputText.getText().toString();
+                     Tag tag = new Tag(strTag);
+                     db.addTag(tag,TagDialogue.this);
+                     inputText.setText("");
+                 }
+                 inputText.setVisibility(View.INVISIBLE);
             }
         });
-        deleteTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isDelete = true;
-            }
-        });
-        tagListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position>=0 ){
-                    if(isDelete) {
-                        db.removeTag(position, TagDialogue.this);
-                        isDelete = false;
-                    }
-                    else if(isPicking){
-                        if(isPicking){
-                            Tag temp = tagList.get(position);
-                            if(tempTags.contains(temp)){
-                                tagList.remove(temp);
-                            }
-                            else{
-                                tempTags.add(temp);
-                            }
+        deleteTag.setOnClickListener(v -> isDelete = true);
+        tagListView.setOnItemClickListener((parent, view1, position, id) -> {
+            if(position>=0 ){
+                if(isDelete) {
+                    db.removeTag(position, TagDialogue.this);
+                    isDelete = false;
+                }
+                else if(isPicking){
+                        Tag temp = tagList.get(position);
+                        if(tempTags.contains(temp)){
+                            tempTags.remove(temp);
                         }
-                    }
+                        else {
+                            tempTags.add(temp);
+                        }
+                        tagAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -170,18 +148,21 @@ public class TagDialogue extends DialogFragment implements TagModifyCallback  {
                 callback.onTagsApplied(tempTags);
             }
         });
-
-
-
         return builder.create();
-
     }
 
+    /**
+     * when tags are modifies, update the tagAdapter
+     */
     @Override
     public void onTagModified() {
         tagAdapter.notifyDataSetChanged();
     }
 
+
+    /**
+     * When tags are loaded, set the tagList and update the tagAdapter
+     */
     @Override
     public void onTagsLoaded() {
         tagAdapter.notifyDataSetChanged();

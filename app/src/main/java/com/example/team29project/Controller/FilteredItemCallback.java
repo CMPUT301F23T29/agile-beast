@@ -1,9 +1,7 @@
 package com.example.team29project.Controller;
 
-import com.example.team29project.Model.Item;
-
 /**
- * Callback interface of filterItem
+ * Callback interface after filtering
  */
 
 public interface FilteredItemCallback {

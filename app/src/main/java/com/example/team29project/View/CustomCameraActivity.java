@@ -4,8 +4,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.AspectRatio;
-import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.view.PreviewView;
@@ -21,16 +19,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-
-import com.example.team29project.Model.CustomCamera;
+import com.example.team29project.Controller.CustomCamera;
 import com.example.team29project.R;
-
-
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Represents a custom camera activity. This activity allows the user to capture images using the device's camera.
@@ -62,7 +53,6 @@ public class CustomCameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_camera);
-        int cameraFacing = CameraSelector.LENS_FACING_BACK;
         previewView = findViewById(R.id.customPreview);
         captureBtn = findViewById(R.id.capture_btn);
         okButton = findViewById(R.id.ok_btn);
@@ -144,47 +134,6 @@ public class CustomCameraActivity extends AppCompatActivity {
             }
         };
         customCamera.captureImage(photoFile, callback);
-    }
-
-    /**
-     *
-     * @param height the height of the screen on camera(Y axis)
-     * @param width the width of the screen on camera(X axis)
-     * @return AspectRatio that the ratio of camera in scale
-     */
-    private int aspectRatio(int width, int height) {
-        double previewRatio = (double) Math.max(width, height) / Math.min(width, height);
-        if (Math.abs(previewRatio - 4.0 / 3.0) <= Math.abs(previewRatio - 16.0 / 9.0)) {
-            return AspectRatio.RATIO_4_3;
-        }
-        return AspectRatio.RATIO_16_9;
-    }
-
-    /**
-     * Creates an image file with a unique name in the "CameraXImages" directory.
-     *
-     * @return The created image file.
-     */
-    private File createImageFile() {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(getExternalFilesDir(null), "CameraXImages");
-
-        try {
-            File image = File.createTempFile(
-                    imageFileName,  /* prefix */
-                    ".jpg",         /* suffix */
-                    storageDir      /* directory */
-            );
-
-            String currentPhotoPath = image.getAbsolutePath();
-            return image;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-
     }
 
 

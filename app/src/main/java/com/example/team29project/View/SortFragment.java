@@ -34,6 +34,11 @@ public class SortFragment extends DialogFragment {
         ((MainPageActivity) getActivity()).setSortFragmentShown(false);
     }
 
+    /**
+     * Attach the context
+     * @param context context of tis dialogue
+     */
+
     @Override
     public void onAttach(@NonNull Context context) {
 
@@ -64,7 +69,7 @@ public class SortFragment extends DialogFragment {
 
         // Set OnClickListener for confirm button
         confirm.setOnClickListener(v -> {
-            String sortBy = sortSpinner.getSelectedItem().toString(); // Gelt selected item from Spinner
+            String sortBy = sortSpinner.getSelectedItem().toString(); // Get selected item from Spinner
             int selectedId = sortOrder.getCheckedRadioButtonId(); // Get selected RadioButton from RadioGroup
             boolean isAsc = selectedId == R.id.sort_asc_radiobutton; // Check if the selected RadioButton is 'asc_radiobutton'
 

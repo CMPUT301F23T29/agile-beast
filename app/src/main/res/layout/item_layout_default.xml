@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:orientation="horizontal"
+    android:id="@+id/item_background"
     android:background="@drawable/item_layout_background"
     android:layout_weight="0.8"
     android:layout_margin="5dp">
