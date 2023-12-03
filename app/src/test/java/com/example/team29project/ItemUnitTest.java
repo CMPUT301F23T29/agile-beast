@@ -66,9 +66,4 @@ public class ItemUnitTest {
         assertEquals(item.getPhotos(),photos);
     }
 
-
-
-
-
-
 }
