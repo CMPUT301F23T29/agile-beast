@@ -274,14 +274,12 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         itemValue.setText(String.format("%.2f",item.getValue()));
         itemName.setText(item.getName());
         itemDate.setText(item.getDate());
-        itemModel.setText(item.getDate());
+        itemModel.setText(item.getModel());
         itemSerialNumber.setText(item.getSerialNumber());
         itemMake.setText(item.getMake());
         itemDescription.setText((item.getDescription()));
         itemComment.setText(item.getComment());
         drawTags(item.getTags());
-
-
     }
     public ArrayList<String> tagsToString(){
         ArrayList<String> temp = new ArrayList<>();

@@ -153,7 +153,6 @@ public class FilterFragment extends DialogFragment implements TagModifyCallback 
         confirm.setOnClickListener(v -> {
             String filterBy = selectedItem; // Get the selected filter
             String data;
-            //TODO: data validation
             switch (filterBy) {
                 case "make":
                     data = make.getText().toString();
