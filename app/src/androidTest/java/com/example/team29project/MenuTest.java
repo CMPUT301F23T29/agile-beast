@@ -4,6 +4,7 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -29,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -69,6 +71,13 @@ public class MenuTest {
 
     @Test
     public void selectItemButtonTest() throws NoSuchFieldException, IllegalAccessException {
+        MainPageActivity activity = mainPageActivityActivityTestRule.getActivity();
+        ArrayList<Integer> selectedItems = activity.getSelectedItems();
+
+        // Selected items should initially be empty
+        assertThat(selectedItems, Matchers.empty());
+
+        // Check that items can be selected
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.select_item)).perform(click());
         onData(Matchers.anything())
@@ -78,9 +87,22 @@ public class MenuTest {
 
         onData(Matchers.anything())
                 .inAdapterView(withId(R.id.items))
+                .atPosition(1)
+                .perform(click());
+        assertTrue(selectedItems.contains(0));
+        assertTrue(selectedItems.contains(1));
+
+        // Check that selected items can be deselected
+        onData(Matchers.anything())
+                .inAdapterView(withId(R.id.items))
                 .atPosition(0)
                 .perform(click());
 
+        onData(Matchers.anything())
+                .inAdapterView(withId(R.id.items))
+                .atPosition(1)
+                .perform(click());
+        assertThat(selectedItems, Matchers.empty());
     }
 
 }
