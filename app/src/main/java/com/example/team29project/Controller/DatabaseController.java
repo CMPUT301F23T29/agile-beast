@@ -389,6 +389,10 @@ public class DatabaseController  {
         }
     }
 
+    public void setItemDataList(ArrayList<Item> itemDataList) {
+        this.itemDataList = itemDataList;
+    }
+
     /**
      * Returns the itemDataList
      * @return the itemDataList containing the items
