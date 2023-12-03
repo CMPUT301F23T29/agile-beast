@@ -4,11 +4,13 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.google.common.base.Predicates.not;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
@@ -84,6 +86,24 @@ public class MenuTest {
         onView(withText(newTagName)).check(matches(isDisplayed()));
 
         // TODO: no clean up function
+    }
+
+    @Test public void tagButtonDeleteTagTest() {
+        String newTagName = "__NEWTAG";
+        onView(withId(R.id.menu)).perform(click());
+        onView(withId(R.id.edit_tag_item)).perform(click());
+        onView(withId(R.id.add_tag)).perform(click());
+        onView(withId(R.id.input_tag)).perform(typeText(newTagName));
+        onView(withId(R.id.add_tag)).perform(click());
+
+        onView(withText(newTagName)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.delete_tag)).perform(click());
+        onView(withText(newTagName)).perform(click());
+
+        onView(withText(newTagName)).check(doesNotExist());
+
+
     }
 
     @Test
