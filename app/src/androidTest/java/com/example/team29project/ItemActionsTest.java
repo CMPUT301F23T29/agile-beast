@@ -88,9 +88,9 @@ public class ItemActionsTest {
     @Test
     public void filterItemsByMakeTest() {
         // Set up test by adding items
-        addItemThroughUI("_item0", "201", "_Apple", "iPhone 12", "123", "descrip", "comment");
-        addItemThroughUI("_item1", "201", "_Android", "Samsung", "123", "descrip", "comment");
-        addItemThroughUI("_item2", "201", "_Apple", "iPhone 12", "123", "descrip", "comment");
+        addItemThroughUI("_item0", "201", "_Apple", "_iPhone 12", "123", "descrip", "comment");
+        addItemThroughUI("_item1", "201", "_Android", "_Samsung", "123", "descrip", "comment");
+        addItemThroughUI("_item2", "201", "_Apple", "_iPhone 13", "123", "descrip", "comment");
 
         onView(withId(R.id.filter_button)).perform(click());
         onView(withId(R.id.filter_spinner)).perform(click());
@@ -104,5 +104,13 @@ public class ItemActionsTest {
 
         // Reset filter
         resetFilter();
+    }
+
+    @Test
+    public void addCameraPhotoToItemTest() throws Exception {
+        onView(withText("_item1")).perform(click());
+        throw new Exception();
+        // TODO: implement this
+
     }
 }
