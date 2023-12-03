@@ -158,13 +158,16 @@ public class ItemViewActivity extends AppCompatActivity implements
         changeData();
     }
 
-
+    /**
+     * When it fails to load the item from db
+     * @param e error messages
+     */
     @Override
     public void onFailure(Exception e) {
         Toast.makeText(ItemViewActivity.this, "Failed", Toast.LENGTH_SHORT).show();
     }
     /**
-     * Change Item's detail
+     * Display the Item's details on Textviews
      */
     private void changeData() {
         itemName.setText(item.getName());
@@ -195,7 +198,6 @@ public class ItemViewActivity extends AppCompatActivity implements
 
     /**
      * Handles if ok was pressed and changes the data
-     *
      */
     @Override
     public void onOKPressed() {

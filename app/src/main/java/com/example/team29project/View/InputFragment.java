@@ -102,11 +102,19 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         drawTags(tagsToString());
     }
 
+    /**
+     * Setting the serial number into result of scanned text
+     * @param scan
+     */
     @Override
     public void onScannedSerial(String scan) {
         itemSerialNumber.setText(scan);
     }
 
+    /**
+     * Setting the description into result of scanned barcode
+     * @param scan
+     */
     @Override
     public void onScannedBarcode(String scan) {
         itemDescription.setText(scan);
@@ -117,9 +125,15 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
      * Interface for user interaction with fragments
      */
     public interface OnFragmentsInteractionListener {
+        /**
+         * When Ok is pressed from this fragment
+         */
         void onOKPressed();
-        void onCancelPressed();
 
+        /**
+         *  When Cancel is pressed from this fragment
+         */
+        void onCancelPressed();
     }
 
     /**
@@ -281,6 +295,11 @@ public class InputFragment extends DialogFragment implements TagAddedItemCallbac
         itemComment.setText(item.getComment());
         drawTags(item.getTags());
     }
+
+    /**
+     * It transform from Tag objects into list of string representation of this tag
+     * @return
+     */
     public ArrayList<String> tagsToString(){
         ArrayList<String> temp = new ArrayList<>();
         for(Tag tag : this.tempTags){
