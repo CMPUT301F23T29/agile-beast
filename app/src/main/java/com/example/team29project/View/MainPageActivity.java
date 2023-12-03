@@ -155,6 +155,10 @@ public class MainPageActivity extends AppCompatActivity implements
 
     }
 
+    public DatabaseController getDb() {
+        return db;
+    }
+
     /**
      * Update the summary of value of item
      */
