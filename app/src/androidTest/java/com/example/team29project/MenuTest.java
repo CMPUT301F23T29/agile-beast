@@ -13,19 +13,13 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
 
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.team29project.Controller.DatabaseController;
-import com.example.team29project.Model.Tag;
-import com.example.team29project.View.ItemViewActivity;
-import com.example.team29project.View.MainActivity;
 import com.example.team29project.View.MainPageActivity;
-import com.example.team29project.View.TagDialogue;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -33,7 +27,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 @RunWith(AndroidJUnit4.class)
@@ -94,7 +87,7 @@ public class MenuTest {
     }
 
     @Test
-    public void selectItemButtonTest() throws NoSuchFieldException, IllegalAccessException {
+    public void selectItemButtonTest() {
         ArrayList<Integer> selectedItems = activity.getSelectedItems();
 
         // Selected items should initially be empty
