@@ -58,26 +58,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp">
+            android:gravity="center">
 
             <Button
                 android:id="@+id/sign_up_button"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
+                android:layout_width="95dp"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="30dp"
                 android:text="Sign Up"
                 android:textColor="@color/button_text" />
 
             <Button
                 android:id="@+id/login_button"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="30dp"
                 android:text="Log in"
-                android:textColor="@color/button_text"/>
+                android:textColor="@color/button_text" />
 
         </LinearLayout>
 
