@@ -235,6 +235,16 @@ public class FilterTest {
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(1).perform(click());
         onView(withId(R.id.delete_button)).perform(click());
+
+        onView(withId(R.id.menu)).perform(click());
+        onView(withId(R.id.edit_tag_item)).perform(click());
+        for(int i=1; i<3; i++) {
+            String newTagName = "NEWTAG"+i;
+            onView(withId(R.id.delete_tag)).perform(click());
+            onData(CoreMatchers.is(CoreMatchers.instanceOf(Tag.class))).inAdapterView(withId(R.id.tag_listview)).atPosition(0).perform(click());
+            Thread.sleep(1000);
+        }
+        onView(withText("OK")).perform(click());
     }
 
 

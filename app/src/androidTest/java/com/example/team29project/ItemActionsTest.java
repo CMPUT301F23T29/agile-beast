@@ -25,8 +25,10 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.team29project.Model.Item;
+import com.example.team29project.Model.Tag;
 import com.example.team29project.View.MainPageActivity;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,21 +77,17 @@ public class ItemActionsTest {
     }
 
     @Test
-    public void addItem() {
+    public void addAndDeleteItem() {
         // Write the item's attributes
         addItemThroughUI("_Sample", "201", "Apple", "iPhone 12", "123", "descrip", "comment");
-
-        onView(withText("_Sample")).check(matches(isDisplayed()));
-    }
-    @Test
-    public void deleteSingleItemTest(){
-        // NOTE: Requires item from addSingleItemTest to exist
         onView(withText("_Sample")).check(matches(isDisplayed()));
 
+        // test for single delete
         onView(withId(R.id.delete_button)).perform(click());
         onView(withText("_Sample")).perform(click());
 
         onView(withText("_Sample")).check(doesNotExist());
+
     }
 
     @Test
@@ -154,9 +152,19 @@ public class ItemActionsTest {
         onView(withText("NEWTAG1")).check(matches(isDisplayed()));
         onView(withText("NEWTAG2")).check(matches(isDisplayed()));
         onView(withId(R.id.back_button)).perform(click());
+
         onView(withId(R.id.delete_button)).perform(click());
+        onView(withText("galaxy")).perform(click());
+
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.edit_tag_item)).perform(click());
+        for(int i=1; i<3; i++) {
+            String newTagName = "NEWTAG"+i;
+            onView(withId(R.id.delete_tag)).perform(click());
+            onData(CoreMatchers.is(CoreMatchers.instanceOf(Tag.class))).inAdapterView(withId(R.id.tag_listview)).atPosition(0).perform(click());
+            Thread.sleep(1000);
+        }
+        onView(withText("OK")).perform(click());
 
 
     }
