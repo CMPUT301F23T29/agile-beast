@@ -82,7 +82,6 @@ public class MenuTest {
         onView(withId(R.id.input_tag)).perform(typeText(newTagName));
         onView(withId(R.id.add_tag)).perform(click());
 
-
         onView(withText(newTagName)).check(matches(isDisplayed()));
 
         // TODO: no clean up function
