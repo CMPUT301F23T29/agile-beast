@@ -44,6 +44,8 @@ import com.example.team29project.Model.Item;
 import com.example.team29project.View.ItemViewActivity;
 import com.example.team29project.View.MainPageActivity;
 
+import org.hamcrest.CoreMatchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -89,6 +91,14 @@ public class ItemViewActivityTest {
         }
     }
 
+    @After
+    public void tearDown() {
+        // clear item
+        onView(withId(R.id.delete_button)).perform(click());
+        onView(withText("Iphone")).perform(click());
+        this.isInit =false;
+    }
+
     @Test public void checkItemDetailsDisplayed() throws InterruptedException {
         Thread.sleep(1000);
         onData(is(instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
@@ -100,6 +110,7 @@ public class ItemViewActivityTest {
         onView(withText("15 Pro")).check(matches(isDisplayed()));
         onView(withText("nice")).check(matches(isDisplayed()));
         onView(withText("good")).check(matches(isDisplayed()));
+        pressBack();
     }
     @Test public void ImageDisplayedTest() throws InterruptedException {
         Thread.sleep(1000);
@@ -110,7 +121,8 @@ public class ItemViewActivityTest {
                         click()));
         onView(withText("Camera")).check(matches(isDisplayed()));
         onView(withText("Gallery")).check(matches(isDisplayed()));
-
+        pressBack();
+        pressBack();
     }
     @Test
     public void RetryCaptureImageTest() throws InterruptedException {
@@ -128,6 +140,8 @@ public class ItemViewActivityTest {
         onView(withId(R.id.retry_btn)).perform(click());
         Thread.sleep(500);
         onView(withId(R.id.capture_btn)).check(matches(isDisplayed()));
+        pressBack();
+        pressBack();
 
     }
     @Test
@@ -157,6 +171,8 @@ public class ItemViewActivityTest {
         } catch(Exception e){
             assertEquals(1,1);
         }
+        pressBack();
+        pressBack();
     }
 
 
@@ -167,6 +183,8 @@ public class ItemViewActivityTest {
         Thread.sleep(1000);
         onView(withId(R.id.edit_button)).perform(click());
         onView(withId(R.id.fragment_input)).check(matches(isDisplayed()));
+        pressBack();
+        pressBack();
 
     }
 
