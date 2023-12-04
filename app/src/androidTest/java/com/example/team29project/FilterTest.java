@@ -1,27 +1,22 @@
 package com.example.team29project;
+
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isNotClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-import static com.google.android.material.datepicker.CompositeDateValidator.allOf;
-
-import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.object.HasToString.hasToString;
+
 import android.content.Intent;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -32,17 +27,16 @@ import androidx.test.rule.ActivityTestRule;
 
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
-import com.example.team29project.View.MainActivity;
 import com.example.team29project.View.MainPageActivity;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class) @LargeTest
-public class SortTest {
+public class FilterTest {
 
     @Rule
     public ActivityTestRule<MainPageActivity> mainPageActivityActivityTestRule =
@@ -59,7 +53,6 @@ public class SortTest {
         // Open add item screen
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.add_new_item)).perform(click());
-
         // Write the item's attributes
         onView(withId(R.id.edit_item_name)).perform(typeText(name));
         onView(withId(R.id.edit_item_value)).perform(typeText(value));
@@ -95,45 +88,32 @@ public class SortTest {
     }
 
 
-
-    @Test public void checkSortFragSortdisplay(){
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_spinner)).check(matches(isDisplayed()));
-        onView(withId(R.id.sort_asc_radiobutton)).check(matches(isDisplayed()));
-        onView(withId(R.id.sort_desc_radiobutton)).check(matches(isDisplayed()));
-        onView(withId(R.id.confirm_sort_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.cancel_sort_button)).check(matches(isDisplayed()));
+    @Test
+    public void checkFilterFragFilterdisplay(){
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_spinner)).check(matches(isDisplayed()));
+        onView(withId(R.id.confirm_filter_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.cancel_filter_button)).check(matches(isDisplayed()));
     }
 
-    @Test public void checkSortFragClickable(){
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.confirm_sort_button)).check(matches(isClickable()));
-        onView(withId(R.id.cancel_sort_button)).check(matches(isClickable()));
-    }
 
-    @Test public void checkSortFragAscSelectable(){
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_asc_radiobutton)).check(matches(isNotSelected()));
-    }
-
-    @Test public void checkSortFragDescSelectable() {
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_desc_radiobutton)).check(matches(isNotSelected()));
-    }
-    @Test public void checkSortByValue() throws InterruptedException {
+    @Test public void checkFilterByMake() throws InterruptedException {
         addItemThroughUI("Sample", "205", "Apple", "iPhone 11", "123", "aescrip", "Domment");
         addItemThroughUI("Zample", "201", "Bpple", "iPhone 12", "125", "descrip", "comment");
-
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_spinner)).perform(click());
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_spinner)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(2).perform(click());
-        onView(withId(R.id.sort_asc_radiobutton)).perform(click());
-        onView(withId(R.id.confirm_sort_button)).perform(click());
+        onView(withId(R.id.filter_by_make_editview)).perform(typeText("Bpple"));
+        onView(withId(R.id.confirm_filter_button)).perform(click());
         Thread.sleep(1000);
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
         Thread.sleep(1000);
         onView(withText("Zample")).check(matches(isDisplayed()));
         onView(withId(R.id.back_button)).perform(click());
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(0).perform(click());
+        onView(withId(R.id.confirm_filter_button)).perform(click());
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.select_item)).perform(click());
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
@@ -141,72 +121,34 @@ public class SortTest {
         onView(withId(R.id.delete_button)).perform(click());
 
     }
-    @Test public void checkSortByMake() throws InterruptedException {
-        addItemThroughUI("Sample", "205", "Apple", "iPhone 11", "123", "aescrip", "Domment");
-        addItemThroughUI("Zample", "201", "Bpple", "iPhone 12", "125", "descrip", "comment");
-
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_spinner)).perform(click());
+    @Test public void checkFilterByDescription()throws InterruptedException {
+        addItemThroughUI("Sample", "205", "Apple", "iPhone 11", "123", "a escrip", "Domment");
+        addItemThroughUI("Zample", "201", "Bpple", "iPhone 12", "125", "d escrip", "comment");
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_spinner)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(3).perform(click());
-        onView(withId(R.id.sort_asc_radiobutton)).perform(click());
-        onView(withId(R.id.confirm_sort_button)).perform(click());
-        Thread.sleep(1000);
-        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
-        Thread.sleep(1000);
-        onView(withText("Sample")).check(matches(isDisplayed()));
-        onView(withId(R.id.back_button)).perform(click());
-        onView(withId(R.id.menu)).perform(click());
-        onView(withId(R.id.select_item)).perform(click());
-        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
-        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(1).perform(click());
-        onView(withId(R.id.delete_button)).perform(click());
-
-
-    }
-    @Test public void checkSortByModel() throws InterruptedException {
-        addItemThroughUI("Sample", "205", "Apple", "iPhone 11", "123", "aescrip", "Domment");
-        addItemThroughUI("Zample", "201", "Bpple", "iPhone 12", "125", "descrip", "comment");
-
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_spinner)).perform(click());
-        onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(4).perform(click());
-        onView(withId(R.id.sort_asc_radiobutton)).perform(click());
-        onView(withId(R.id.confirm_sort_button)).perform(click());
-        Thread.sleep(1000);
-        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
-        Thread.sleep(1000);
-        onView(withText("Sample")).check(matches(isDisplayed()));
-        onView(withId(R.id.back_button)).perform(click());
-        onView(withId(R.id.menu)).perform(click());
-        onView(withId(R.id.select_item)).perform(click());
-        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
-        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(1).perform(click());
-        onView(withId(R.id.delete_button)).perform(click());
-
-    }
-
-    @Test public void checkSortByDescription() throws InterruptedException {
-        addItemThroughUI("Sample", "205", "Apple", "iPhone 11", "123", "descrip", "Domment");
-        addItemThroughUI("Zample", "201", "Bpple", "iPhone 12", "125", "aescrip", "comment");
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_spinner)).perform(click());
-        onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(5).perform(click());
-        onView(withId(R.id.sort_asc_radiobutton)).perform(click());
-        onView(withId(R.id.confirm_sort_button)).perform(click());
+        onView(withId(R.id.filter_by_description_editview)).perform(typeText("d"));
+        onView(withId(R.id.confirm_filter_button)).perform(click());
         Thread.sleep(1000);
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
         Thread.sleep(1000);
         onView(withText("Zample")).check(matches(isDisplayed()));
         onView(withId(R.id.back_button)).perform(click());
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(0).perform(click());
+        onView(withId(R.id.confirm_filter_button)).perform(click());
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.select_item)).perform(click());
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(1).perform(click());
         onView(withId(R.id.delete_button)).perform(click());
-    }
 
-    @Test public void checkSortByDate() throws InterruptedException {
-        addItemThroughUI("Zample", "201", "Bpple", "iPhone 12", "125", "aescrip", "comment");
+
+
+    }
+    @Test public void filterByDateTest() throws InterruptedException {
+        addItemThroughUI("Zample", "201", "Bpple", "iPhone 12", "125", "descrip", "comment");
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.add_new_item)).perform(click());
 
@@ -225,66 +167,74 @@ public class SortTest {
         onView(withId(R.id.edit_comment)).perform(typeText("comment"));
         onView(withText("OK")).perform(click());
 
-
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_spinner)).perform(click());
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_spinner)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(1).perform(click());
-        onView(withId(R.id.sort_asc_radiobutton)).perform(click());
-        onView(withId(R.id.confirm_sort_button)).perform(click());
-        Thread.sleep(1000);
-        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
-        Thread.sleep(1000);
-        onView(withText("Sample")).check(matches(isDisplayed()));
-        onView(withId(R.id.back_button)).perform(click());
-        onView(withId(R.id.menu)).perform(click());
-        onView(withId(R.id.select_item)).perform(click());
-        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
-        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(1).perform(click());
-        onView(withId(R.id.delete_button)).perform(click());
-    }
-    // If it doesn't work in needed to
-    @Test public void checkSortByTag() throws InterruptedException {
-        // Add tags
-        onView(withId(R.id.menu)).perform(click());
-        onView(withId(R.id.edit_tag_item)).perform(click());
-        onView(withId(R.id.add_tag)).perform(click());
-        onView(withId(R.id.input_tag)).perform(typeText("NEWTAG1"),closeSoftKeyboard());
-        onView(withId(R.id.add_tag)).perform(click());
-        onView(withId(R.id.add_tag)).perform(click());
-        onView(withId(R.id.input_tag)).perform(typeText("NEWTAG2"),closeSoftKeyboard());
-        onView(withId(R.id.add_tag)).perform(click());
-
-        // Use proper synchronization instead of Thread.sleep()
+        onView(withId(R.id.filter_by_start_date_editview)).perform(click());
+        onView(withId(R.id.picker_month)).perform(swipeDown());
+        onView(withId(R.id.picker_date)).perform(swipeDown());
         onView(withText("OK")).perform(click());
-        onView(withId(R.id.fragment_main_menu)).check(matches(isDisplayed()));
-        pressBack();
-        addItemThroughUIWithTag("Sample", "205", "Apple", "iPhone 11", "123", "descrip", "Domment","NEWTAG1");
-        addItemThroughUIWithTag("Zample", "201", "Bpple", "iPhone 12", "125", "aescrip", "comment","NEWTAG2");
-        onView(withId(R.id.sort_by_button)).perform(click());
-        onView(withId(R.id.sort_spinner)).perform(click());
-        onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(6).perform(click());
-        onView(withId(R.id.sort_asc_radiobutton)).perform(click());
-        onView(withId(R.id.confirm_sort_button)).perform(click());
+        onView(withId(R.id.filter_by_end_date_editview)).perform(click());
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.confirm_filter_button)).perform(click());
         Thread.sleep(1000);
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
         Thread.sleep(1000);
-        onView(withText("Sample")).check(matches(isDisplayed()));
+        onView(withText("Zample")).check(matches(isDisplayed()));
         onView(withId(R.id.back_button)).perform(click());
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(0).perform(click());
+        onView(withId(R.id.confirm_filter_button)).perform(click());
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.select_item)).perform(click());
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(1).perform(click());
         onView(withId(R.id.delete_button)).perform(click());
-        Thread.sleep(1000);
+
+
+
+    }
+
+
+    //If it does not work need to wipe the data of the devices
+    @Test public void filterByTagTest() throws InterruptedException {
+
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.edit_tag_item)).perform(click());
         for(int i=1; i<3; i++) {
             String newTagName = "NEWTAG"+i;
-            onView(withId(R.id.delete_tag)).perform(click());
-            onData(CoreMatchers.is(CoreMatchers.instanceOf(Tag.class))).inAdapterView(withId(R.id.tag_listview)).atPosition(0).perform(click());
-            Thread.sleep(1000);
+            onView(withId(R.id.add_tag)).perform(click());
+            onView(withId(R.id.input_tag)).perform(typeText(newTagName),closeSoftKeyboard());
+            onView(withId(R.id.add_tag)).perform(click());
+
         }
         onView(withText("OK")).perform(click());
+        pressBack();
+        Thread.sleep(1000);
+        addItemThroughUIWithTag("Sample", "205", "Apple", "iPhone 11", "123", "descrip", "Domment","NEWTAG1");
+        addItemThroughUIWithTag("Zample", "201", "Bpple", "iPhone 12", "125", "aescrip", "comment","NEWTAG2");
+
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(4).perform(click());
+        onView(withId(R.id.filter_by_tags)).perform(click());
+        onData(allOf(is(instanceOf(Tag.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(1).perform(click());
+        onView(withId(R.id.confirm_filter_button)).perform(click());
+        Thread.sleep(1000);
+        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
+        Thread.sleep(1000);
+        onView(withText("Zample")).check(matches(isDisplayed()));
+        onView(withId(R.id.back_button)).perform(click());
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).inRoot(RootMatchers.isPlatformPopup()).atPosition(0).perform(click());
+        onView(withId(R.id.confirm_filter_button)).perform(click());
+        onView(withId(R.id.menu)).perform(click());
+        onView(withId(R.id.select_item)).perform(click());
+        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
+        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(1).perform(click());
+        onView(withId(R.id.delete_button)).perform(click());
     }
 
 
