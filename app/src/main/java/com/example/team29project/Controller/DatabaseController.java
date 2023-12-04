@@ -64,6 +64,16 @@ public class DatabaseController  {
         this.tagDataList = new ArrayList<>();
     }
 
+    public DatabaseController(String userId, FirebaseFirestore db, FirebaseStorage sb) {
+        this.db = db;
+        this.sb = sb;
+        this.imageRef = sb.getReference();
+        this.itemsRef = db.collection("Users").document(userId).collection("items");
+        this.tagsRef = db.collection("Users").document(userId).collection("tags");
+        this.itemDataList = new ArrayList<>();
+        this.tagDataList = new ArrayList<>();
+    }
+
     /**
      *  returns the reference of images from firebase storage
      * @return StorageReference of images storage
