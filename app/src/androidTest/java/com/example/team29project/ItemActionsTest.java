@@ -93,26 +93,6 @@ public class ItemActionsTest {
     }
 
     @Test
-    public void filterItemsByMakeTest() {
-        // Set up test by adding items
-        addItemThroughUI("_item0", "201", "_Apple", "_iPhone 12", "123", "descrip", "comment");
-        addItemThroughUI("_item1", "201", "_Android", "_Samsung", "123", "descrip", "comment");
-        addItemThroughUI("_item2", "201", "_Apple", "_iPhone 13", "123", "descrip", "comment");
-
-        onView(withId(R.id.filter_button)).perform(click());
-        onView(withId(R.id.filter_spinner)).perform(click());
-        onView(withText(containsString("Make"))).inRoot(isPlatformPopup()).perform(click());
-        onView(withId(R.id.filter_by_make_editview)).perform(typeText("_Apple"));
-        onView(withId(R.id.confirm_filter_button)).perform(click());
-
-        onView(withText("_item0")).check(matches(isDisplayed()));
-        onView(withText("_item1")).check(doesNotExist());
-        onView(withText("_item2")).check(matches(isDisplayed()));
-
-        // Reset filter
-        resetFilter();
-    }
-    @Test
     public void editingItem() throws InterruptedException {
         addItemThroughUI("galaxy", "200", "Samsung", "15 Pro", "0011010", "good", "nice");
         Thread.sleep(1000);

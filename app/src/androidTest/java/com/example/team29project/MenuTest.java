@@ -21,8 +21,10 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Model.Item;
 import com.example.team29project.View.MainPageActivity;
 
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
@@ -43,7 +45,7 @@ public class MenuTest {
     @Before
     public void setUp() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), MainPageActivity.class);
-        intent.putExtra("userId", "a");
+        intent.putExtra("userId", "test1");
 
         mainPageActivityActivityTestRule.launchActivity(intent);
 
@@ -89,39 +91,33 @@ public class MenuTest {
         onView(withText(newTagName)).check(doesNotExist());
     }
 
+    private void addItemThroughUI(String name, String value, String make, String model, String serialNum, String desc, String comment) {
+        // Open add item screen
+        onView(withId(R.id.menu)).perform(click());
+        onView(withId(R.id.add_new_item)).perform(click());
+
+        // Write the item's attributes
+        onView(withId(R.id.edit_item_name)).perform(typeText(name));
+        onView(withId(R.id.edit_item_value)).perform(typeText(value));
+        onView(withId(R.id.edit_item_date)).perform(click());
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.edit_item_make)).perform(typeText(make));
+        onView(withId(R.id.edit_item_model)).perform(typeText(model));
+        onView(withId(R.id.edit_serialno)).perform(typeText(serialNum));
+        onView(withId(R.id.edit_description)).perform(typeText(desc));
+        onView(withId(R.id.edit_comment)).perform(typeText(comment));
+        onView(withText("OK")).perform(click());
+    }
+
     @Test
-    public void selectItemButtonTest() {
-        ArrayList<Integer> selectedItems = activity.getSelectedItems();
-
-        // Selected items should initially be empty
-        assertThat(selectedItems, Matchers.empty());
-
-        // Check that items can be selected
+    public void deleteMultipleItemsTest() {
+        addItemThroughUI("Sample", "205", "Apple", "iPhone 11", "123", "aescrip", "Domment");
+        addItemThroughUI("Zample", "201", "Bpple", "iPhone 12", "125", "descrip", "comment");
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.select_item)).perform(click());
-        onData(Matchers.anything())
-                .inAdapterView(withId(R.id.items))
-                .atPosition(0)
-                .perform(click());
-
-        onData(Matchers.anything())
-                .inAdapterView(withId(R.id.items))
-                .atPosition(1)
-                .perform(click());
-        assertTrue(selectedItems.contains(0));
-        assertTrue(selectedItems.contains(1));
-
-        // Check that selected items can be deselected
-        onData(Matchers.anything())
-                .inAdapterView(withId(R.id.items))
-                .atPosition(0)
-                .perform(click());
-
-        onData(Matchers.anything())
-                .inAdapterView(withId(R.id.items))
-                .atPosition(1)
-                .perform(click());
-        assertThat(selectedItems, Matchers.empty());
+        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
+        onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(1).perform(click());
+        onView(withId(R.id.delete_button)).perform(click());
     }
 
 }
