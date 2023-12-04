@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import android.net.Uri;
 
 import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.FilteredItemCallback;
 import com.example.team29project.Controller.ItemCallback;
 import com.example.team29project.Controller.LoadItemsCallback;
 import com.example.team29project.Controller.OnPhotoUploadCompleteListener;
@@ -29,6 +30,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -441,5 +443,50 @@ public class FireBaseControllerTest {
         verify(itemsRef.document(any()), times(3)).delete();
     }
 
+    @Test
+    public void filterByMakeTest() {
+        String filterBy = "make";
+        String data = "apple";
+        FilteredItemCallback callback = mock(FilteredItemCallback.class);
+        Query query = mock(Query.class, Mockito.RETURNS_DEEP_STUBS);
 
+        when(itemsRef.whereEqualTo("make", "apple")).thenReturn(query);
+        when(query.addSnapshotListener(any())).thenReturn(null);
+
+        dbController.filter(filterBy, data, callback);
+
+        verify(query).addSnapshotListener(any());
+        verify(itemsRef).whereEqualTo("make", "apple");
+    }
+
+    @Test
+    public void filterByDescriptionTest() {
+        String filterBy = "description";
+        String data = "apple";
+        FilteredItemCallback callback = mock(FilteredItemCallback.class);
+        Query query = mock(Query.class, Mockito.RETURNS_DEEP_STUBS);
+
+        when(itemsRef.get().addOnCompleteListener(any())).thenReturn(null);
+        when(query.addSnapshotListener(any())).thenReturn(null);
+
+        dbController.filter(filterBy, data, callback);
+
+        verify(itemsRef.get()).addOnCompleteListener(any());
+    }
+
+    @Test
+    public void filterByMakeTags() {
+        String filterBy = "tags";
+        String data = "apple";
+        FilteredItemCallback callback = mock(FilteredItemCallback.class);
+        Query query = mock(Query.class, Mockito.RETURNS_DEEP_STUBS);
+
+        when(itemsRef.whereArrayContains("tags", "apple")).thenReturn(query);
+        when(query.addSnapshotListener(any())).thenReturn(null);
+
+        dbController.filter(filterBy, data, callback);
+
+        verify(query).addSnapshotListener(any());
+        verify(itemsRef).whereArrayContains("tags", "apple");
+    }
 }
