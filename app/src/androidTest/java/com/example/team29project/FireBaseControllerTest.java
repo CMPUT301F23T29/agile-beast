@@ -2,9 +2,7 @@ package com.example.team29project;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -24,7 +22,6 @@ import com.example.team29project.Controller.OnPhotoUploadCompleteListener;
 import com.example.team29project.Controller.TagModifyCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,10 +31,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
@@ -150,7 +145,7 @@ public class FireBaseControllerTest {
         StorageReference ref = mock(StorageReference.class, Mockito.RETURNS_DEEP_STUBS);
 
         when(imgRef.child("images/" + uniqueId)).thenReturn(ref);
-        when(ref.putFile(filePath).addOnSuccessListener(taskSnapshot -> {listener.onPhotoUploadComplete(position);})).thenReturn(null);
+        when(ref.putFile(filePath).addOnSuccessListener(taskSnapshot -> listener.onPhotoUploadComplete(position))).thenReturn(null);
 
         dbController.uploadPhoto(filePath, listener, uniqueId, position);
 
@@ -234,7 +229,6 @@ public class FireBaseControllerTest {
     @Test
     public void addTagTest() {
         Tag tag = mock(Tag.class, Mockito.RETURNS_DEEP_STUBS);
-        TagModifyCallback callback = mock(TagModifyCallback.class);
         ArrayList<String> items = new ArrayList<>(Arrays.asList("_item1", "_item2"));
         HashMap<String, Object> data = new HashMap<>();
         data.put("items", items);
