@@ -114,7 +114,6 @@ public class ItemActionsTest {
     }
     @Test
     public void editingItem() throws InterruptedException {
-
         addItemThroughUI("galaxy", "200", "Samsung", "15 Pro", "0011010", "good", "nice");
         Thread.sleep(1000);
         onData(is(instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
@@ -181,7 +180,5 @@ public class ItemActionsTest {
 
 
     }
-
-
 
 }
