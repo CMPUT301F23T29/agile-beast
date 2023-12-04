@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import android.net.Uri;
 
 import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.LoadItemsCallback;
 import com.example.team29project.Controller.OnPhotoUploadCompleteListener;
 import com.example.team29project.Controller.TagModifyCallback;
 import com.example.team29project.Model.Item;
@@ -22,11 +23,13 @@ import com.google.firebase.storage.StorageReference;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class FireBaseControllerTest {
     private DatabaseController dbController;
@@ -48,7 +51,7 @@ public class FireBaseControllerTest {
 
         // Set up return values for init
         imgRef = mock(StorageReference.class);
-        itemsRef = mock(CollectionReference.class);
+        itemsRef = mock(CollectionReference.class, Mockito.RETURNS_DEEP_STUBS);
         tagsRef = mock(CollectionReference.class);
 
         Mockito.when(sb.getReference()).thenReturn(imgRef);
@@ -159,4 +162,54 @@ public class FireBaseControllerTest {
 
         verify(tagsRef, times(1)).addSnapshotListener(ArgumentMatchers.any());
     }
+
+    @Test
+    public void loadInitialItemsTest() {
+        LoadItemsCallback callback = mock(LoadItemsCallback.class);
+
+        when(itemsRef.addSnapshotListener(ArgumentMatchers.any())).thenReturn(null);
+
+        dbController.loadInitialItems(callback);
+
+        verify(itemsRef, times(1)).addSnapshotListener(ArgumentMatchers.any());
+    }
+
+    @Test
+    public void addItem() {
+        Item item = mock(Item.class);
+        String id = "_testId";
+        ArrayList<String> photos = new ArrayList<>(Arrays.asList("_photo1", "_photo2"));
+        ArrayList<String> tags = new ArrayList<>(Arrays.asList("_tag1", "_tag2"));
+
+        when(item.getName()).thenReturn("_name");
+        when(item.getDate()).thenReturn("_Date");
+        when(item.getValue()).thenReturn(20.0);
+        when(item.getMake()).thenReturn("_make");
+        when(item.getModel()).thenReturn("_model");
+        when(item.getSerialNumber()).thenReturn("_serial");
+        when(item.getDescription()).thenReturn("_desc");
+        when(item.getComment()).thenReturn("_comment");
+        when(item.getPhotos()).thenReturn(photos);
+        when(item.getTags()).thenReturn(tags);
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("name", "_name");
+        data.put("date", "_Date");
+        data.put("value", 20.0);
+        data.put("make", "_make");
+        data.put("model", "_model");
+        data.put("serialNumber", "_serial");
+        data.put("description", "_desc");
+        data.put("comment", "_comment");
+        data.put("photos", photos);
+        data.put("tags", tags);
+
+        when(itemsRef.document(id).set(data).addOnSuccessListener(ArgumentMatchers.any()).addOnFailureListener(ArgumentMatchers.any())).thenReturn(null);
+
+        dbController.addItem(item, id);
+
+        verify(itemsRef.document(id), times(2)).set(data);
+    }
+
+
 }
