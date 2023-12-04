@@ -113,7 +113,7 @@ public class DatabaseController  {
      * @return item Item object
      */
 
-    private Item createItemFromDoc(DocumentSnapshot doc) {
+    public Item createItemFromDoc(DocumentSnapshot doc) {
         String name = doc.getString("name");
         String date = doc.getString("date");
         Object itemValueObject = doc.get("value");
