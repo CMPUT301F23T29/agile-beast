@@ -134,6 +134,7 @@ public class SortTest {
         Thread.sleep(1000);
         onView(withText("Zample")).check(matches(isDisplayed()));
         onView(withId(R.id.back_button)).perform(click());
+
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.select_item)).perform(click());
         onData(CoreMatchers.is(CoreMatchers.instanceOf(Item.class))).inAdapterView(withId(R.id.items )).atPosition(0).perform(click());
