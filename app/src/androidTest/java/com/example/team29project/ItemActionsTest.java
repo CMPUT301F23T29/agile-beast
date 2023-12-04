@@ -106,11 +106,4 @@ public class ItemActionsTest {
         resetFilter();
     }
 
-    @Test
-    public void addCameraPhotoToItemTest() throws Exception {
-        onView(withText("_item1")).perform(click());
-        throw new Exception();
-        // TODO: implement this
-
-    }
 }

@@ -73,22 +73,7 @@ public class MenuTest {
         onView(withText("Delete")).check(matches(isDisplayed()));
     }
 
-    @Test
-    public void tagButtonAddTagTest() {
-        String newTagName = "__NEWTAG";
-        onView(withId(R.id.menu)).perform(click());
-        onView(withId(R.id.edit_tag_item)).perform(click());
-        onView(withId(R.id.add_tag)).perform(click());
-        onView(withId(R.id.input_tag)).perform(typeText(newTagName));
-        onView(withId(R.id.add_tag)).perform(click());
-
-
-        onView(withText(newTagName)).check(matches(isDisplayed()));
-
-        // TODO: no clean up function
-    }
-
-    @Test public void tagButtonDeleteTagTest() {
+    @Test public void tagButtonAddAndDeleteTagTest() {
         String newTagName = "__NEWTAG";
         onView(withId(R.id.menu)).perform(click());
         onView(withId(R.id.edit_tag_item)).perform(click());
@@ -102,8 +87,6 @@ public class MenuTest {
         onView(withText(newTagName)).perform(click());
 
         onView(withText(newTagName)).check(doesNotExist());
-
-
     }
 
     @Test
