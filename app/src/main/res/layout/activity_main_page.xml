@@ -47,7 +47,7 @@
             android:fontFamily="monospace"
             android:text="@string/filter_by"
             android:textColor="@color/button_text"
-            android:textSize="20dp"
+            android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/sort_by_button"
             app:layout_constraintHorizontal_bias="0.474"
@@ -108,7 +108,7 @@
             android:layout_width="70dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
+            android:layout_marginStart="7dp"
             android:text="Name"
             android:textColor="@color/white"
             android:textSize="26dp" />
@@ -123,10 +123,9 @@
 
         <TextView
             android:id="@+id/item_date"
-            android:layout_width="130dp"
+            android:layout_width="122dp"
             android:layout_height="30sp"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
             android:fontFamily="monospace"
             android:text="Date"
             android:textColor="@color/white"
@@ -199,7 +198,7 @@
             android:id="@+id/value_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="20dp"
             android:fontFamily="monospace"
             android:text="Total: $"
             android:textColor="#407783"
