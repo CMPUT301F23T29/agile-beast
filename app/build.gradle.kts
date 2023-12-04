@@ -56,6 +56,7 @@ dependencies {
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
     implementation ("com.google.mlkit:text-recognition:16.0.0")
     implementation ("org.mindrot:jbcrypt:0.4")
+    androidTestImplementation("org.mockito:mockito-android:5.8.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
 }
