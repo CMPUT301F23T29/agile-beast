@@ -12,27 +12,32 @@ import com.google.firebase.storage.StorageReference;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Answers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
 public class FireBaseControllerTest {
     private DatabaseController dbController;
+    private FirebaseFirestore db;
+    private FirebaseStorage sb;
+    private StorageReference imgRef;
+    private CollectionReference itemsRef;
+    private CollectionReference tagsRef;
 
 
-    private String testUsername = "_a";
+
+
+    private final String testUsername = "_a";
 
     @Before
     public void setUp() {
-        FirebaseFirestore db = Mockito.mock(FirebaseFirestore.class, Mockito.RETURNS_DEEP_STUBS);
-        FirebaseStorage sb = Mockito.mock(FirebaseStorage.class);
+        db = Mockito.mock(FirebaseFirestore.class, Mockito.RETURNS_DEEP_STUBS);
+        sb = Mockito.mock(FirebaseStorage.class);
 
         // Set up return values for init
-        StorageReference imgRef = Mockito.mock(StorageReference.class);
-        CollectionReference itemsRef = Mockito.mock(CollectionReference.class);
-        CollectionReference tagsRef = Mockito.mock(CollectionReference.class);
+        imgRef = Mockito.mock(StorageReference.class);
+        itemsRef = Mockito.mock(CollectionReference.class);
+        tagsRef = Mockito.mock(CollectionReference.class);
 
         Mockito.when(sb.getReference()).thenReturn(imgRef);
         Mockito.when(db.collection("Users").document(testUsername).collection("items")).thenReturn(itemsRef);
