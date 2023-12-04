@@ -64,6 +64,16 @@ public class DatabaseController  {
         this.tagDataList = new ArrayList<>();
     }
 
+    public DatabaseController(String userId, FirebaseFirestore db, FirebaseStorage sb, ArrayList<Item> items, ArrayList<Tag> tags) {
+        this.db = db;
+        this.sb = sb;
+        this.imageRef = sb.getReference();
+        this.itemsRef = db.collection("Users").document(userId).collection("items");
+        this.tagsRef = db.collection("Users").document(userId).collection("tags");
+        this.itemDataList = items;
+        this.tagDataList = tags;
+    }
+
     /**
      *  returns the reference of images from firebase storage
      * @return StorageReference of images storage
@@ -103,7 +113,7 @@ public class DatabaseController  {
      * @return item Item object
      */
 
-    private Item createItemFromDoc(DocumentSnapshot doc) {
+    public Item createItemFromDoc(DocumentSnapshot doc) {
         String name = doc.getString("name");
         String date = doc.getString("date");
         Object itemValueObject = doc.get("value");
@@ -371,14 +381,6 @@ public class DatabaseController  {
         }
     }
 
-    public void setItemDataList(ArrayList<Item> itemDataList) {
-        this.itemDataList = itemDataList;
-    }
-
-    /**
-     * Returns the itemDataList
-     * @return the ArrayList containing the items
-     */
     public ArrayList<Item> getItems() {
         return itemDataList;
     }
