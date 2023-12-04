@@ -1,4 +1,4 @@
-#agile-beast
+# agile-beast
 <a name="readme-top"></a>
 
 <details>
@@ -17,12 +17,11 @@
 
 
 ## About The Project
-An Android app to add and store items(modify). This project is part of the University of Alberta CMPUT 301 course built by students of Team 32 for the Winter 2023 term.
+To assist in making a household inventory (for purposes like insurance), we have created a mobile application that allows one to efficiently record and manage the items that they own, and store this information. This project is part of the University of Alberta CMPUT 301 course built by students of Team 29 for the Fall 2023 term.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Documentation
 - <a name ="Documentation" href = "https://github.com/CMPUT301F23T29/agile-beast/wiki">Check out our Wiki for all our documentation.</a>
-- <a href = ""> Check out our javadocs here </a>
 
 ### Built With
 <img src = "https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white"/> <img src = "https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" />
