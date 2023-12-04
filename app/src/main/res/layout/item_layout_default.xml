@@ -12,9 +12,12 @@
         android:id="@+id/item_name"
         android:layout_width="70dp"
         android:layout_height="30dp"
-        android:layout_margin="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="3dp"
         android:text="name"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:ellipsize="end"
+        android:maxLines="1"  />
 
     <View
         android:layout_height="match_parent"
@@ -26,13 +29,12 @@
 
     <TextView
         android:id="@+id/item_date"
-        android:text="date"
-        android:textSize="20sp"
-        android:layout_margin="5dp"
-        android:fontFamily="monospace"
-        android:layout_width="130dp"
+        android:layout_width="122dp"
         android:layout_height="30sp"
-        />
+        android:layout_marginTop="5dp"
+        android:fontFamily="monospace"
+        android:text="date"
+        android:textSize="20sp" />
 
     <View
         android:layout_width="1dp"
@@ -45,7 +47,7 @@
         android:id="@+id/item_value2"
         android:layout_width="15dp"
         android:layout_height="30dp"
-        android:layout_margin="5dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="monospace"
         android:text="$"
         android:textSize="20sp" />
@@ -54,10 +56,11 @@
         android:id="@+id/item_value"
         android:text="value"
         android:textSize="20sp"
-        android:layout_margin="5dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="monospace"
-        android:layout_width="100dp"
+        android:layout_width="10dp"
+        android:layout_weight="1"
         android:layout_height="30dp"
-        />
-
+        android:ellipsize="end"
+        android:maxLines="1" />
 </LinearLayout>
