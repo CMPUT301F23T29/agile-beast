@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.example.team29project.Model.Item;
 import com.example.team29project.R;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -63,7 +64,9 @@ public class ItemArrayAdapter extends ArrayAdapter<Item> {
         TextView value = view.findViewById(R.id.item_value);
         name.setText(item.getName());
         date.setText(item.getDate());
-        value.setText( item.getValue().toString());
+        DecimalFormat df = new DecimalFormat("0.##");
+        String valueText = df.format(item.getValue());
+        value.setText(valueText);
         if (selectedItems.contains(Integer.valueOf(position))){
             // If the item is selected, change the background color to light grey
             layout.setBackgroundColor(Color.parseColor("#D3D3D3"));

@@ -168,7 +168,7 @@ public class MainPageActivity extends AppCompatActivity implements
             total = total +  item.getValue();
         }
 
-        sumItem.setText(String.valueOf(total));
+        sumItem.setText( String.format("%.2f", total));
 
     }
     /**

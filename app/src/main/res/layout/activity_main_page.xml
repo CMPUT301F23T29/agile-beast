@@ -166,15 +166,17 @@
 
         <TextView
             android:id="@+id/value_display"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:layout_marginBottom="22dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
             android:fontFamily="monospace"
+            android:singleLine="true"
             android:text="00"
             android:textColor="#407783"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/value_label"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -200,9 +202,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:fontFamily="monospace"
-            android:text="Total: $"
+            android:text="Total:$"
             android:textColor="#407783"
-            android:textSize="28dp"
+            android:textSize="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/menu"
             app:layout_constraintTop_toTopOf="parent" />
