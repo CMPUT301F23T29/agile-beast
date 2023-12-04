@@ -64,14 +64,14 @@ public class DatabaseController  {
         this.tagDataList = new ArrayList<>();
     }
 
-    public DatabaseController(String userId, FirebaseFirestore db, FirebaseStorage sb) {
+    public DatabaseController(String userId, FirebaseFirestore db, FirebaseStorage sb, ArrayList<Item> items, ArrayList<Tag> tags) {
         this.db = db;
         this.sb = sb;
         this.imageRef = sb.getReference();
         this.itemsRef = db.collection("Users").document(userId).collection("items");
         this.tagsRef = db.collection("Users").document(userId).collection("tags");
-        this.itemDataList = new ArrayList<>();
-        this.tagDataList = new ArrayList<>();
+        this.itemDataList = items;
+        this.tagDataList = tags;
     }
 
     /**
