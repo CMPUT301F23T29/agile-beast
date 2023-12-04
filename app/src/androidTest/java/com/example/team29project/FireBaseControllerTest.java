@@ -19,6 +19,7 @@ import com.example.team29project.Controller.FilteredItemCallback;
 import com.example.team29project.Controller.ItemCallback;
 import com.example.team29project.Controller.LoadItemsCallback;
 import com.example.team29project.Controller.OnPhotoUploadCompleteListener;
+import com.example.team29project.Controller.SortItemCallback;
 import com.example.team29project.Controller.TagModifyCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
@@ -482,5 +483,21 @@ public class FireBaseControllerTest {
 
         verify(query).addSnapshotListener(any());
         verify(itemsRef).whereArrayContains("tags", "apple");
+    }
+
+    @Test
+    public void sortTest() {
+        String sortBy = "name";
+        boolean isAsc = false;
+        SortItemCallback callback = mock(SortItemCallback.class);
+        Query query = mock(Query.class, Mockito.RETURNS_DEEP_STUBS);
+
+        when(itemsRef.orderBy(anyString(), any())).thenReturn(query);
+        when(query.addSnapshotListener(any())).thenReturn(null);
+
+        dbController.sort(sortBy, isAsc, callback);
+
+        verify(itemsRef).orderBy(sortBy, Query.Direction.DESCENDING);
+        verify(query).addSnapshotListener(any());
     }
 }
