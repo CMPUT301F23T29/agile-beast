@@ -1,7 +1,15 @@
 package com.example.team29project;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,6 +17,7 @@ import static org.mockito.Mockito.when;
 import android.net.Uri;
 
 import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.ItemCallback;
 import com.example.team29project.Controller.LoadItemsCallback;
 import com.example.team29project.Controller.OnPhotoUploadCompleteListener;
 import com.example.team29project.Controller.TagModifyCallback;
@@ -16,7 +25,9 @@ import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -30,6 +41,7 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FireBaseControllerTest {
     private DatabaseController dbController;
@@ -52,7 +64,7 @@ public class FireBaseControllerTest {
         // Set up return values for init
         imgRef = mock(StorageReference.class);
         itemsRef = mock(CollectionReference.class, Mockito.RETURNS_DEEP_STUBS);
-        tagsRef = mock(CollectionReference.class);
+        tagsRef = mock(CollectionReference.class, Mockito.RETURNS_DEEP_STUBS);
 
         Mockito.when(sb.getReference()).thenReturn(imgRef);
         Mockito.when(db.collection("Users").document(testUsername).collection("items")).thenReturn(itemsRef);
@@ -211,5 +223,133 @@ public class FireBaseControllerTest {
         verify(itemsRef.document(id), times(2)).set(data);
     }
 
+    @Test
+    public void addTagTest() {
+        Tag tag = mock(Tag.class, Mockito.RETURNS_DEEP_STUBS);
+        TagModifyCallback callback = mock(TagModifyCallback.class);
+        ArrayList<String> items = new ArrayList<>(Arrays.asList("_item1", "_item2"));
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("items", items);
 
+        when(tag.getItems()).thenReturn(items);
+        when(tag.getName()).thenReturn("_tag");
+        when(tagsRef.document("_tag").set(data).addOnSuccessListener(ArgumentMatchers.any()).addOnFailureListener(any())).thenReturn(null);
+
+        verify(tagsRef).document("_tag");
+        verify(tagsRef.document("_tag")).set(data);
+    }
+
+    @Test
+    public void updatePhotoTest() {
+        Item item = mock(Item.class);
+        ArrayList<String> photos = new ArrayList<>(Arrays.asList("_photo1", "_photo2", "_photo3"));
+        Map<String, Object> fieldUpdate = new HashMap<>();
+        fieldUpdate.put("photos", FieldValue.delete());
+
+        when(itemsRef.document(item.getDocId()).update(fieldUpdate)).thenReturn(null);
+        when(itemsRef.document(item.getDocId()).update(eq("photos"), FieldValue.arrayUnion(ArgumentMatchers.anyString()))).thenReturn(null);
+
+        dbController.updatePhoto(item, photos);
+
+        verify(itemsRef.document(item.getDocId())).update(fieldUpdate);
+        verify(itemsRef.document(item.getDocId()), times(3)).update(eq("photos"), any());
+    }
+
+    @Test
+    public void updateItemTest() {
+        String documentId = "_docId";
+        Item item = mock(Item.class);
+        DocumentReference docRef = mock(DocumentReference.class, Mockito.RETURNS_DEEP_STUBS);
+
+        ArrayList<String> photos = new ArrayList<>(Arrays.asList("_photo1", "_photo2"));
+        ArrayList<String> tags = new ArrayList<>(Arrays.asList("_tag1", "_tag2"));
+
+        when(item.getName()).thenReturn("_name");
+        when(item.getDate()).thenReturn("_Date");
+        when(item.getValue()).thenReturn(20.0);
+        when(item.getMake()).thenReturn("_make");
+        when(item.getModel()).thenReturn("_model");
+        when(item.getSerialNumber()).thenReturn("_serial");
+        when(item.getDescription()).thenReturn("_desc");
+        when(item.getComment()).thenReturn("_comment");
+        when(item.getPhotos()).thenReturn(photos);
+        when(item.getTags()).thenReturn(tags);
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("name", "_name");
+        data.put("date", "_Date");
+        data.put("value", 20.0);
+        data.put("make", "_make");
+        data.put("model", "_model");
+        data.put("serialNumber", "_serial");
+        data.put("description", "_desc");
+        data.put("comment", "_comment");
+        data.put("photos", photos);
+        data.put("tags", tags);
+
+        when(itemsRef.document(documentId)).thenReturn(docRef);
+        when(docRef.update(any()).addOnSuccessListener(any()).addOnFailureListener(any())).thenReturn(null);
+        when(item.getPhotos()).thenReturn(photos);
+
+        dbController.updateItem(documentId, item);
+
+        verify(docRef.update(data).addOnSuccessListener(any())).addOnFailureListener(any());
+    }
+
+    @Test
+    public void updateTagItemTest() {
+        Item item = mock(Item.class, Mockito.RETURNS_DEEP_STUBS);
+        Map<String, Object> fieldUpdate = new HashMap<>();
+        fieldUpdate.put("tags", FieldValue.delete());
+
+        when(itemsRef.document(item.getDocId()).update(fieldUpdate)).thenReturn(null);
+        when(item.getTags()).thenReturn(new ArrayList<>(Arrays.asList("tag1", "tag2")));
+
+        dbController.updateTagItem(item);
+
+        verify(itemsRef.document(item.getDocId())).update(fieldUpdate);
+        verify(itemsRef.document(item.getDocId()), times(2)).update(eq("tags"), any());
+    }
+
+    @Test
+    public void updateTagTest() {
+        Tag tag = mock(Tag.class);
+        Map<String, Object> fieldUpdate = new HashMap<>();
+        fieldUpdate.put("items", FieldValue.delete());
+
+        when(tag.getName()).thenReturn("tag1");
+        when(tag.getItems()).thenReturn(new ArrayList<>(Arrays.asList("Item1", "item2")));
+
+        dbController.updateTag(tag);
+
+        verify(tagsRef.document("tag1")).update(fieldUpdate);
+        verify(tagsRef.document("tag1"), times(2)).update(eq("items"), any());
+    }
+
+    @Test
+    public void getTagsTest() {
+        ArrayList<Tag> tags = dbController.getTags();
+
+        assertNotNull(tags);
+    }
+
+    @Test
+    public void getItemsTest() {
+        ArrayList<Item> items = dbController.getItems();
+
+        assertNotNull(items);
+    }
+
+    @Test
+    public void getItemTest() {
+        assertThrows(IndexOutOfBoundsException.class, () -> {dbController.getItem(1);});
+    }
+
+    @Test
+    public void getItemByDocumentTest() {
+        String documentId = "docId";
+        ItemCallback callback = mock(ItemCallback.class);
+
+
+    }
 }
