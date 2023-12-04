@@ -6,9 +6,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.net.Uri;
+
 import com.example.team29project.Controller.DatabaseController;
+import com.example.team29project.Controller.OnPhotoUploadCompleteListener;
+import com.example.team29project.Controller.TagModifyCallback;
 import com.example.team29project.Model.Item;
 import com.example.team29project.Model.Tag;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -17,6 +22,7 @@ import com.google.firebase.storage.StorageReference;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -49,7 +55,7 @@ public class FireBaseControllerTest {
         Mockito.when(db.collection("Users").document(testUsername).collection("items")).thenReturn(itemsRef);
         Mockito.when(db.collection("Users").document(testUsername).collection("tags")).thenReturn(tagsRef);
 
-        dbController = new DatabaseController("a", db, sb);
+        dbController = new DatabaseController(testUsername, db, sb);
     }
 
     @Test
@@ -109,5 +115,48 @@ public class FireBaseControllerTest {
         assertEquals(returnedItem.getPhotos(), photoStrings);
         assertEquals(returnedItem.getTags(), tags);
 
+    }
+
+    @Test
+    public void testPhotoTest() {
+        Uri filePath = mock(Uri.class);
+        OnPhotoUploadCompleteListener listener = mock(OnPhotoUploadCompleteListener.class);
+        String uniqueId = "_photoId";
+        int position = 3;
+
+        StorageReference ref = mock(StorageReference.class, Mockito.RETURNS_DEEP_STUBS);
+
+        when(imgRef.child("images/" + uniqueId)).thenReturn(ref);
+        when(ref.putFile(filePath).addOnSuccessListener(taskSnapshot -> {listener.onPhotoUploadComplete(position);})).thenReturn(null);
+
+        dbController.uploadPhoto(filePath, listener, uniqueId, position);
+
+        verify(imgRef, times(1)).child("images/" + uniqueId);
+        verify(ref, times(2)).putFile(filePath);
+    }
+
+    @Test
+    public void deletePhotoTest() {
+        String uniqueId = "_photoId";
+        StorageReference photoRef = mock(StorageReference.class, Mockito.RETURNS_DEEP_STUBS);
+//        when(photoRef.delete()).thenReturn(null);
+        when(imgRef.child("images/"+uniqueId)).thenReturn(photoRef);
+        when(photoRef.delete().addOnSuccessListener(aVoid -> {})).thenReturn(null);
+        when(photoRef.delete().addOnFailureListener(aVoid -> {})).thenReturn(null);
+
+        dbController.deletePhoto(uniqueId);
+
+        verify(photoRef, times(3)).delete();
+    }
+
+    @Test
+    public void loadInitialTagsTest() {
+        TagModifyCallback callback = mock(TagModifyCallback.class);
+        when(tagsRef.addSnapshotListener((value, error)->{})).thenReturn(null);
+
+        dbController.loadInitialTags(callback);
+
+
+        verify(tagsRef, times(1)).addSnapshotListener(ArgumentMatchers.any());
     }
 }
